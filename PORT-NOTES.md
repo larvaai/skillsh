@@ -65,6 +65,7 @@ Commit trên cùng nhánh. Test: `python3 bin/tests/test_dot3.py` (22 ca, 0 đ�
 | `.claude/hooks/config_write_guard.py` | gác ghi `settings.json` + `.claude/hooks/**` (guard the guards) | Write/Edit/Bash |
 | `.claude/hooks/bash_safety.py` | lưới cuối chống `rm -rf /` / `curl\|sh` / fork-bomb / `dd→/dev` … (fail-open khi hook lỗi) | Bash |
 | `settings.json` `permissions.deny` | chặn Read `.env`/`*.pem`/`*.key`/`credentials`/`id_rsa`… | Read tool |
+| `.githooks/pre-push` + `bin/prepush_check.py` | **backstop transport** — re-áp secret-scan + ship-GO-phải-ký + chặn force/xoá nhánh bảo vệ cho MỌI push (kể cả `sh -c 'git push'`) | git pre-push |
 | prose: checkpoint (front-matter phiếu) · progress (ADVANCE=advance.py) · atlas (secret→chỉ ghi tên+vị trí) | | model |
 
 Bằng chứng gate hoạt động thật: khi wire `config_write_guard`, nó **chặn ngay cả Edit của phiên
@@ -76,14 +77,18 @@ chủ đích ngoài flow thường).
 - **resume-pending-gates** — resume đọc `pipeline/*.json`, `cho_duyet:true` → in "ĐANG CHỜ KÝ",
   không tiến cử skill sau cổng (prose resume + partner). *(Đang có session khác sửa `resume/SKILL.md`
   → chừa để tránh đụng.)*
-- **git pre-push backstop** — cùng luật `gate_ship` ở tầng transport, bắt evasion `sh -c 'git push'`.
 - **skill-md-validator** (`check_skills.py` gắn vào tune Bước 6), **current-pointer-truth** (xoá khối
   ghi current.json ở 15 skill, chỉ charter ghi), **red-before-green** (proof-of-fail trong frame).
+
+## Kích hoạt backstop (một lần mỗi clone, sau khi nhánh có `.githooks/`)
+
+`git config core.hooksPath .githooks`. Break-glass: `SKILLSH_PREPUSH=off` hoặc `git push --no-verify`.
 
 ## Kiểm nhanh
 
 ```bash
 python3 .claude/hooks/tests/test_dot2_gates.py     # 15 ca, phải 0 đỏ
+python3 bin/tests/test_dot3.py                       # 22 ca (advance + 2 guard)
+python3 bin/tests/test_prepush.py                    # 9 ca (pre-push backstop, repo tạm — có ca sh -c evasion)
 python3 bin/check_pipeline.py                        # audit mọi ship.json trong repo
-python3 bin/sign_gate.py --check rebuild-hex-agent/pipeline/ship.json
 ```

@@ -113,5 +113,14 @@ khai) sha artifact còn khớp; không có front-matter → REFUSE; sửa artifa
 `.env`/`.env.*`/`*.pem`/`*.key`/`id_rsa*`/`credentials*`/`secrets.y*ml`. + luật `atlas`: gặp secret
 hardcode chỉ ghi TÊN biến + vị trí, KHÔNG ghi giá trị (chặn vector mà guard theo path mù).
 
-Test: `python3 bin/tests/test_dot3.py` (22 ca). Đợt 3 chưa làm (để session khác / sau):
-resume-pending-gates (prose resume/partner), git pre-push backstop, skill-md-validator.
+**5. BACKSTOP tầng transport — `.githooks/pre-push` + `bin/prepush_check.py`.** Hook in-session
+(gate_ship/push_boundary) chỉ soi lệnh MODEL gõ → né được bằng `sh -c 'git push'` / alias /
+push tay. Git pre-push chạy cho MỌI push dù spawn kiểu gì → re-áp ĐÚNG luật hai hook kia (import
+lại, không chép lệch): secret-scan + ship-GO-phải-ký + chặn force/xoá nhánh bảo vệ. **Kích hoạt
+(một lần mỗi clone): `git config core.hooksPath .githooks`** (chỉ có hiệu lực khi nhánh đang
+checkout đã chứa `.githooks/` — tức sau khi merge nhánh này). Break-glass: `SKILLSH_PREPUSH=off`
+hoặc `git push --no-verify`. Fail-OPEN khi hook tự lỗi.
+
+Test: `python3 bin/tests/test_dot3.py` (22 ca) + `python3 bin/tests/test_prepush.py` (9 ca, có
+ca `sh -c 'git push'` evasion → vẫn bị chặn). Đợt 3 chưa làm (để session khác / sau):
+resume-pending-gates (prose resume/partner), skill-md-validator, current-pointer-truth.
