@@ -1,0 +1,9 @@
+{
+  "skill": "spar",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "Đủ 4 file giao thức trong outputs/spar/round-1/ (prompt.md, user-output.md, claude-output.md, grade-output.md). prompt.md status=graded, có frontmatter đúng mẫu (round/topic/rubric). Luật xương sống 'không nhìn trước đáp án' được tôn trọng: user-output.md có nội dung thật do user viết, claude-output.md sinh sau. grade-output.md bám ĐÚNG khung cố định SKILL.md L92-117: 5 tiêu chí (Đúng/Đủ ý/Lập luận/Rõ/Trọng tâm) × 2 bản (BẠN 8/10, CLAUDE 10/10) + GATE + khối GÓP Ý 3 gạch (làm tốt hơn / thiếu / SỬA TRƯỚC TIÊN). Chấm cùng một thước, không nương tay. Chấm CHÍNH XÁC: bắt đúng lỗ hở thật của user — 'kiểm tra DB xem đã gửi chưa rồi mới ghi' là check-then-write dính race, đối lại UNIQUE constraint (claude-output L18-31); user cũng thật sự thiếu chuẩn hoá timezone khoá + rủi ro claim-xong-worker-chết làm kẹt liều. Chênh 8 vs 10 công bằng, có cơ sở. Coach chỉ đúng 1 đòn bẩy: 'đẩy tính duy nhất xuống chỗ cưỡng chế được, đừng để trong trí nhớ code' (grade-output L22).",
+  "top_failure": "NONE",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng: đủ 4 file, giữ luật xương sống, chấm cùng một thước công bằng và bắt đúng lỗ race của bản user, coach có 1 đòn bẩy sắc — không friction."
+}

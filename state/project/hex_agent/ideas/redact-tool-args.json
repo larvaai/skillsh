@@ -1,0 +1,23 @@
+{
+  "project": "/Users/uspro/Desktop/namnson/hex_agent",
+  "slug": "redact-tool-args",
+  "updated_at": "2026-07-01T10:22:00Z",
+  "ten_y_tuong": "C2 — Redact tool args trước khi ghi events.jsonl",
+  "giai_doan": "done_handoff",
+  "cho_duyet": false,
+  "do_ro": "ro_rang",
+  "do_kha_thi": "kha_thi_ro",
+  "trang_thai": "done_handoff",
+  "phan_bien": [],
+  "an_so_can_kiem_chung": [],
+  "da_chot": [
+    "GĐ1: đáng làm — đóng rủi ro bảo mật LIVE (known-risks §1), tiền đề cho agent chạm tool ghi-đĩa thật",
+    "GĐ2-4 MVP: hook ở attach_to_bus (bus-level, phủ mọi sink) + mask theo tên khóa SECRET_KEYS (đệ quy dict+list) + default-ON, config nới key-set",
+    "GĐ2-4 OUT: dò secret theo giá trị (regex) / redaction UI-SSE / xoay key động",
+    "GĐ5 R1: không giá trị bí mật thô trong LogEvent persisted",
+    "GĐ5 R3: mask để lại marker (một chiều), KHÔNG xoá field — để inspect biết có field bị che",
+    "GĐ5 ownership: control định nghĩa RedactionPolicy, observability thực thi lúc ghi"
+  ],
+  "dang_mo": [],
+  "artifact_path": null
+}

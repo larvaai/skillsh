@@ -1,0 +1,9 @@
+{
+  "skill": "skeleton",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "Report outputs/skeleton/skeleton-live-slice.md: (1) đủ 6 phần template GĐ8 — E2E xuyên đủ 10 tầng dạng bảng, không bỏ tầng; checklist 0/9 KHÔNG tick khống (đúng luật PROVE-đừng-MOCK). (2) Mở bằng GÓC NHÌN LÃNH ĐẠO ngôn ngữ nghiệp vụ (bằng chứng CHƯA CÓ / cấp / 0/9 / đổ người: CHƯA), không mở bằng tên framework → gate 2 pass. (3) Bám nguồn chuẩn-xác đã đối chiếu fixture: stack NestJS+BullMQ/Redis+Postgres khớp tech-decision ADR-007; máy trạng thái pending→taken khớp domain-model §3; slice khớp architecture §4; NFR-1/2/4 đúng; db.ts tự nhận in-memory (dòng 4) và BUG-5 IDOR trong confirmDose (dose.controller.ts:14) đều trích đúng — KHÔNG bịa link/test. (4) lý do chọn slice + 3 slice loại. (6) cổng 'Live slice pass chưa?', Chủ=Tech lead+dev / Duyệt=CTO, không tự tuyên pass, ô trống→chưa pass + lối đi tiếp không phủ định cứng. (7) bàn giao /frame(bắt buộc)+/backlog+/partner + artifact path.",
+  "top_failure": "Chạy trên tài liệu+codebase phác (không có state pipeline đã qua cổng) nhưng KHÔNG in block cảnh báo ⚠️ 'đầu vào ngoài pipeline' như SKILL.md yêu cầu — chỉ ghi 'Nhận từ:' header. Là khuyết minh bạch nguồn nhỏ, không rớt gate vì nguồn vẫn được nêu rõ.",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng: pass cả 3 gate, xử lý đúng ca khó nhất (không có bằng chứng → báo 0/9 chờ-bằng-chứng thay vì tick khống), bám nguồn khớp fixture từng chi tiết; chỉ thiếu block cảnh báo ⚠️ đầu-vào-ngoài."
+}

@@ -1,0 +1,64 @@
+{
+  "project": "hex-agent-rebuild",
+  "slug": "hex-agent-rebuild",
+  "giai_doan": "gd8_live_slice",
+  "updated_at": "2026-07-02T00:00:00Z",
+  "nhan_tu": "gd7_stack",
+  "brownfield_informed": true,
+  "slice": "finish-by-evidence-tối-thiểu — task 2 bước → plan → order(deps) → delegate 1 worker (scope⊆parent) → judge-by-evidence → FINISHED/BLOCKED, +resume từ SQLite (dính SPIKE-1)",
+  "duong_di_e2e": [
+    "Intake (Facade nhận TaskEnvelope → SessionFactory) — gốc: orchestrator/loop.py:run [93-147]",
+    "Kernel.execute_tool (LLM plan, JSON-mode → parse_decision) — gốc: core/kernel.py:106-150; contracts.py:117-182",
+    "Decompose gate accept_decomposition (μ↓ + coverage + RENAME/STUCK) — gốc: decompose_agent/solve.py:_decompose [132-185]; accept.py:52-128",
+    "Order next_node (topo depth,order; N1 trước N2) — gốc: tree.py:next_node [43-51]",
+    "Delegate DelegationManager.delegate (validate policy, scope⊆parent, child session) — gốc: delegation/manager.py:63-192; policy.py:25-26; session.py:163",
+    "Worker execute_tool (fs_write/fs_read qua chokepoint, sandbox jail, PolicyGate fail-closed) — gốc: core/kernel.py:106-150; safety/sandbox.py:38,97",
+    "Emit events.jsonl (tool.requested/completed → EventLogger + summary + metrics) — gốc: observability/event_log.py:102",
+    "judge_acceptance (mỗi passed cần ≥1 evidence THẬT resolve; scaffolding bị từ chối) — gốc: supervisor/graph.py:357-382; evidence.py:16-23",
+    "Finish/Blocked bounded (all_accepted → FINISHED; guard → BLOCKED) — gốc: supervisor/loop.py:_drive [157-241]; discipline/budget.py:Budget [10-67]",
+    "Resume từ SQLite (kill sau N1, resume cùng run_id, atomic txn, 0 side-effect re-run) — gốc: orchestrator/loop.py:resume [217-273]; loop.py:208-218"
+  ],
+  "link_staging": null,
+  "link_staging_trang_thai": "CHƯA CÓ — slice rebuild chưa được /frame dựng & deploy; không bịa link",
+  "validate_tick": "0/9",
+  "validate_9_o": [
+    { "o": 1, "ten": "Kiến trúc hợp lý (hexagonal frozen-kernel + mutable session)", "tick_rebuild": false, "goc_anchor": "orchestrator/loop.py:run [93-147]; supervisor/loop.py:_drive [157-241]", "can_dung_lai": "dựng facade+_drive Python 3.11; DoD task 2 bước về FINISHED" },
+    { "o": 2, "ten": "Stack phù hợp (Python 3.11 · LangGraph · SQLite)", "tick_rebuild": false, "goc_anchor": "ATLAS.md:27; langgraph.sqlite = truth", "can_dung_lai": "graph tối thiểu + SQLite checkpointer; xác nhận bản Python (open-Q GĐ7)" },
+    { "o": 3, "ten": "Module boundary ổn (qua PORT, không cross-import)", "tick_rebuild": false, "goc_anchor": "delegation/manager.py:63 (cửa RIÊNG); core/kernel.py:106-150 (chokepoint)", "can_dung_lai": "ToolPort/DelegationPort; audit-test: không call site nào ngoài execute_tool" },
+    { "o": 4, "ten": "Auth = scope chạy (scope con ⊆ cha)", "tick_rebuild": false, "goc_anchor": "policy.py:25-26 + session.py:163 (scope-shrink)", "can_dung_lai": "property-test Hypothesis: MỌI child-cap ⊄ parent → REJECTED fail-closed" },
+    { "o": 5, "ten": "DB = SQLite checkpoint (resume 0 side-effect) — SPIKE-1", "tick_rebuild": false, "rui_ro_cao": true, "goc_anchor": "orchestrator/loop.py:resume [217-273]; atomic txn loop.py:208-218", "can_dung_lai": "SPIKE-1 CHƯA ĐO: kill sau N1, resume, kiểm (a) không re-emit tool.requested N1 (b) round_no liên tục (c) crash giữa txn không để checkpoint nửa-ghi" },
+    { "o": 6, "ten": "CI xanh", "tick_rebuild": false, "rui_ro_cao": true, "goc_anchor": "327 test + tests_audit (evidence-C:25) — CI cụ thể chưa neo bản rebuild", "can_dung_lai": "CI tối thiểu lint+pytest+audit chạy trên slice; chỉ tick khi XANH thật (→ /delivery)" },
+    { "o": 7, "ten": "Test strategy thực tế (pytest + Hypothesis property + audit)", "tick_rebuild": false, "goc_anchor": "pytest + tests_audit (evidence-C:25,66)", "can_dung_lai": "≥1 property-test invariant (μ↓ hoặc scope⊆parent) + ≥1 integration E2E + audit delegate/redaction; pass thật mới tick" },
+    { "o": 8, "ten": "Observability = event-log đủ (jsonl+summary+metrics, seq gap-free)", "tick_rebuild": false, "rui_ro_cao": true, "goc_anchor": "observability/event_log.py:102; replay deterministic (evidence-B §7)", "can_dung_lai": "events.jsonl chứa tool.requested/completed N1,N2 + delegation.finished; seq gap-free; REDACT raw args trước khi bật write-tool (ADR-006)" },
+    { "o": 9, "ten": "Team hiểu flow delivery", "tick_rebuild": false, "goc_anchor": "đường đi E2E đã có anchor gốc (bảng §2)", "can_dung_lai": "1 dev NGOÀI dựng-lại-được từ Report (không hỏi tác giả) sau khi staging chạy" }
+  ],
+  "cho_duyet": false,
+  "trang_thai": "can_sua",
+  "gate": "NO-GO cho pass/đổ-người-build-full; GO cho dựng-slice-ngay (rủi ro thấp)",
+  "gate_cau_hoi": "Live slice pass chưa?",
+  "gate_nguoi_duyet": "CTO (mở cổng) · Tech-lead + dev (chủ sở hữu) — tự-quyết, product owner: không hỏi approval",
+  "gate_ly_do": "Chưa có staging chạy thật trên bản rebuild + ô rủi ro cao #5 (resume/SPIKE-1) chưa đo → chưa được tuyên pass. Không phủ định cứng: chưa dựng nên chưa chứng minh, lối đi tiếp = /frame dựng + đo SPIKE-1.",
+  "gate_phuong_an_da_loai": [
+    "Tuyên pass dựa trên bằng-chứng-gốc 9/9 anchored — loại: 'chạy ở gốc' ≠ 'chạy ở rebuild', tick khống vi phạm luật chạy-thật",
+    "Tách resume/SPIKE-1 khỏi slice để pass nhanh — loại: bỏ đúng ẩn số rủi ro cao duy nhất = false-proof",
+    "Mở rộng slice sang control-plane UI+SSE — loại: sau-MVP, không đổi bản chất rủi ro LÕI loop (Đủ-là-đủ)"
+  ],
+  "gia_dinh_da_doi": [
+    "SPIKE-1 từ 'treo' → điều-kiện go/no-go THẬT phải đo trong slice (feed ngược stack.json.spike)",
+    "OQ-3 reconcile tên event (tool.requested/completed/failed = allowlist chân lý) làm NGAY trong slice (feed ngược GĐ6 §5)",
+    "redact-raw-args bật TRƯỚC ô 8 chạy write-tool fs_write (feed ngược Security Model GĐ6 §6.4 / ADR-006)",
+    "max_steps enforce ở tầng discipline (không phải core — core coi là knob) để ô 9 bounded finish chạy thật"
+  ],
+  "rui_ro_con_lai": [
+    "R1 SPIKE-1 LangGraph resume một-lần-đúng → đo NGAY trong slice (ô 5); fail → mở lại orchestrator tự viết, không đụng shape",
+    "R2 NFR-số (P95 loop, ngưỡng alert error-rate) OQ-1 → perf test GĐ12 + baseline Operate, không bịa",
+    "R3 judge = honor-system một phần (O tự chấm) → siết evidence types E21/Operate",
+    "R4 control-plane redaction đầy đủ (rò secret ui_payload) → slice E21 + Security sign-off GĐ12",
+    "R5 CI/CD thật → Delivery Standards GĐ11 (/delivery)"
+  ],
+  "invariant_slice_cham": ["I2/I3 session state", "I1 một chokepoint execute_tool", "event-log-first", "I13/I14 delegation scope⊆parent", "E10/discipline evidence-based bounded finish", "I10/I11 SQLite resume"],
+  "invariant_slice_khong_cham": ["I16/I17 redact/attribution control-plane — cố ý ngoài slice (sau MVP, ADR-006)"],
+  "ban_giao_toi": "gd9_backlog",
+  "ban_giao_code_that": "frame",
+  "artifact_path": "rebuild-hex-agent/pipeline/08-skeleton.md"
+}

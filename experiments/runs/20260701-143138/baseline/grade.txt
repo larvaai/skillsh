@@ -1,0 +1,22 @@
+CHẤM: explain · hex_agent · L3 · overview   variant=baseline
+avgTotal=14/14   gate=đạt   graderTotals=[14,14]
+
+--- Giám khảo #1 — total 14/14 · gate đạt
+  1_muc = 2 — Bám đúng L3: Zoom 2 kỹ + chạm Zoom 3, chỉ gọi tên module/execute_tool SAU khi đã neo vào bước luồng, không trích số dòng (thứ cần ≥L4), kết bằng gợi ý đúng mức L3.
+  2_che_do = 2 — Overview trọn vẹn theo thang zoom: câu đời thường → vấn đề+cho ai → bản đồ 'bạn ở đây' 8 bước đánh số → module map về từng bước, và nhắc giá trị business ở mỗi tầng.
+  3_du_y = 2 — Nắm đúng ý cốt lõi cho phạm vi overview L3: một cửa execute_tool + cửa delegation riêng + SQLite là nguồn sự thật để resume, kèm guard ngân sách, ép JSON, chốt finish — không thiếu mảnh quan trọng.
+  4_loi_van = 2 — Câu ngắn, phẳng, vấn đề-trước; list đánh số dùng đúng chỗ (luồng zoom 2) và bullet chỉ để liệt kê module ở tầng cuối như E3 cho phép; không trích số dòng.
+  5_bam_code = 2 — Mọi claim khớp code thật (đối chiếu README/MAP/runtime-flow/kernel.py): chuỗi middleware timing→policy→budget→retry→condense, scope check allowed_capabilities, hai chokepoint tách biệt, finish_gate, SQLite truth — không bịa file/hành vi (chỉ lỗi chính tả 'Ari', không phải claim code).
+  6_ranh_gioi = 2 — Đúng vai explain: dạy hiểu theo mức, không dựng .ai-understanding/ (atlas), không đào side-effect sâu (trace), không liệt gap (review), không phán số phận file (triage).
+  7_ket = 2 — Kết bằng gợi ý đúng mức L3 — mời đi sâu trách nhiệm từng phần (vd core/ chia kernel vs session) hoặc một module cụ thể — khớp câu gợi ý L3 trong bảng mức.
+  SỬA TRƯỚC TIÊN: Gần như hoàn hảo cho L3; đòn bẩy nhỏ duy nhất là sửa lỗi chính tả 'hệ trợ lý Ari' → 'AI' và cắt bớt vài câu dài nối bằng gạch ngang cho phẳng hơn — không có gì ảnh hưởng điểm.
+
+--- Giám khảo #2 — total 14/14 · gate đạt
+  1_muc = 2 — Bám đúng L3: dựng Zoom 2 kỹ (bản đồ 8 bước) rồi chạm Zoom 3 trách nhiệm module; mọi tên code (orchestrator/loop.py, execute_tool, guard) đều được neo vào bước luồng TRƯỚC khi gọi tên — đúng luật neo và đúng độ sâu L3.
+  2_che_do = 2 — Overview trọn vẹn: mở bằng làm gì + cho ai + vì sao tồn tại, một ý tưởng cốt lõi bằng lời, bản đồ 'bạn ở đây', rồi module map theo thang zoom.
+  3_du_y = 2 — Nắm đủ cốt lõi cho phạm vi L3: hai ý trung tâm (một cửa để gác, một nguồn sự thật SQLite để chạy tiếp) và buộc cả hai về đúng hai nỗi sợ gốc, không thừa không thiếu.
+  4_loi_van = 2 — Câu ngắn, phẳng, kể thành chuyện; bullet chỉ dùng ở tầng liệt kê module cuối; không trích số dòng — khớp principles (lỗi chính tả 'Ari' thay vì 'AI' là vết nhỏ, không đủ trừ điểm).
+  5_bam_code = 2 — Mọi claim khớp code thật: execute_tool trong core/kernel.py có scope-check allowed_capabilities + chuỗi middleware (timing/policy/budget/retry/condense), delegation_node đi cửa riêng qua DelegationServicePort, finish_gate.py chặn final khi sửa code chưa validate, checkpoint.py dùng langgraph.sqlite một DB/run, kernel vs session tách trong core/ — không bịa file/hành vi.
+  6_ranh_gioi = 2 — Đúng vai explain: dạy hiểu theo mức, không dựng .ai-understanding/ (atlas), không đào side-effect sâu (trace), không liệt edge case (review), không phán số phận file (triage).
+  7_ket = 2 — Kết bằng gợi ý đúng mức L3: mời đi sâu vào trách nhiệm từng phần (vd core/ chia kernel với session) hoặc chọn một module cụ thể — khớp câu gợi ý L3 trong bảng mức.
+  SỬA TRƯỚC TIÊN: Không có lỗi chặn; nếu tinh, sửa lỗi chính tả 'hệ trợ lý Ari' thành 'AI' để bản explain sạch tuyệt đối.

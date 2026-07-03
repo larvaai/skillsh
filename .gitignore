@@ -1,0 +1,10 @@
+# Runtime telemetry — logs sinh khi chạy, không commit
+state/telemetry/
+state/**/.dedup/
+
+# Bản báo cáo máy sinh (chạy lại được)
+skill-governance/SKILL-DECISION.generated.md
+
+# Python
+__pycache__/
+*.pyc

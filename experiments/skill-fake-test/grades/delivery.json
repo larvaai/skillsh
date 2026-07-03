@@ -1,0 +1,10 @@
+{
+  "skill": "delivery",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "outputs/delivery/delivery-standards.md có đủ 3 artifact. Standards đủ 12/12 mục (grep '^### [0-9]' = 12: Repository→Incident, không mục nào stub). DoR/DoD có 'Không đạt DoD → không release' (dòng 132) + dòng cứng thêm theo rủi ro cho liều/quyền/Identity. PR Checklist đủ 9 dòng có 'link story/requirement' (dòng 143-151). Bám nguồn THẬT: event payload snake_case khớp ĐÚNG fixture contract (scheduling-v1.md 'DoseEventGenerated {dose_event_id, schedule_id, scheduled_time, status:pending}', adherence-v1.md 'DoseConfirmed {dose_event_id, taken_at}', 'DoseMissed {dose_event_id}'), error code khớp (SCH-403-NOT-OWNER, ADH-403-NO-LINK, SCH-400-*), NFR-1 60s/NFR-2 300ms p95/NFR-3 250k-ngày/NFR-4 audit-log — không bịa. Có block ⚠️ cảnh báo input ngoài pipeline (dòng 7-11) + đánh dấu ⟳ giả định cho 2/4 contract chưa có (Reminders, Identity) thay vì bịa. Mở bằng Góc nhìn lãnh đạo (bảng 4 chỉ số DORA + câu hỏi tuần nghiệp vụ, dòng 19-32), có 'Tự soi trước khi chốt' (dòng 171). Cổng dùng đúng câu doc + phân vai A5, AI không tự tuyên bố pass (dòng 189). Bàn giao trỏ /uat(chính)+/frame+/review không chọn hộ.",
+  "top_failure": "NONE — chỉ 2 nốt phụ không chạm gate: (1) chỉ sinh delivery-standards.md, thiếu file metadata delivery.json mà SKILL §145 yêu cầu (chi tiết state-plumbing, không phải khiếm khuyết nội dung); (2) chạy một-lượt thay vì hỏi từng cụm (§72), nhưng đã hedge ẩn số bằng ⟳ giả định thay vì bịa — đúng cách trong ngữ cảnh test không tương tác.",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng: đủ 3 artifact + 12 mục, bám ĐÚNG contract/error-code/NFR trong fixture (kiểm chứng file:line), đọc-được 3 tầng, cổng+bàn giao chuẩn — 14/14, PASS gate.",
+  "evidence_score": "14/14 (7 tiêu chí đều 2/2, 3 xương sống đều 2)"
+}

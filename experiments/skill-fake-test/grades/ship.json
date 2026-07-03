@@ -1,0 +1,9 @@
+{
+  "skill": "ship",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "outputs/ship/ship.md có đủ 4 artifact (Go/No-Go 12 ô + P1/P2 · Rollback · Runbook · Rollout 5 bậc). GATE rubric 3 xương sống đều đạt: (tc1) đủ 4 artifact, checklist có owner+trạng thái, ô 7 ghi 'N/A + lý do', runbook có smoke+rollback, rollout có tín hiệu tiến/lùi mỗi bậc; (tc2) mở bằng mục 0 Góc-nhìn-lãnh-đạo không jargon, rồi runbook/rollback có ngưỡng số cụ thể (confirm p95>300ms/10', IDOR→lùi ngay); (tc3) bám nguồn thật, kiểm chứng file:line: BUG-5 IDOR khớp fixture/codebase/mediremind/src/adherence/dose.controller.ts (không kiểm dose.userId===req.userId); OQ-A/OQ-B khớp progress.json open_questions + definition-of-done.md dòng 38 'phải đóng bằng ADR trước cổng GĐ13'; UAT ký thì gắn nhãn 'nguồn ngoài state, chưa qua cổng'. Đối chiếu ANSWER-KEY mục ship (G-1..G-4, buộc có G-1): bắt 4/4 — thiếu uat.md (dòng 191 + ⚠️ block), chưa 2 chữ ký (Security TREO), 2 OQ chưa đóng (P1/P2), rollback chưa test (ô#3). Cổng NO-GO kèm điều kiện chuyển GO (thiếu-gì/ai/mốc), không tự bấm GO (dòng 169). Bàn giao /operate + đường về /uat.",
+  "top_failure": "NONE",
+  "verdict_one_line": "Bản SHIP xuất sắc: đủ 4 artifact, 3 tiêu chí xương sống đều đạt, bắt 4/4 trap của answer-key (gồm G-1 bắt buộc), mọi claim load-bearing truy được về file:line trong fixture, không bịa sign-off, không tự bấm GO — pass gate, effectiveness 3."
+}

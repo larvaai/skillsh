@@ -1,0 +1,9 @@
+{
+  "skill": "review",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "7/7, thiếu: NONE (bắt đủ BUG-1..BUG-7; BUG-5 IDOR nằm đúng nhóm Critical như chuẩn bắt buộc)",
+  "evidence": "outputs/review/gaps.md bám code thật: BUG-5 IDOR @ dose.controller.ts confirmDose dòng 14-16 → Critical (khớp code, không kiểm dose.userId===req.userId); BUG-4 @ reminder.service.ts dòng 21 await pushProvider.send không try/catch → Critical; BUG-3 dedupe window5×cron1 → Critical; BUG-6 chia-0 @ adherence.service.ts dòng 18 → Critical; BUG-1 timezone @ dose-generator dòng 17/26-27, BUG-2 endDate @ dòng 22, BUG-7 denominator @ dòng 14-16 → Medium. Đã grep xác minh canCaregiverView() 0 caller (đúng). Không phát hiện gap bịa: mọi file·dòng·symbol tồn tại thật, 'CÓ THỂ LÀ GAP' tách riêng, đúng khung Bước 3, không viết fix, kết gợi ý frame.",
+  "top_failure": "NONE (chỉ điểm mềm: BUG-1/2/7 xếp Medium thay vì Critical — nhưng đúng thang rubric vì không crash/mất-data/breach, không phải lỗi)",
+  "verdict_one_line": "Bản review chạy sạch đúng hợp đồng: recall 7/7 khuyết tật, BUG-5 IDOR nằm đúng Critical, mọi gap bám code thật không bịa, đúng khung Bước 3, không lấn fix — pass gate, effectiveness 3."
+}

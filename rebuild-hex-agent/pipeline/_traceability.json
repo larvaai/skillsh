@@ -1,0 +1,84 @@
+{
+  "project": "rebuild-hex-agent",
+  "slug": "hex-agent-rebuild",
+  "updated_at": "2026-07-02T00:00:00Z",
+  "stage": "traceability",
+  "role": "control-panel (read-only) — soi 15 GĐ, KHÔNG sinh/sửa artifact stage khác",
+  "dang_o_gd": 14,
+  "dang_o_ghi_chu": "GĐ14 Operate — cổng GO, đóng vòng quay lại GĐ9 /backlog",
+  "cong_dat_dat": {
+    "gd8_live_slice": "CHUA_PASS (0/9 tick · staging=null · NO-GO-pass, GO chỉ cho dựng-slice)",
+    "gd13_go_no_go": "GO alpha nội bộ có-điều-kiện (write_tools/delegation OFF; CTO+PO ký 2026-07-02)"
+  },
+  "co": [
+    "gd00_atlas",
+    "gd0_5_idea_domain",
+    "gd6_shape",
+    "gd7_stack",
+    "gd9_backlog",
+    "gd10_modules",
+    "gd11_delivery",
+    "gd12_uat (GO-có-điều-kiện, 26/28 PASS)",
+    "gd13_ship (GO alpha)",
+    "gd14_operate (GO, đạt MỘT PHẦN)"
+  ],
+  "thieu": [
+    "gd8_skeleton: live slice CHƯA dựng — 0/9 tick, staging=null (cổng đắt #1 chưa pass) → /frame",
+    "gd12_uat: 2 AC PENDING vì R3 multi-agent chưa build → M1/M2/M3 chưa tuyên (điểm bán) → /backlog+/frame",
+    "spike1_d3_resume: chưa xanh staging (điều kiện chặn ĐÓNG R1) → /frame",
+    "d4_redact_raw_args: chưa xanh — blocker CISO mở pilot (write-tool) → /frame+/uat",
+    "oq1_baseline: DORA + NFR-số (P95/alert threshold) chưa có số → /operate qua các nhịp (không bịa)"
+  ],
+  "never_skip_check": {
+    "story_ac_gd9": "CO",
+    "dod_gd11": "CO",
+    "test_mapping_gd12": "CO (26/28, 2 PENDING minh bạch)",
+    "rollback_monitoring_gd13": "CO",
+    "ket_luan": "0 never-skip vắng mặt"
+  },
+  "chain_dut": [],
+  "chain_ghi_chu": [
+    "Chuỗi Business Objective(M1)→Product Goal→Requirement/PRD→Epic→Feature→Story→AC→Test Case→Release→Metric KHÔNG đứt; khép cả 2 chiều (Operate metric ↔ target GĐ1).",
+    "Mắt xích Test Case→Metric của R3 tồn tại về ĐỊNH NGHĨA nhưng giá trị PENDING/chưa-có-số (R3 chưa build) — liên-kết-có-nhưng-chưa-kích-hoạt, không tính đứt.",
+    "Mắt xích Story→PR→Release: PR chưa tồn tại (chưa /frame code slice nào) — dấu hiệu chưa bước sang thực thi, không đứt chuỗi thiết kế."
+  ],
+  "cong_dat": [
+    "gd00_atlas_GO",
+    "gd0_5_idea_GO",
+    "gd6_shape_GO",
+    "gd7_stack_GO",
+    "gd8_live_slice_CHUA_PASS",
+    "gd9_backlog_GO",
+    "gd10_modules_GO",
+    "gd11_delivery_GO",
+    "gd12_uat_GO_co_dieu_kien",
+    "gd13_go_no_go_GO_alpha",
+    "gd14_operate_GO_dat_mot_phan"
+  ],
+  "security_thread_c2": {
+    "data_classification_gd1_6": "CO (Public/Internal/Confidential/Secret — 06-shape §6)",
+    "threat_model_stride_gd6": "CO (luồng delegate + redaction — 06-shape §6.4)",
+    "secret_redact_gd8_11": "DAT_LUAT nhưng redact-raw-args CHƯA xanh (blocker ADR-006)",
+    "scan_gd11": "CO (audit-adversarial trong CI)",
+    "sast_dast_gd12": "MOT_PHAN (audit-adversarial thay DAST; pentest/DAST public HOÃN — chưa transport public)",
+    "checklist_gd13": "CO (12 ô, 6 N/A hợp lệ alpha)",
+    "monitoring_gd14": "CO nhưng ngưỡng-số P95/error-rate = OQ-1 chưa có"
+  },
+  "open_q_treo": [
+    "OQ-1 baseline chi phí/false-finish + NFR-số → Operate",
+    "SPIKE-1/D3 resume a/b/c → chặn ĐÓNG R1; fail → phương án B",
+    "M1/M2/M3 R3 → chặn release beta",
+    "OQ-M1 Skills phình có state → tách khỏi Discipline",
+    "honor-system gap (judge≠doer) → /review + verifier độc lập"
+  ],
+  "nhac_skill": {
+    "live_slice_spike1_r3_code": "/frame",
+    "refine_backlog_r3": "/backlog",
+    "baseline_oq1_dora_nfr": "/operate",
+    "dan_di_tiep_ca_pipeline": "/partner",
+    "cham_chat_luong_artifact": "/grade"
+  },
+  "artifact_path": "rebuild-hex-agent/pipeline/_traceability.md",
+  "read_only": true,
+  "khong_sua_artifact_stage_khac": true
+}

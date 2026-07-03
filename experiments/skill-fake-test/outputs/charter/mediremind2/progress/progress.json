@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "project": "mediremind2",
+  "mode": "greenfield",
+  "con_tro": { "giai_doan": "gd0_intake", "ghi_chu": "vừa dựng project, chưa có ý nào" },
+  "tasks": [
+    {
+      "id": "T-01",
+      "viec": "Brainstorm ý đầu tiên → plan có input/output",
+      "giai_doan": "gd0_intake",
+      "trang_thai": "todo",
+      "depends_on": [],
+      "parallel_group": null,
+      "owner": "idea",
+      "artifact": "idea/mediremind.md"
+    }
+  ],
+  "updated_at": "2026-07-03T10:23:28Z"
+}

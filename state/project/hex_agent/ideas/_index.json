@@ -1,0 +1,6 @@
+{
+  "ideas": [
+    { "slug": "budget-exhaustion-backoff", "ten_y_tuong": "A1 — Budget Exhaustion Backoff", "giai_doan": "spike", "trang_thai": "dang_spike", "updated_at": "2026-07-01T10:10:30Z" },
+    { "slug": "redact-tool-args", "ten_y_tuong": "C2 — Redact tool args trước khi ghi events.jsonl", "giai_doan": "done_handoff", "trang_thai": "done_handoff", "updated_at": "2026-07-01T10:22:00Z" }
+  ]
+}

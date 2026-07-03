@@ -1,0 +1,132 @@
+{
+  "project": "hex-agent-rebuild",
+  "slug": "hex-agent-rebuild",
+  "giai_doan": "gd11_delivery",
+  "artifact": "pipeline/11-delivery.md",
+  "artifact_path": "rebuild-hex-agent/pipeline/11-delivery.md",
+  "cho_duyet": false,
+  "nhan_tu": "modules",
+  "ban_giao": "uat",
+  "nguon": [
+    "gd10_modules (Module Map + Contract: 6 module · 6 owner · 2 seam · Test contract)",
+    "gd8_skeleton (CI tối thiểu lint→pytest→audit-test; test stack pytest+Hypothesis+audit)",
+    "gd7_stack (Python 3.11 · LangGraph · SQLite · OpenAI-compatible JSON-mode · SSE · pytest+Hypothesis+audit-test)",
+    "gd9_backlog (Story+AC để PR link ngược: S1.1.1 chokepoint · S1.6.1 SPIKE-1 · S3.2.1 delegation-scope · S3.5.1 acceptance-by-evidence)"
+  ],
+  "input_ngoai_pipeline": false,
+  "canh_bao_input_ngoai": null,
+  "updated_at": "2026-07-02T00:00:00Z",
+  "artifacts": {
+    "delivery_standards_12_muc": [
+      "Repository (mono-repo modular monolith, 6 package = 6 module GĐ10, CODEOWNERS = owner GĐ10)",
+      "Branching (trunk-based + short-lived, PR ≤400 dòng; loại git-flow)",
+      "Coding standard (UTF-8 no BOM · frozen dataclass + __post_init__ · ports=Protocol trong src/ports/ · lazy client LLM/RAG · restore kw-only · ruff+mypy)",
+      "Review policy (approval owner module; chạm ≥2 module = mọi owner đích; PR chạm D1–D5 = audit/property xanh trước approve)",
+      "Testing pyramid (~60 unit / 15 property[Hypothesis] / 15 integration / 10 audit-adversarial + contract cross-module; nặng property+audit vì điểm bán = invariant kiểm-được)",
+      "CI/CD (lint[no-BOM]→type→unit→property→integration[+resume]→audit-adversarial→contract→build; CD staging auto; prod sau-MVP GĐ13)",
+      "Environment (dev/staging/prod; config env+yaml; var/workspace jail)",
+      "Secret management (redact tại biên Redactor ~15 SECRET_KEYS; 0 secret repo; ADR-006 redact raw args TRƯỚC bật write-tool)",
+      "Feature flag (write_tools_enabled · delegation_enabled · rag_enabled; default an toàn OFF; rollback = tắt flag)",
+      "Migration strategy (đối tượng = SQLite checkpoint + AgentState schema_version; forward-only + rollback script; cùng txn atomic)",
+      "Observability standard (event-log-first tool.requested/completed/failed → events.jsonl+summary+metrics; seq gap-free; replay=snapshot deterministic)",
+      "Incident process (on-call theo owner module GĐ10; rollback=tắt flag; điều tra=event-log replay; sự cố invariant = P1)"
+    ],
+    "definition_of_ready": ["có AC (backlog GĐ9)", "có ước lượng (1-2 sprint)", "phụ thuộc rõ (module đích + seam chạm)", "đủ context (invariant chạm + loại test)"],
+    "definition_of_done_lo_i_khong_cat": [
+      "code review pass (owner module CODEOWNERS GĐ10)",
+      "test pass: unit+property(Hypothesis)+integration+contract+audit-adversarial — CI xanh",
+      "contract giữ (không phá Public API/seam module khác GĐ10)",
+      "5 invariant-kiểm-được XANH (D1–D5) nếu chạm ranh giới",
+      "observability có (capability call phát tool.requested/completed; seq gap-free)",
+      "doc cập nhật (Public API/event schema/ADR)",
+      "không giảm chất lượng (coverage không tụt, lint+no-BOM+type sạch)",
+      "merge xanh CI"
+    ],
+    "dod_dong_them_theo_rui_ro": [
+      "PR bật write-tool → redact raw args xanh (0-secret-in-jsonl) TRƯỚC khi bật flag (ADR-006)",
+      "PR đổi checkpoint/AgentState schema → migration forward-only + rollback script + resume tương thích ≥1 version"
+    ],
+    "pr_checklist_9_dong": [
+      "link story/requirement (S_._._ GĐ9 · epic E__ · invariant chạm D_/none)",
+      "có test (unit/property/integration/audit — loại nào áp dụng)",
+      "breaking change? (thông báo owner đích + version bump)",
+      "update API contract? (seam nào: execute_tool/run_task_loop/DelegationManager.delegate/SafeToolPort/EventEmitter.emit; contract-test xanh; N/A nếu nội bộ)",
+      "có migration? (checkpoint/AgentState schema; forward-only+rollback; N/A nếu không đụng DB)",
+      "security impact? (scope/allowed_capabilities/sandbox/secret; D4 redact nếu chạm ui_payload/args)",
+      "observability (log/metric)? (tool.requested/completed đúng; metric mới; seq gap-free)",
+      "ảnh hưởng module khác? (module nào GĐ10; owner review; N/A nếu chỉ trong package mình)",
+      "rollback plan nếu rủi ro cao? (sau flag nào)"
+    ]
+  },
+  "dod_5_invariant_kiem_duoc": {
+    "D1": { "invariant": "không call-site nào bypass execute_tool", "test": "audit-adversarial", "nguon": "I1 · REBRIEF #2 · Contract Exec-Core" },
+    "D2": { "invariant": "scope child ⊆ parent khi delegate", "test": "property/Hypothesis", "nguon": "I13/I14 · REBRIEF #4 · Contract Orch/Exec-Core" },
+    "D3": { "invariant": "resume round-trip xanh cùng run_id, 0 side-effect", "test": "integration/SPIKE-1", "nguon": "I10/I11 · REBRIEF #6 · GĐ8 ô#5" },
+    "D4": { "invariant": "0 secret trong ui_payload (redact tại biên)", "test": "audit + property", "nguon": "I16 · REBRIEF #7 · Contract Control-Plane" },
+    "D5": { "invariant": "worker KHÔNG set verdict — chỉ gate ghi acceptance", "test": "audit-adversarial", "nguon": "REBRIEF #5 · Contract Orch" }
+  },
+  "dora_4_chi_so": {
+    "lead_time": "CI timestamp commit→merge-xanh staging (baseline OQ-1 → Operate)",
+    "deployment_frequency": "CD log lần/tuần lên staging (trunk-based → cao)",
+    "change_failure_rate": "% PR gây rollback / hỏng CI sau merge (CI + incident log)",
+    "recovery_time_mttr": "phát hiện → khôi phục (rollback = tắt feature flag)",
+    "baseline_status": "CHƯA có số → OQ-1 → Operate GĐ14, KHÔNG bịa. delivery đặt cách đo; Operate đọc số thật."
+  },
+  "codeowners_map_gd10": {
+    "src/orchestration/": "@team-orchestration",
+    "src/execution_core/": "@team-platform",
+    "src/discipline/": "@team-platform",
+    "src/knowledge/": "@team-platform",
+    "src/tools_safety/": "@team-safety",
+    "src/control_plane/": "@team-observability"
+  },
+  "test_pyramid": { "unit": "~60% (Discipline pure fn, envelope, fold)", "property_hypothesis": "~15% (μ↓, scope⊆parent, budget monotone)", "integration": "~15% (E2E slice + resume round-trip D3)", "audit_adversarial": "~10% (D1/D4/D5 + sandbox-escape + policy fail-closed)", "contract_cross_module": "Orch↔Control-Plane(6 event GĐ5) · Exec-Core↔Tools-Safety(SafeToolPort) · Exec-Core↔Discipline(middleware)" },
+  "ci_pipeline": "lint(ruff+no-BOM)→type(mypy Public API)→unit→property(Hypothesis)→integration(E2E+resume D3)→audit-adversarial(D1/D4/D5+sandbox/policy)→contract-test(cross-module GĐ10)→build; bất kỳ bước đỏ = chặn merge; audit+property = gate không-bỏ-qua kể cả hotfix; CD merge-xanh→staging auto",
+  "quyet_dinh_lon": [
+    "repo: mono-repo modular monolith (loại poly-repo/microservice = biên mạng+version-skew; loại package phẳng = mất ranh giới owner GĐ10)",
+    "branching: trunk-based + short-lived (loại git-flow = merge đau + trễ deploy, ngược nhịp DORA)",
+    "coding: UTF-8 no BOM + frozen dataclass + ports=Protocol + lazy client + restore kw-only (bám gốc ATLAS/GĐ6/GĐ7)",
+    "test pyramid: nặng property+audit ~60/15/15/10 (loại pytest-only = bỏ lọt 3 bệnh chết người; loại e2e-heavy = UI sau-MVP; loại pyramid cổ điển 70/20/10 = hệ bán invariant không bán bề-rộng)",
+    "secret: redact tại biên EventEmitter (loại redact-ở-UI = raw đã rời biên, quá muộn phá I16); ADR-006 redact raw args TRƯỚC write-tool",
+    "CI: staging auto, prod sau-MVP GĐ13 (loại deploy-thẳng-prod = chưa baseline NFR, prod gate là /ship)",
+    "env: 3 tầng dev/staging/prod (loại thêm tầng UAT/pre-prod = thừa cho single-node chưa traffic)",
+    "migration: forward-only + schema_version + rollback (loại destructive/không-version = một lần đổi schema hỏng mọi resume đang chạy)"
+  ],
+  "bam_nguon_gd_truoc": {
+    "owner_codeowners": "= modules_owner GĐ10 (_index.json)",
+    "contract_test": "= Test contract GĐ10 (6 event GĐ5 · SafeToolPort · middleware 2 chiều)",
+    "ci_base": "= CI tối thiểu GĐ8 ô#6 (lint+pytest+audit-test) — chỉ chuẩn hoá+thêm thứ tự gate, không dựng mới",
+    "stack": "= Tech Decision GĐ7 (Python 3.11·LangGraph·SQLite·OpenAI-compatible·pytest+Hypothesis+audit·SSE) — KHÔNG chọn lại",
+    "pr_link_story": "= backlog GĐ9 (Story S_._._ ; PR đầu R1 = S1.1.1 chokepoint)",
+    "dod_5_invariant": "= REBUILD-BRIEF invariant #2/#4/#5/#6/#7 biến thành test"
+  },
+  "khong_lan_vai": {
+    "khong_code_slice": "→ /frame",
+    "khong_dao_bug": "→ /review",
+    "khong_viet_test_result_signoff": "→ /uat",
+    "khong_ve_lai_module_hay_chon_lai_stack": "dùng nguyên GĐ10/GĐ7"
+  },
+  "open_q": [
+    "OQ-1 (kế thừa): baseline 4 chỉ số DORA + ngưỡng alert/error-rate + P95 loop chưa có số → delivery đặt cách đo; số thật → Operate GĐ14, KHÔNG bịa",
+    "OQ-M1 (kế thừa GĐ10): Skills (E07) phình thành catalog động có state → tách khỏi Discipline thành package/owner riêng → cập CODEOWNERS + contract-test",
+    "SPIKE-1 (từ GĐ8): D3 resume round-trip là điều kiện chặn ĐÓNG R1 (pass a/b/c: không re-emit tool.requested bước done · round_no liên tục · crash giữa txn không nửa-ghi); fail → phương án B orchestrator tự viết (không đổi Standards)"
+  ],
+  "cho_duyet_note": "cho_duyet:false = cổng đã tự-quyết GO (chế độ tự-quyết, product owner không hỏi approval); resume đi tiếp sang uat",
+  "gate": "GO",
+  "gate_cau_hoi": "Item đạt Definition of Done chưa? Chuẩn delivery đủ để 6 team giao hàng an toàn, song song chưa?",
+  "gate_nguoi_duyet": "CTO / Kiến trúc sư (chủ sở hữu chuẩn, trình bằng chứng) · Eng-manager (mở cổng) — tự-quyết, product owner: không hỏi approval",
+  "gate_ly_do": "Đủ 3 artifact với DoD là cổng cứng phản ánh đúng 5 invariant-kiểm-được (điểm bán → test thật D1–D5); chuẩn bám 4 nguồn GĐ trước đã-qua-cổng (owner GĐ10 · test-contract GĐ10 · CI GĐ8 · stack/test GĐ7) + link story GĐ9 → không bịa; mỗi package 1 owner + review-theo-owner + audit-adversarial chặn 3 bệnh chết người → 6 team code song song không phá ranh giới nhau. AI không tự tuyên item nào Done (chưa có PR) — chỉ đặt luật (phân vai A5).",
+  "gate_phuong_an_loai": [
+    "Chặn GO tới khi có số baseline DORA / SPIKE-1 pass — loại: số DORA đo ở Operate GĐ14; SPIKE-1 là rủi ro thực-thi-R1 (chặn đóng R1, không chặn chốt chuẩn); chặn cổng = trộn vai GĐ11/8/14, nghẽn 6 team chờ. Ghi OQ-1+SPIKE-1 có địa chỉ.",
+    "Nới DoD (bỏ property/audit cho hotfix) — loại: D1–D5 là điểm bán; nới = cho merge code phá điểm bán mà CI vẫn xanh (false-safe); DoD không cắt dòng (luật cứng GĐ11).",
+    "Áp pyramid cổ điển 70/20/10 unit-nặng — loại: hệ bán bất-biến-kiểm-được không bán bề-rộng-feature; unit-nặng bỏ lọt lỗi phổ quát trên mọi input (false-finish/leo-quyền/rò-secret); nghiêng property+audit có lý do (GĐ7 ADR-007)."
+  ],
+  "handoff_to": "uat",
+  "handoff_liet_ke": ["uat (GĐ12 — chính: mapping AC→test→result, UAT+security sign-off)", "frame (code slice theo chuẩn, vd S1.1.1/S1.6.1)", "review (đào gap edge/error/permission một luồng)"],
+  "theo_doi": [
+    "SPIKE-1/D3 resume-round-trip — điều kiện chặn đóng R1 (pass a/b/c) — uat verify",
+    "ADR-006 redact-raw-args TRƯỚC bật write-tool (D4) — Safety↔Observability — uat security sign-off",
+    "OQ-1 số DORA/alert threshold → Operate GĐ14, không bịa",
+    "OQ-M1 Skills tách khỏi Discipline → cập CODEOWNERS + contract-test"
+  ]
+}

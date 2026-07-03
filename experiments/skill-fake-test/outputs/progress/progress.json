@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "project": "mediremind",
+  "mode": "greenfield",
+  "con_tro": {
+    "giai_doan": "gd11_delivery",
+    "ghi_chu": "PLAN: nhóm pg-build GĐ11 đã chia (T-11a Scheduling ∥ T-11b Reminders), cả hai depends_on [T-08 contract-freeze, T-11 Delivery-Standards] đã done → cùng READY, đây là điểm fan-out. ADVANCE: T-11a báo xong NHƯNG thiếu phiếu checkpoint PASS (progress/checkpoints/T-11a.md không tồn tại) → KHÔNG lật done, giữ in_progress, chạy /checkpoint T-11a trước. T-11b vẫn ready. GĐ12 uat todo. 2 open-Q CHƯA đóng: OQ-A (managed queue vs cron), OQ-B (retention cho NFR-4).",
+    "checkpoint_cho": ["T-11a"]
+  },
+  "open_questions": [
+    { "id": "OQ-A", "cau_hoi": "Dùng managed job-queue hay tự cron cho Reminder Worker?", "treo_tu": "gd6_shape", "trang_thai": "open", "ghi_chu": "chuyển cho stack/ADR; chưa artifact nào đóng; liên quan src/legacy/old_reminder_cron.ts" },
+    { "id": "OQ-B", "cau_hoi": "Giữ dữ liệu liều/thuốc bao lâu (retention) cho NFR-4?", "treo_tu": "gd2_4_product_prd", "trang_thai": "open", "ghi_chu": "dữ liệu sức khoẻ nhạy cảm; chưa artifact nào đóng; phải đóng bằng ADR trước cổng GĐ13" }
+  ],
+  "tasks": [
+    { "id": "T-00", "viec": "Idea Brief", "giai_doan": "gd0_idea",
+      "trang_thai": "done", "depends_on": [], "parallel_group": null,
+      "owner": "idea", "artifact": "idea/mediremind.md", "traces_to": ["IDEA-1"] },
+
+    { "id": "T-01", "viec": "Business Case + Success metric (SM-1, SM-2)", "giai_doan": "gd1_business",
+      "trang_thai": "done", "depends_on": ["T-00"], "parallel_group": null,
+      "owner": "idea", "artifact": "problem/business-case.md", "traces_to": ["SM-1", "SM-2"] },
+
+    { "id": "T-02", "viec": "Product Brief + Requirements + PRD (NFR-1..5)", "giai_doan": "gd2_4_product_prd",
+      "trang_thai": "done", "depends_on": ["T-01"], "parallel_group": null,
+      "owner": "idea", "artifact": "problem/prd.md", "traces_to": ["NFR-1", "NFR-2", "NFR-3", "NFR-4", "NFR-5"] },
+
+    { "id": "T-03", "viec": "Domain Model (User, Medication, Schedule, DoseEvent, Reminder, CaregiverLink, AdherenceReport)", "giai_doan": "gd5_domain",
+      "trang_thai": "done", "depends_on": ["T-02"], "parallel_group": null,
+      "owner": "idea", "artifact": "docs/domain-model.md", "traces_to": ["NFR-4"] },
+
+    { "id": "T-04", "viec": "Architecture Brief (modular monolith + C4) — treo OQ-A", "giai_doan": "gd6_shape",
+      "trang_thai": "done", "depends_on": ["T-03"], "parallel_group": null,
+      "owner": "shape", "artifact": "docs/architecture.md", "traces_to": ["NFR-1", "NFR-5"] },
+
+    { "id": "T-05", "viec": "Tech Decision Matrix (TypeScript stack) — treo OQ-A", "giai_doan": "gd7_stack",
+      "trang_thai": "done", "depends_on": ["T-04"], "parallel_group": null,
+      "owner": "stack", "artifact": "docs/tech-decision.md" },
+
+    { "id": "T-06", "viec": "Live Slice: patient xác nhận một liều (staging + E2E + log)", "giai_doan": "gd8_skeleton",
+      "trang_thai": "done", "depends_on": ["T-05"], "parallel_group": null,
+      "owner": "skeleton", "artifact": "codebase/live-slice-report.md", "traces_to": ["SM-1"] },
+
+    { "id": "T-07", "viec": "Roadmap + Backlog (Epic→Feature→Story→AC)", "giai_doan": "gd9_backlog",
+      "trang_thai": "done", "depends_on": ["T-06"], "parallel_group": null,
+      "owner": "backlog", "artifact": "docs/roadmap.md" },
+
+    { "id": "T-08", "viec": "Module Map + Contracts (4 bounded context) — FREEZE cổng ∥", "giai_doan": "gd10_modules",
+      "trang_thai": "done", "depends_on": ["T-07"], "parallel_group": null,
+      "owner": "modules", "artifact": "docs/contracts/module-contract-v1.md" },
+
+    { "id": "T-11", "viec": "Delivery Standards + DoD + PR Checklist", "giai_doan": "gd11_delivery",
+      "trang_thai": "done", "depends_on": ["T-08"], "parallel_group": null,
+      "owner": "delivery", "artifact": "codebase/delivery-standards.md" },
+
+    { "id": "T-11a", "viec": "Sinh Scheduling module theo contract (Medication·Schedule·sinh DoseEvent)", "giai_doan": "gd11_delivery",
+      "trang_thai": "in_progress", "depends_on": ["T-08", "T-11"], "parallel_group": "pg-build",
+      "owner": "delivery", "artifact": "codebase/mediremind/src/scheduling/",
+      "ghi_chu": "T báo xong nhưng THIẾU phiếu checkpoint PASS (progress/checkpoints/T-11a.md không tồn tại) → chưa được lật done. Chạy /checkpoint T-11a: kiểm code trỏ đúng path repo + test theo test-pyramid + không nới NFR-4 (quyền caregiver + audit-log)." },
+
+    { "id": "T-11b", "viec": "Sinh Reminders module theo contract (dispatch Reminder push|sms, worker cron)", "giai_doan": "gd11_delivery",
+      "trang_thai": "ready", "depends_on": ["T-08", "T-11"], "parallel_group": "pg-build",
+      "owner": "delivery", "artifact": "codebase/mediremind/src/reminders/", "traces_to": ["NFR-1"] },
+
+    { "id": "T-12", "viec": "UAT: Test & Verification Report (Req→AC→Test→Result→Decision) + sign-off", "giai_doan": "gd12_uat",
+      "trang_thai": "todo", "depends_on": ["T-11a", "T-11b"], "parallel_group": null,
+      "owner": "uat", "artifact": "codebase/uat-report.md" }
+  ],
+  "updated_at": "2026-07-03T14:30:00Z"
+}

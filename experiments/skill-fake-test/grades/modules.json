@@ -1,0 +1,9 @@
+{
+  "skill": "modules",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "outputs/modules/modules.md sinh đủ 2 artifact. Module Map: 4 module = 4 bounded context khớp Domain §4 (Scheduling/Reminders/Adherence/Identity), không bịa context. Mỗi Contract đủ ô lõi Owner+Responsibilities+Owns+Does-NOT-own+Public-API (dòng 93-188); 3 module lõi đầy đủ event/permission/error/SLA/test-contract, Reminders rút gọn ô Public-API có nêu lý do (đường nền, không REST public — dòng 131). Đọc-3-tầng: mở bằng bảng 'sự cố ở đâu → gọi team nào' ngôn ngữ nghiệp vụ (dòng 23-30) trước khi vào OpenAPI. Bám nguồn: entity giao thoa DoseEvent tách sinh/trạng-thái khớp verbatim Domain note; bảng kiểm chéo Backlog GĐ9 map hết E1-E5, F5.2 retention flag CHƯA-CÓ-CHỦ đúng theo backlog 'CHƯA chốt' + OQ-B (dòng 205, 211), không tự bịa chủ. Có block ⚠️ cảnh báo đầu vào ngoài pipeline (dòng 7-13). Cổng: trình bằng chứng, KHÔNG tự tuyên GO ('Quyết định GO là của user', dòng 228), bàn giao đúng /delivery + nhắc /frame kèm artifact path (dòng 231-238). Mỗi lần tách/gộp có lý do + cách chia đã loại (dòng 77-81).",
+  "top_failure": "NONE",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng: 3 tiêu chí xương sống đều 2, bám sát Domain/Backlog không bịa, cổng đúng vai, không lấn skill khác — pass gate, effectiveness 3."
+}

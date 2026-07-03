@@ -1,0 +1,22 @@
+CHẤM: explain · hex_agent · L3 · overview   variant=B
+avgTotal=14/14   gate=đạt   graderTotals=[14,14]
+
+--- Giám khảo #1 — total 14/14 · gate đạt
+  1_muc = 2 — Khop L3: bản đồ luồng đánh số kỹ (Zoom 2) + chạm module (Zoom 3), và mọi tên code (execute_tool, delegate, loop.py) đều được neo vào bước luồng trước khi gọi tên — đúng luật neo và đúng hành vi L3.
+  2_che_do = 2 — Overview trọn vẹn: nói app làm gì + cho ai (dev/team dựng multi-agent) + vì sao tồn tại (cái đau khi mỗi chỗ tự gọi model/tool), rồi một ý tưởng cốt lõi (một cửa duy nhất) → luồng câu chuyện → module, business value nhắc lại mỗi tầng.
+  3_du_y = 2 — Đủ ý cho một overview L3: chokepoint execute_tool, model là capability llm.chat, cửa delegate riêng, finish gate, checkpoint SQLite nguồn-sự-thật để resume, và vai trò từng module — không thừa không thiếu cho phạm vi.
+  4_loi_van = 2 — Câu ngắn, phẳng, dễ đọc; chỉ dùng một list ở tầng module cuối (E3 cho phép), không trích số dòng, không tường-bullet thay lời kể — bám principles.
+  5_bam_code = 2 — Mọi claim khớp code thật đã kiểm (execute_tool/tool.requested-completed-failed ở core/kernel.py, llm.chat qua execute_tool ở graph/nodes.py, delegate ở delegation/manager.py + node delegate trong graph, finish_gate chặn khi code_changed, path var/agent_runs/<run_id>/langgraph.sqlite); phần control/ E21 dở dang được gắn nhãn 'chưa chắc' đúng README.
+  6_ranh_gioi = 2 — Đúng vai explain: dạy hiểu theo mức, không dựng .ai-understanding/, không đào side-effect sâu (trace), không liệt edge case (review), không phán số phận file (triage).
+  7_ket = 2 — Kết đúng mức L3: gợi ý hai nhánh bước tiếp hợp lệ (giải thích trách nhiệm từng phần, hoặc soi module cụ thể như execute_tool/delegation) kèm câu hỏi định hướng — không hand off sai vì L3 vẫn là việc của explain.
+  SỬA TRƯỚC TIÊN: Bản này gần như hoàn hảo cho L3 overview; đòn bẩy nhỏ duy nhất là gọn bớt đôi chỗ lặp business value ('một cửa để nhìn-thấy-hết' nhắc hơi nhiều) để câu chuyện thoáng hơn — không phải lỗi, chỉ là mài.
+
+--- Giám khảo #2 — total 14/14 · gate đạt
+  1_muc = 2 — Đúng L3: kể Zoom 2 kỹ (luồng 8 bước đánh số) rồi chạm Zoom 3 (điểm danh module + trách nhiệm). Gọi tên module/khái niệm (execute_tool, delegate) đều SAU khi đã neo vào một bước trong luồng — đúng luật neo L3, không phải trích số dòng. Độ sâu và từ ngữ khớp mức flow.
+  2_che_do = 2 — Overview trọn vẹn: mở bằng vấn đề thực tế + cho ai (dev/team xây trợ lý nhiều bước) + vì sao tồn tại (cái đau khi mỗi chỗ tự gọi model/tool), rồi ý tưởng cốt lõi (một cửa duy nhất) bằng lời trước khi đặt tên, rồi bản đồ luồng 'bạn ở đây', rồi module. Nhắc lại giá trị business ở mỗi tầng.
+  3_du_y = 2 — Đủ ý cho một overview toàn cảnh: vấn đề, ý tưởng chokepoint + ngoại lệ delegation, luồng đầu-cuối, checkpoint SQLite làm nguồn sự thật resume, 7 phần chính, và cảnh báo E21 dang dở. Không thừa không thiếu cho phạm vi 'kể toàn cảnh'.
+  4_loi_van = 2 — Câu ngắn, phẳng, đời thường (E1-E2). Bản đồ luồng kể bằng câu đánh số chứ không phải tường-bullet (E3); bullet chỉ dùng ở tầng module cuối, mỗi dòng một cụm — đúng ngoại lệ cho phép. Tên file trong ngoặc đơn, không dán số dòng (E4 ổn ở L3).
+  5_bam_code = 2 — Kiểm chứng mọi claim với hex_agent: graph nodes guard/agent/tool/delegate/finish khớp runtime.py; execute_tool emit requested→completed/failed + scope + middleware khớp kernel.py; delegate() là chokepoint riêng ở delegation/manager.py; finish_gate chặn code-changed-no-validation; path var/agent_runs/<run_id>/langgraph.sqlite đúng checkpoint.py+event_log.py; E21 contracts+EventEmitter done/transport-UI pending khớp README dòng 8. Không có claim bịa.
+  6_ranh_gioi = 2 — Đúng vai explain: dạy hiểu theo mức, không dựng .ai-understanding (atlas), không đào side-effect sâu (trace), không liệt edge case/gap (review), không phán số phận file (triage). Lưu ý 'E21 dang dở' là trạng thái từ README, không phải review gap.
+  7_ket = 2 — Kết đúng mức L3: xác nhận mức, rồi hỏi hai hướng đi tiếp đúng gợi ý trong bảng ('giải thích trách nhiệm từng phần, hay có module cụ thể bạn thắc mắc') — khớp câu gợi ý L3 của SKILL.
+  SỬA TRƯỚC TIÊN: Gần như hoàn hảo cho L3 overview; đòn bẩy duy nhất còn lại rất nhỏ: đầu bước 6 nói 'cái cửa duy nhất' trong khi bước 5 vừa liệt kê ba nhánh trong đó có delegate — có thể làm rõ 'duy nhất cho tool + model, còn giao-việc đi cửa riêng' ngay tại chỗ để tránh cảm giác mâu thuẫn thoáng qua (mục 7 đã đính chính sau đó, nên chỉ là mài giũa)."

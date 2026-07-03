@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "project": "hxag",
+  "mode": "greenfield",
+  "con_tro": { "giai_doan": "gd14_operate", "ghi_chu": "15/15 done (GĐ0→14 trọn vòng). LEARN → quay lại GĐ9: I-1 SPIKE-1, I-2 test-rebuild M1/M2/M3, I-3 baseline OQ-1, I-4 verifier độc lập" },
+  "tasks": [
+    { "id": "T-01", "viec": "Idea Intake: brainstorm → plan có input/output + ẩn số", "giai_doan": "gd0_intake",
+      "trang_thai": "done", "depends_on": [], "parallel_group": null, "owner": "idea", "artifact": "idea/hexagent.md" },
+
+    { "id": "T-02", "viec": "Problem WHY→PRD (business-case + product-brief + requirements + prd)", "giai_doan": "gd1_business",
+      "trang_thai": "done", "depends_on": ["T-01"], "parallel_group": null, "owner": "idea", "artifact": "problem/prd.md" },
+
+    { "id": "T-03", "viec": "Domain Model (entity+lifecycle, rule bất biến, event, ranh giới context)", "giai_doan": "gd5_domain",
+      "trang_thai": "done", "depends_on": ["T-02"], "parallel_group": null, "owner": "idea", "artifact": "docs/domain-model.md" },
+
+    { "id": "T-04", "viec": "Solution Architecture (Brief + C4 + ADR có rejected_alternatives)", "giai_doan": "gd6_architecture",
+      "trang_thai": "done", "depends_on": ["T-03"], "parallel_group": null, "owner": "shape", "artifact": "docs/architecture.md" },
+
+    { "id": "T-05", "viec": "Tech Decision Matrix + ADR (Python3.11·LangGraph·SQLite)", "giai_doan": "gd7_stack",
+      "trang_thai": "done", "depends_on": ["T-04"], "parallel_group": null, "owner": "stack", "artifact": "docs/tech-decision.md" },
+
+    { "id": "T-06", "viec": "Live Slice Report — PROOF kiến trúc chạy (cổng đậm GĐ8)", "giai_doan": "gd8_live_slice",
+      "trang_thai": "done", "depends_on": ["T-05"], "parallel_group": null, "owner": "skeleton", "artifact": "codebase/live-slice-report.md" },
+
+    { "id": "T-07", "viec": "Roadmap + Backlog (Epic→Feature→Story→AC)", "giai_doan": "gd9_backlog",
+      "trang_thai": "done", "depends_on": ["T-06"], "parallel_group": null, "owner": "backlog", "artifact": "docs/roadmap.md" },
+
+    { "id": "T-08", "viec": "Module Map + Contracts — FREEZE (cổng mở nhánh song song)", "giai_doan": "gd10_modules",
+      "trang_thai": "done", "depends_on": ["T-07"], "parallel_group": null, "owner": "modules", "artifact": "docs/module-map.md" },
+
+    { "id": "T-09", "viec": "Delivery Standards + DoD + PR Checklist", "giai_doan": "gd11_delivery",
+      "trang_thai": "done", "depends_on": ["T-08"], "parallel_group": null, "owner": "delivery", "artifact": "codebase/delivery-standards.md" },
+
+    { "id": "T-10", "viec": "Build module Execution-Core (kernel/session/registry) theo contract", "giai_doan": "gd11_delivery",
+      "trang_thai": "done", "depends_on": ["T-08", "T-09"], "parallel_group": "pg-build", "owner": "fanout", "artifact": "codebase/modules/execution-core.md", "traces_to": ["E01"] },
+
+    { "id": "T-11", "viec": "Build module Orchestration (taskloop/plan/delegation/acceptance) theo contract", "giai_doan": "gd11_delivery",
+      "trang_thai": "done", "depends_on": ["T-08", "T-09"], "parallel_group": "pg-build", "owner": "fanout", "artifact": "codebase/modules/orchestration.md", "traces_to": ["E10"] },
+
+    { "id": "T-12", "viec": "Build module Observability-ControlPlane (events/emitter/redaction) theo contract", "giai_doan": "gd11_delivery",
+      "trang_thai": "done", "depends_on": ["T-08", "T-09"], "parallel_group": "pg-build", "owner": "fanout", "artifact": "codebase/modules/observability-controlplane.md", "traces_to": ["E04", "E21"] },
+
+    { "id": "T-13", "viec": "Verification / UAT (Story×AC×kết quả + phát hiện có bằng chứng)", "giai_doan": "gd12_uat",
+      "trang_thai": "done", "depends_on": ["T-10", "T-11", "T-12"], "parallel_group": null, "owner": "uat", "artifact": "codebase/uat-report.md" },
+
+    { "id": "T-14", "viec": "Release Readiness (Go/No-Go + Runbook + Rollback)", "giai_doan": "gd13_release",
+      "trang_thai": "done", "depends_on": ["T-13"], "parallel_group": null, "owner": "ship", "artifact": "codebase/runbook.md" },
+
+    { "id": "T-15", "viec": "Operations & Measure (Ops Dashboard, LEARN → quay lại GĐ9)", "giai_doan": "gd14_operate",
+      "trang_thai": "done", "depends_on": ["T-14"], "parallel_group": null, "owner": "operate", "artifact": "codebase/ops.md" }
+  ],
+  "updated_at": "2026-07-03T03:05:00Z"
+}

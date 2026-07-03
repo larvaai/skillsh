@@ -1,0 +1,183 @@
+{
+  "project": "hex-agent-rebuild",
+  "slug": "hex-agent-rebuild",
+  "stage": "review",
+  "giai_doan": "review_L6plus",
+  "level": "L6+",
+  "che_do": "tong_the (edge → error → permission)",
+  "nhan_tu": "gd5_domain + gd6_shape + gd8_skeleton + gd10_modules (đã qua cổng)",
+  "pham_vi": "thiết kế rebuild HexAgent: plan/decompose · acceptance · delegation · budget · resume · redaction",
+  "trang_thai_thiet_ke": "thiết-kế-trên-giấy (skeleton 0/9 tick, chưa có code)",
+  "updated_at": "2026-07-02T00:00:00Z",
+  "artifact_path": "rebuild-hex-agent/review/REVIEW.md",
+  "state_json": "rebuild-hex-agent/pipeline/_review.json",
+  "tong_ket": {
+    "gap_that": 12,
+    "critical": 3,
+    "high": 5,
+    "med": 4,
+    "co_the_la_gap": 3,
+    "vung_on": 5,
+    "xuong_song_gay": false
+  },
+  "gaps": [
+    {
+      "id": "G1",
+      "muc": "Critical",
+      "truc": "acceptance",
+      "symbol": "judge_acceptance",
+      "neo_goc": "evidence-A §4 (graph.py:357-382, evidence.py:16-23)",
+      "artifact_rebuild": "05 §5.3 rule#1 · 06 §4 bước5 · 10 Orchestration",
+      "dieu_thieu": "gate không kiểm evidence THẬT có thuộc AC đang chấm (cross-AC reuse của evidence thật vượt gate)",
+      "kich_ban_fail": "O nộp AC-2.evidence_ids=[E1] trong khi E1 là tool_result thật của AC-1 → gate honor passed → FINISHED sai dù N2 chưa chạy",
+      "hau_qua": "phá M1 zero-false-finish (báo-xong-khống tinh vi)",
+      "goi_y_sua": "evidence mang provenance (node_id/AC-nguồn); gate reject provenance ≠ AC đang chấm",
+      "ban_giao": "/frame slice acceptance-provenance"
+    },
+    {
+      "id": "G2",
+      "muc": "Critical",
+      "truc": "loop/budget",
+      "symbol": "no-progress guard + delegation",
+      "neo_goc": "evidence-A §4-5 (loop.py:229-235, delegation/manager.py:63-192)",
+      "artifact_rebuild": "08 §1 · 06 §4 bước4-6 · 05 §5.3",
+      "dieu_thieu": "no-progress đo artifact-count ở loop cha; node blocked re-delegate tạo artifact-rác mỗi round né guard; không có per-node stuck-guard ở task-loop",
+      "kich_ban_fail": "N2 luôn fail nhưng worker con tạo file tạm mỗi round (artifacts+1) → no-progress không trip; O đổi wording → repeat-guard né → loop chạy tới max_rounds × max_steps=100 × depth",
+      "hau_qua": "phá M2 bounded nghĩa kinh tế (về terminal nhưng đốt gần-trần) — bệnh chạy-vô-hạn",
+      "goi_y_sua": "per-node stuck-counter ở task-loop; 'tiến triển' gắn acceptance/coverage không phải artifact-count",
+      "ban_giao": "/frame slice loop-stuck-guard"
+    },
+    {
+      "id": "G3",
+      "muc": "Critical",
+      "truc": "permission/redaction",
+      "symbol": "tool.requested raw args + Redactor",
+      "neo_goc": "evidence-B §6 (known gap: tool.requested logs raw args to jsonl), ADR-006",
+      "artifact_rebuild": "06 §6.4 · 08 §5 · 10 Tools-Safety/Control-Plane",
+      "dieu_thieu": "ràng buộc 'redact TRƯỚC write-tool' là lời-hứa-điều-phối giữa 2 team, KHÔNG có cơ chế ép thứ tự (không error code / invariant freeze / test); không owner sở hữu việc enforce",
+      "kich_ban_fail": "Safety bật fs_write trước khi Observability bật redact cho tool.requested; worker fs_write content chứa API key → raw args vào events.jsonl append-only → secret vĩnh viễn không xoá",
+      "hau_qua": "rò secret vào audit log bất biến = breach không-thu-hồi (vượt invariant #7 redact tại biên)",
+      "goi_y_sua": "ranh giới cứng: freeze fail-closed nếu write-cap enabled mà Redactor chưa active cho tool.requested; error WRITE_TOOL_ENABLED_WITHOUT_REDACTION; owner = Execution-Core; audit-test",
+      "ban_giao": "/frame slice redact-before-write-gate"
+    },
+    {
+      "id": "G4",
+      "muc": "High",
+      "truc": "acceptance",
+      "dieu_thieu": "AC vô nghiệm (mismatch AC↔capability) → treo tới max_rounds, BLOCKED báo 'max_rounds' che nguyên nhân thật",
+      "kich_ban_fail": "AC yêu cầu .pdf nhưng scope chỉ fs_write .txt → không sinh được evidence → hết round → BLOCKED sai loại",
+      "hau_qua": "đốt trần budget + chẩn đoán sai (nhiễu OQ-1)",
+      "goi_y_sua": "static pre-check khi accept: mỗi AC phải có ≥1 capability trong scope sinh được evidence; nếu không → ACCEPTANCE_UNSATISFIABLE sớm",
+      "ban_giao": "/frame pre-check satisfiable"
+    },
+    {
+      "id": "G5",
+      "muc": "High",
+      "truc": "delegation/error",
+      "dieu_thieu": "child crash/timeout: thiết kế mô tả happy-path merge; không nêu parent xử lý timeout/raise/partial-merge; budget là step-count không wall-clock; không error code timeout/crashed",
+      "kich_ban_fail": "worker con gọi LLM treo > timeout; không wall-clock timeout → delegate() block vô hạn → task-loop cha đứng giữa round (guard chỉ chạy giữa round) → treo thật",
+      "hau_qua": "treo (phá M2) + nguy cơ leak child session",
+      "goi_y_sua": "wall-clock timeout per-delegation; try/finally đóng child bất kể outcome; failed → rollback partial merge; error code timeout/crashed",
+      "ban_giao": "/frame slice delegation-failure-path"
+    },
+    {
+      "id": "G6",
+      "muc": "High",
+      "truc": "resume",
+      "dieu_thieu": "atomic-txn bảo vệ state-checkpoint, KHÔNG bảo vệ tool-side-effect đã phát trước checkpoint; idempotency chỉ áp command không áp tool execution",
+      "kich_ban_fail": "N1 fs_write + emit tool.requested, crash trước save → resume chạy lại N1 → re-emit tool.requested (vi phạm SPIKE-1 a) + side-effect nhân đôi nếu tool không idempotent",
+      "hau_qua": "resume gây re-run side-effect (đúng thứ ADR-005 hứa chống) — CHÍNH LÀ SPIKE-1",
+      "goi_y_sua": "checkpoint per-step (save sau mỗi execute_tool) HOẶC tool-call idempotency key để resume skip step đã completed",
+      "ban_giao": "/frame đo SPIKE-1 theo tiêu chí a/b/c của 08 ô#5"
+    },
+    {
+      "id": "G7",
+      "muc": "High",
+      "truc": "reduce",
+      "dieu_thieu": "reduce gom artifact node con nhưng không ràng buộc source ⊆ children(parent) đã done",
+      "kich_ban_fail": "reduce của P nhận source_ids=[artifact_A, artifact_C] với C thuộc nhánh khác → gom nhầm chéo nhánh → AC gốc P pass bằng dữ liệu không thuộc P",
+      "hau_qua": "sai kết quả tổng hợp (đường phụ của G1)",
+      "goi_y_sua": "run_reduce validate mọi source_id ∈ artifacts của children(parent) đã done; reject nếu ngoài tập",
+      "ban_giao": "/frame khi build reduce"
+    },
+    {
+      "id": "G8",
+      "muc": "High",
+      "truc": "decompose",
+      "dieu_thieu": "RENAME detect bằng Jaccard lexical >0.80 → paraphrase đồng-nghĩa-khác-từ né được; STUCK detection tiêu chí không nêu rõ ở rebuild",
+      "kich_ban_fail": "worker chia cha thành con nghĩa-trùng bằng từ đồng nghĩa → Jaccard<0.80 → gate PASS → cây phình vô ích, tiêu MAX_DEPTH nhanh, mỗi tầng tốn budget",
+      "hau_qua": "làm yếu chứng-minh-dừng ở tầng ngữ nghĩa; kết hợp G2 tăng đốt tiền",
+      "goi_y_sua": "bổ sung embedding-similarity song song Jaccard hoặc coverage-by-implication chặt hơn; ghi rõ tiêu chí STUCK",
+      "ban_giao": "/frame khi build gate-2",
+      "ghi_chu": "một phần nghi-ngờ (tuỳ prompt worker)"
+    },
+    {
+      "id": "G9",
+      "muc": "Med",
+      "truc": "permission",
+      "dieu_thieu": "scope con ⊆ cha cho phép BẰNG → chain deep giữ nguyên scope cha, không thu-hẹp; lá vẫn full-scope (lỗ least-privilege, không leo-thang)",
+      "kich_ban_fail": "delegate 8 tầng mỗi tầng truyền nguyên {fs_read,fs_write,terminal_run} → lá đáng ra chỉ fs_read vẫn có terminal_run ở tầng khó audit nhất",
+      "hau_qua": "bề mặt tấn công rộng ở tầng sâu; kết hợp bug tool thành đường thật",
+      "goi_y_sua": "O đặt cap tối thiểu per-assignment; audit-warn khi scope con == cha ở depth>threshold (policy, không nhất thiết block)",
+      "ban_giao": "policy/audit-warn"
+    },
+    {
+      "id": "G10",
+      "muc": "Med",
+      "truc": "budget",
+      "dieu_thieu": "parse-budget đếm CONSECUTIVE reset on good-parse → xen 1 trivial-pass mỗi N lỗi → không bao giờ cạn dù tỉ lệ lỗi cao",
+      "kich_ban_fail": "LLM đều '7 fail + 1 trivial-pass' với max=8 consecutive → không đạt 8 liên tiếp → parse-guard không FAILED; nếu decision đổi chữ ký → né repeat-guard",
+      "hau_qua": "parse-budget vô dụng như guard độc lập; tương tác G2 kéo dài loop (còn max_rounds backstop)",
+      "goi_y_sua": "thêm total-parse-error budget (không reset) song song consecutive; reset chỉ khi good-parse KÈM tiến-triển-thật",
+      "ban_giao": "/frame khi build Budget"
+    },
+    {
+      "id": "G11",
+      "muc": "Med",
+      "truc": "observability/resume",
+      "dieu_thieu": "SessionSeq start=1 in-process; resume cross-process nguồn seq khôi phục ở đâu chưa nêu (state serializable-only — seq có trong serialized state?)",
+      "kich_ban_fail": "run tới seq=42, crash, resume tiến trình mới → SessionSeq start=1 → event tiếp theo seq đụng → EVENT_SEQ_GAP / duplicate seq → replay=snapshot vỡ",
+      "hau_qua": "audit/replay integrity vỡ (invariant ii/v)",
+      "goi_y_sua": "seq high-watermark persist trong checkpoint, restore trước emit đầu tiên sau resume; test seq tiếp tục tăng",
+      "ban_giao": "gộp SPIKE-1 /frame slice resume"
+    },
+    {
+      "id": "G12",
+      "muc": "Med",
+      "truc": "plan",
+      "dieu_thieu": "gate-2 kiểm μ↓ cho THÊM-CON; việc thêm depends_on-edge giữa node đã có có acyclic-check độc lập không, hay chỉ dựa giả định 'chỉ đặt lúc tạo'",
+      "kich_ban_fail": "round 3 O thêm N1.depends_on=[N2] khi N2.depends_on=[N1] → cycle → next_node() trả None → no-progress → BLOCKED 'no-progress' che nguyên nhân cycle",
+      "hau_qua": "bounded (no-progress backstop) nhưng chẩn đoán sai + phí round; có thể crash tuỳ hiện thực topo-sort",
+      "goi_y_sua": "acyclic-check độc lập mỗi lần thêm/đổi depends_on; error PLAN_DEPENDENCY_CYCLE rõ ràng",
+      "ban_giao": "/frame khi build Tree mutation"
+    }
+  ],
+  "co_the_la_gap": [
+    "G8-phụ: STUCK detection tiêu chí không nêu (μ không giảm sau N attempt vs decompose lặp) — cần đọc accept.py thật",
+    "condense.run có thể bỏ mất evidence-id/artifact-ref cần cho judge sau → AC đúng-ra-pass thành false-BLOCKED — cần xác nhận condense bảo toàn ref",
+    "command apply_at=immediate_if_waiting: nếu loop không có state 'waiting' tường minh ở rebuild thì áp lúc nào — cần state-machine chi tiết"
+  ],
+  "vung_on": [
+    "cây acyclic lúc TẠO + μ co ngặt khi chia (thêm-con chắc; gap chỉ thêm-edge G12 + ngữ nghĩa G8)",
+    "scope con ⊆ cha enforce 2 tầng fail-closed (không leo-thang quyền; gap chỉ không-thu-hẹp G9)",
+    "isolation state cross-run (freeze-kernel + state-chỉ-session + deep-copy)",
+    "scaffolding-as-evidence bị reject (evidence.py:16-23) — G1 là trục khác (cross-AC reuse)",
+    "chokepoint đơn execute_tool (audit-test 0 call-site bỏ qua đóng đường vòng)"
+  ],
+  "gate": "NO-GO",
+  "gate_loai": "NO-GO mở write-tool+delegation NGAY · GO đóng 3 Critical trong slice đầu qua /frame rồi mở dần (khớp rollout GĐ13 alpha→pilot-write→beta-delegation)",
+  "cong_cau_hoi": "Thiết kế đủ an toàn để mở write/delegation chưa?",
+  "phuong_an_da_loai": [
+    "(a) chặn cả pipeline tới khi đóng hết 12 gap — loại: High/Med không chặn nền R1 alpha read-only; trái Đủ-là-đủ + GĐ13",
+    "(b) GO đầy đủ vì xương-sống-chắc — loại: xương sống chắc ≠ khe hở an toàn; G3 rò secret không-thu-hồi không được nuốt",
+    "(c) tự-đóng gap trong review — loại: SKILL review không đề xuất fix, fix là việc /frame"
+  ],
+  "ban_giao_critical": {
+    "G1": "/frame slice acceptance-provenance",
+    "G2": "/frame slice loop-stuck-guard",
+    "G3": "/frame slice redact-before-write-gate"
+  },
+  "handoff_to": "frame",
+  "handoff_high_med_to": "backlog (vòng kế — khớp operate.json I-1/I-3)",
+  "prev_artifact_path": "rebuild-hex-agent/pipeline/10-modules.md"
+}

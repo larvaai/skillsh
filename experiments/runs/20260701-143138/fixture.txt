@@ -1,0 +1,4 @@
+project = /Users/uspro/Desktop/namnson/hex_agent
+level   = L3
+mode    = overview
+note    = args của workflow không bind (lỗi harness); các agent tự phục hồi fixture qua state/current.json nên output/grade hợp lệ. Phase Confirm chạy lại riêng ở run tune-confirm.

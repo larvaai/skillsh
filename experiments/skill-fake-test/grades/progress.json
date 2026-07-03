@@ -1,0 +1,9 @@
+{
+  "skill": "progress",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "outputs/progress/progress.json + board.md. ADVANCE T-11a: fixture cũ (fixture/mediremind/progress/progress.json:54-56) có T-11a=ready; output đổi ready→in_progress, KHÔNG lật done vì phiếu progress/checkpoints/T-11a.md không tồn tại (đã kiểm: không có checkpoints dir dưới outputs/progress; find toàn fake-test không ra phiếu T-11a). Con trỏ giữ gd11_delivery, T-12 vẫn bị chặn — đúng, không mở khóa oan. pg-build (T-11a∥T-11b) cùng depends_on [T-08,T-11] đã done, có ghi /fanout — đồ thị là dữ liệu, không lời kể. Mọi task done (T-00..T-08,T-11) kế thừa nguyên từ fixture, không bịa done mới. Append: chỉ trang_thai + updated_at (09:00→14:30) đổi, không xoá task. Artifact codebase/mediremind/src/scheduling/ khớp folders.md:32 (pg-build đổ code vào thư mục con repo). board.md có bảng 8 cột + khối 'Đang ready' + 'Song song sẵn sàng' + cả hai khối in PLAN/ADVANCE đúng mẫu.",
+  "top_failure": "NONE",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng: đòn thử hiểm nhất (báo-xong-thiếu-phiếu) bị chặn đúng — giữ in_progress, không lật done, không mở khóa T-12; 3 gate xương sống đều 2/2, TỔNG 14/14."
+}

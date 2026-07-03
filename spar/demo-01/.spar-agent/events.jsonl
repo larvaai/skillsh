@@ -1,0 +1,3 @@
+{"at": "2026-07-03T05:35:10+00:00", "status": "pending", "type": "answer.started"}
+{"at": "2026-07-03T05:36:12+00:00", "output": "/Users/uspro/Desktop/skillsh/spar/demo-01/user-output.md", "status": "user-answered", "type": "answer.completed"}
+{"at": "2026-07-03T05:49:43+00:00", "prompt_fingerprint": "44235d6daae3971dccf8470e9049c9844c291d9bd854363b63b3a003fb836734", "type": "server.baseline.created"}

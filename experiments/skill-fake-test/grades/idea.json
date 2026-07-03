@@ -1,0 +1,9 @@
+{
+  "skill": "idea",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "5 artifact đủ GĐ0-5 trong outputs/idea/. Gate qua cả 3 xương sống: (1) Đúng+đủ artifact — 02-business-case.md có SM-1/SM-2 đo được; 03-prd.md có scope-out thành chữ (A.5) + MVP rõ (A.4) + open-Q có địa chỉ; 04-domain-model.md mọi entity có identity+lifecycle (DoseEvent state machine pending→taken/skipped/missed), BR-1..7 bất biến, 9 domain event đặt tên, data ownership theo 4 context. (3) Bám nguồn — mọi số khớp BIBLE §3 (30 ngày/+≥15pp/≥60%), entity khớp BIBLE §4-5; chi phí y tế KHÔNG có trong fixture được đánh dấu open-Q chứ không bịa (02:20-21); số cứng NFR (60s/300ms/50k) cố ý để dạng range + open-Q GĐ6 (03:56-66) — trung thực, không đóng đinh. (2) Đọc-được-3-tầng — mỗi file mở bằng tầng lãnh đạo (vấn đề/ai đau/giá trị) trước chi tiết dev, ~1 trang. Router chạy đúng (rõ ràng × khả thi rõ → Nhánh C, 01:29-38), 4 cổng đúng câu doc, quyết định lớn kèm phương án loại (H2/cảm biến). Bàn giao (00-handoff.md) trỏ /shape đường chính + liệt kê lối rẽ, không tự chọn hộ, dừng đúng GĐ5.",
+  "top_failure": "NONE — friction duy nhất là bản chạy batch không có vòng AskUserQuestion tương tác thật (skill tự trả CÓ ở mọi cổng), nhưng đó là do fixture non-interactive, không phải lỗi lấn vai; artifact vẫn giữ đúng kỷ luật hỏi-đúng-tầng và dừng-đúng-GĐ5.",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng: 6 giai đoạn đủ mục, mọi số bám BIBLE (chỗ thiếu đánh open-Q thay vì bịa), dừng đúng Domain, bàn giao trỏ /shape — 14/14, gate đạt."
+}

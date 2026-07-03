@@ -1,0 +1,67 @@
+{
+  "project": "hex-agent-rebuild",
+  "stage": "grade",
+  "skill": "grade",
+  "cho_duyet": true,
+  "updated_at": "2026-07-02T00:00:00Z",
+  "graded_target": {
+    "artifact": "rebuild-hex-agent/explain/EXPLAIN.md",
+    "skill_under_test": "explain",
+    "fixture": {
+      "project": "hex-agent-rebuild",
+      "level": "L3",
+      "mode": "overview",
+      "level_source": "rebuild-hex-agent/user-state.json"
+    }
+  },
+  "scoring": {
+    "scale_per_criterion": "0/1/2",
+    "criteria": [
+      { "n": 1, "ten": "Muc", "gate": true, "diem": 2, "ly_do": "dung 'Zoom 2 ky + cham Zoom 3'; moi ten code chi goi ten SAU khi neo vao mot buoc trong luong — khop hanh vi L3." },
+      { "n": 2, "ten": "Che do", "gate": false, "diem": 2, "ly_do": "overview tron: lam gi + cho ai (dev nen tang) + vi sao ton tai (bao-xong-khong & chay-vo-han); theo dung thang zoom 0->3." },
+      { "n": 3, "ten": "Du y", "gate": false, "diem": 2, "ly_do": "nam cot loi task->plan->sap thu tu->giao con->nghiem-thu-bang-bang-chung->co bien; neu ro 'hai chot doi nhau'." },
+      { "n": 4, "ten": "Loi van", "gate": true, "diem": 2, "ly_do": "cau ngan phang; luong ke bang cau van danh so, bullet chi o tang module; khong trich so dong o muc thap (tuan E4)." },
+      { "n": 5, "ten": "Bam code", "gate": true, "diem": 2, "ly_do": "moi ten/hanh vi khop evidence A/B (execute_tool, AgentKernel/KernelSession, accept_decomposition, next_node, DelegationManager.delegate, judge_acceptance, events.jsonl, redact-tai-emitter, PolicyGate fail-closed, SQLite-truth resume, RAG health-gated, UI-perp-core); khong claim bia." },
+      { "n": 6, "ten": "Ranh gioi", "gate": false, "diem": 2, "ly_do": "day nguoi hieu theo muc; muc 'Neo ve goi rebuild' hand off sang review/frame/atlas nhu sibling, khong tu lam viec cua ho." },
+      { "n": 7, "ten": "Ket", "gate": false, "diem": 2, "ly_do": "ket dung L3: moi di sau Zoom 3 (len L4) hoac chon mot luong cu the bang che do flow, kem cau hoi dinh huong." }
+    ]
+  },
+  "gate": {
+    "backbone_criteria": [1, 4, 5],
+    "backbone_scores": { "1_muc": 2, "4_loi_van": 2, "5_bam_code": 2 },
+    "ket_qua": "dat",
+    "rot_o": []
+  },
+  "tong_diem": 14,
+  "diem_toi_da": 14,
+  "gate_label": "dat",
+  "fix_first": "Khong co loi chan. Don bay got duy nhat: cat/an muc 'Tu soi truoc khi gui' (dong 91-98 cua EXPLAIN.md) khoi ban giao nguoi doc — la checklist bep nuc cua tac gia, khong phai noi dung cho CTO/business.",
+  "quyet_dinh_gate": {
+    "vai_nguoi_duyet": "Nguoi cham (doc lap)",
+    "quyet_dinh": "GO",
+    "ly_do": "ca 3 cong xuong song deu = 2, khong cong nao 0 -> khong rot gate; rui ro bia-code da khu bang doi chieu tung-claim voi evidence goc; ban explain khop gan 1:1 vi du mau L3 trong explain/SKILL.md.",
+    "phuong_an_da_loai": [
+      "Ha tieu chi 4 xuong 1 vi muc Tu-soi dai -> loai: muc do la phu luc tach khoi than giai thich, ghi thanh don bay FIX FIRST thay vi tru diem.",
+      "Ha tieu chi 3 vi khong noi sau resume/checkpoint nguyen tu -> loai: o overview L3 'SQLite = chan ly tua-lai' la du, di sau la viec L4+/trace.",
+      "Nang thanh 'can sua bat buoc' -> loai: khong co loi chan; grade khong sua explain (do la viec tune)."
+    ]
+  },
+  "evidence_da_doi_chieu": [
+    "rebuild-hex-agent/00-understanding/evidence-A-core-loop.md",
+    "rebuild-hex-agent/00-understanding/evidence-B-domain-architecture.md",
+    "rebuild-hex-agent/00-understanding/REBUILD-BRIEF.md"
+  ],
+  "open_questions": [
+    "OQ-G1: grade khong kiem noi dung review/REVIEW.md (12 gap, 3 Critical) hay frame/slice-01 — do la doi chieu o stage traceability, ngoai pham vi cham mot ban explain.",
+    "OQ-G2: diem nay cham cho dung mot ban; de dung lam thuoc cho tune, chay lai grade tren tung bien the cung fixture roi loai ban rot gate truoc, xep theo tong sau."
+  ],
+  "artifact_path": "rebuild-hex-agent/explain/EXPLAIN.grade.md",
+  "graded_artifact_path": "rebuild-hex-agent/explain/EXPLAIN.md",
+  "standard_read": [
+    ".claude/skills/explain/SKILL.md",
+    ".claude/skills/explain/rule/principles.md",
+    ".claude/skills/grade/rubric.md"
+  ],
+  "handoff_to": "tune",
+  "handoff_note": "Ban explain DAT gate 14/14; neu muon nang tiep, chay tune explain voi cung fixture (hex-agent-rebuild/L3/overview) va dung grade nay lam baseline."
+}

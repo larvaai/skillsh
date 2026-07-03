@@ -1,0 +1,9 @@
+{
+  "skill": "charter",
+  "gate": "fail",
+  "effectiveness": 1,
+  "recall": "n/a",
+  "evidence": "outputs/charter/mediremind2/ có 6 folder (problem/idea/docs/codebase/constitution/progress/checkpoints) đủ, constitution 4 file diff=IDENTICAL với assets/constitution/ (A2=2, bám seed sạch), progress.json đúng schema con_tro=gd0_intake + đúng 1 task seed T-01 không bịa task tương lai, README.md có mục 'Kỳ vọng ban đầu' thô trung thực + board.md đọc-được (A3=2). NHƯNG state/current.json KHÔNG được tạo (find -name current.json = rỗng) và không có memory project/dòng trỏ MEMORY.md — rubric A1 ghi rõ 'không trỏ state/current.json' => A1=0, mà A1 là xương sống gate. Slug lệch nhẹ: folder mediremind2 nhưng artifact trỏ idea/mediremind.md.",
+  "top_failure": "Thiếu state/current.json (rubric A1 liệt kê là mục gate => A1=0) + thiếu memory project/dòng MEMORY.md; skill bỏ Bước 6 và Bước 7 của hợp đồng => con trỏ project không được đăng ký, resume sau này không biết project active nào.",
+  "verdict_one_line": "Khung dựng đẹp và bám seed tuyệt đối, nhưng RỚT GATE vì bỏ Bước 7 (state/current.json) và Bước 6 (memory) — hai mắt xích để resume/hệ biết project tồn tại."
+}

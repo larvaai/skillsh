@@ -1,0 +1,54 @@
+{
+  "project": "hex-agent-rebuild",
+  "slug": "hex-agent-rebuild",
+  "giai_doan": "gd6_shape",
+  "cho_duyet": false,
+  "updated_at": "2026-07-02T00:00:00Z",
+  "style": "hexagonal_modular_monolith",
+  "kernel": "frozen_kernel_mutable_session",
+  "modules": [
+    "Orchestration",
+    "Execution-Core",
+    "Discipline",
+    "Tools-Safety",
+    "Control-Plane-Observability",
+    "Knowledge-optional"
+  ],
+  "boundary_maps_to_bounded_context_gd5": true,
+  "artifacts_present": [
+    "architecture_brief",
+    "c4_context",
+    "c4_container",
+    "data_flow",
+    "integration_model",
+    "security_model_stride",
+    "adrs"
+  ],
+  "da_chot": [
+    "ADR-001 hexagonal frozen-kernel + mutable-session (loại: shared mutable core, microservices)",
+    "ADR-002 single execute_tool chokepoint (loại: rải rác call sites)",
+    "ADR-003 delegation chokepoint RIÊNG (loại: method của kernel)",
+    "ADR-004 evidence-based acceptance + bounded finish (loại: LLM tự nói xong / honor-system)",
+    "ADR-005 SQLite = chân lý resume, checkpoint atomic (loại: JSON checkpoint làm truth)",
+    "ADR-006 redact-at-boundary + attribution ≠ authz (loại: trust-O bypass / issued_by làm authz)"
+  ],
+  "open_q_dong_tai_gd6": [
+    "OQ-2: catalog event/command = config-driven closed allowlist (không hard-code rải rác)",
+    "OQ-3: registry allowlist = chân lý tên event; reconcile về tool.requested/completed/failed"
+  ],
+  "dang_mo": [
+    "OQ-1: baseline chi phí + false-finish thực (→ Operate)",
+    "Ngưỡng NFR số (P95 loop, alert error-rate) chưa có — cần ở stack/skeleton nếu đo được, không bịa",
+    "Loại DB/vector-store/LLM-provider cụ thể + framework graph-runtime → GĐ7 stack"
+  ],
+  "rang_buoc_cho_stack": [
+    "runtime hỗ trợ freeze-kernel + serializable-only state (resume không side-effect)",
+    "embedded relational store làm chân lý resume + transaction atomic (commands+round+save)",
+    "LLM adapter JSON-mode + retry-classify transient-vs-permanent",
+    "vector store health-gated offline-first (RAG optional, never raises)",
+    "Redactor mask SECRET_KEYS tại biên; middleware chain thứ tự cố định Timing→Policy→Budget→Retry→Condense→core"
+  ],
+  "gate": "GO",
+  "artifact_path": "rebuild-hex-agent/pipeline/06-shape.md",
+  "handoff_to": "stack"
+}

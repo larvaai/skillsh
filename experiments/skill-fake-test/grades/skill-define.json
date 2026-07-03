@@ -1,0 +1,9 @@
+{
+  "skill": "skill-define",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "outputs/skill-define/define.md có đủ 3 phần theo SKILL.md: (a) 5 case bám thẳng nhu cầu MediRemind 'reminder gửi lặp/flaky' (dòng 5-9: trùng ngắn hạn, retry gửi lại, flaky theo run, đa kênh, spike loop); (b) dòng 11 'Không có skill này thì bình thường làm sao' mô tả đúng cách thường (query/cron GROUP BY hoặc alert Grafana/CloudWatch); (c) dòng 15 kết luận 'CHƯA đáng làm skill mới' ngả rõ. Dòng 13 đối chiếu skill đã có (operate/review, không trùng). Nháp ngay không hỏi lại. Không tự viết SKILL.md thật.",
+  "top_failure": "Format tiền tố 'Trường hợp X:' thay cho đúng dạng 'X -> làm gì'; vài case (B/C) hơi nặng chữ so với yêu cầu một câu ngắn — friction rất nhẹ, không rớt gate.",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng: 5 case thật bám nhu cầu, kết luận CHƯA-đáng ngả rõ + đối chiếu skill đã có + trỏ skill-creator có điều kiện; đủ 3 xương sống, gate đạt, 12/12."
+}

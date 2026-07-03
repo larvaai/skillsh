@@ -1,0 +1,53 @@
+{
+  "project": "hex-agent-rebuild",
+  "slug": "hex-agent-rebuild",
+  "giai_doan": "gd7_stack",
+  "nhan_tu": "shape",
+  "ban_giao": "skeleton",
+  "cho_duyet": false,
+  "trang_thai": "done_handoff",
+  "updated_at": "2026-07-02T00:00:00Z",
+  "artifact_path": "rebuild-hex-agent/pipeline/07-stack.md",
+  "brownfield_informed": true,
+  "stack_goc_quan_sat": "Python · LangGraph · SQLite · Qdrant · OpenAI-compatible JSON-mode · SSE (ATLAS.md:27, evidence-B:34)",
+  "hang_muc": [
+    { "muc": "Ngôn ngữ/runtime lõi", "chon": "Python 3.11", "loai": ["Go (scale không phải rủi ro; ecosystem agent yếu; xé khỏi gốc)", "TypeScript/Node (rời codebase Python gốc = mất lợi thế rebuild)"], "kieu": "matrix", "adr": "ADR-001" },
+    { "muc": "Graph substrate / state machine", "chon": "LangGraph (+SQLite checkpointer)", "loai": ["Orchestrator tự viết (tự gánh resume-atomic dễ sai; đội chưa có sẵn)"], "kieu": "matrix", "adr": "ADR-002", "spike_gated": true },
+    { "muc": "Checkpoint store", "chon": "SQLite (langgraph.sqlite = chân lý resume)", "loai": ["Postgres (thừa; ngược single-deployable)", "Redis (không phải relational-truth atomic)"], "kieu": "matrix_gon_rang_buoc_ep", "adr": "ADR-003", "ep_boi": "ADR-005 GĐ6" },
+    { "muc": "LLM adapter", "chon": "OpenAI-compatible JSON-mode client (qua execute_tool)", "loai": ["SDK khoá cứng một vendor (vendor-lock cloud không cần thiết)"], "kieu": "rang_buoc_ep_1_dong", "adr": "ADR-004" },
+    { "muc": "Vector KB (optional)", "chon": "NONE ở MVP (Qdrant khi bật; pgvector nếu đã có Postgres)", "loai": ["Qdrant cho MVP (thêm service cho tính năng chưa dùng)", "pgvector (phải kéo Postgres chỉ vì RAG)"], "kieu": "matrix", "adr": "ADR-005", "yagni": true },
+    { "muc": "Transport control-plane", "chon": "SSE (event-stream) + POST/GET (command/snapshot)", "loai": ["WebSocket (song công thừa; tự dựng reconnect/resync)"], "kieu": "matrix", "adr": "ADR-006" },
+    { "muc": "Test stack", "chon": "pytest + Hypothesis (property-based) + audit-test", "loai": ["pytest-only ví-dụ (không chứng minh phổ quát)", "unittest stdlib (thiếu param/fixture/property)"], "kieu": "matrix", "adr": "ADR-007" }
+  ],
+  "spike": [
+    {
+      "id": "SPIKE-1",
+      "an_so": "LangGraph resume round-trip — checkpoint atomic + 0 side-effect re-run",
+      "time_box": "1-2 ngày",
+      "trang_thai": "TREO",
+      "do_o": "GĐ8 live slice (DoD gốc 'resume round-trip', rẻ nhất để đo)",
+      "tieu_chi_dat": ["không re-emit tool.requested của bước đã done", "round_no liên tục", "crash giữa transaction không để checkpoint nửa-ghi"],
+      "dieu_kien_dao_chieu": "fail → mở lại orchestrator tự viết (§2), KHÔNG đụng shape"
+    }
+  ],
+  "khong_spike": [
+    "NFR số (P95 loop, ngưỡng alert error-rate) — chưa có số, platform nội bộ tải thấp, không bịa → OQ-1 đo ở GĐ8/Operate",
+    "SQLite / LLM-adapter / pytest / SSE — stack quen, gốc đã chạy, ràng buộc ép sẵn"
+  ],
+  "an_so_treo": [
+    "SPIKE-1 LangGraph resume round-trip → đo ở live slice GĐ8",
+    "OQ-1: NFR-số (P95 loop, alert error-rate) → GĐ8/Operate, không bịa",
+    "Model/endpoint LLM cụ thể + bản Python chính xác của gốc → xác nhận ở skeleton"
+  ],
+  "rang_buoc_keo_theo": [
+    "LangGraph = vendor-lock mức-lib (cô lập sau port graph, đổi được)",
+    "SQLite single-writer/single-node (migrate SQLite→Postgres qua cùng port nếu multi-instance)",
+    "LLM model/endpoint = config runtime; chuẩn OpenAI-compatible = 0 vendor-lock cứng",
+    "pytest+Hypothesis cần viết generator/shrink (chi phí một lần)"
+  ],
+  "goi_y_lat_cat_song_gd8": "accept → plan/decompose(+gate2 μ↓) → next_node → delegate(scope⊆parent) → judge_by_evidence → finish/blocked, có chèn resume ở giữa để dính luôn SPIKE-1",
+  "gate": "GO",
+  "gate_cau_hoi": "Stack đã chốt, sẵn sàng dựng live slice chưa?",
+  "gate_nguoi_duyet": "CTO (tự-quyết, product owner: không hỏi approval)",
+  "handoff_to": "skeleton"
+}

@@ -1,0 +1,151 @@
+{
+  "project": "hex-agent-rebuild",
+  "slug": "hex-agent-rebuild",
+  "note_project_placeholder": "Prompt ghi 'project':'undefined' là template placeholder; slug thật xuyên pipeline = hex-agent-rebuild (pipeline/_index.json, current.json).",
+  "giai_doan": "frame_slice",
+  "nhan_tu": "gd8_skeleton + gd9_backlog + gd10_modules + gd11_delivery",
+  "updated_at": "2026-07-02T00:00:00Z",
+  "phase": "frame",
+  "awaiting_confirmation": false,
+  "che_do": "tu-quyet (product owner: không hỏi approval); frame đóng vai Dev nhận slice tự chốt GO",
+  "constitution": {
+    "goal": "Dựng lát cắt sống end-to-end tất định chứng minh vòng lặp lõi: task 2 bước → plan → order(deps) → delegate 1 worker (scope⊆parent) → judge-by-evidence → FINISHED, budget chặn.",
+    "non_goals": [
+      "no resume/SPIKE-1/atomic-txn/crash-recovery (→ slice-02)",
+      "no control-plane UI / SSE / snapshot / RuntimeCommand (E21/R4)",
+      "no RAG / Knowledge (E08/R2, optional)",
+      "no roles catalog / RoleView allowlist đầy đủ (E09)",
+      "no LLM thật (fake-trước-real: LLM-plan = simulator tất định)",
+      "no multi-round phức tạp / retry K vòng / decompose sâu >1 tầng",
+      "no DB thật ngoài in-memory / no auth / no production"
+    ],
+    "coding_rules": [
+      "frozen dataclass + __post_init__ validate cho mọi entity",
+      "cross-module CHỈ qua Protocol trong src/ports/ (cấm import implementation module khác)",
+      "code tường minh > trừu tượng; diff nhỏ; không framework chung; không plugin system",
+      "SessionFactory là constructor DUY NHẤT (restore **kw-only), child scope ⊆ parent"
+    ]
+  },
+  "domain": {
+    "user_journey": "Builder giao TaskEnvelope(task 2 bước) → run_task_loop tự plan/order/delegate/judge → nhận Outcome FINISHED với evidence thật, hoặc BLOCKED khi chạm budget guard.",
+    "core_concepts": ["TaskEnvelope", "Plan/Tree", "Node(work|reduce)", "DoneWhen", "DelegationManager", "AcceptanceCriterion", "Evidence", "Budget", "events.jsonl"],
+    "risks_if_overbuilt": [
+      "kéo resume/SPIKE-1 vào lát-đầu → tắc cả lát khi ẩn số vướng",
+      "nhồi 4 guard + multi-round → phình thành E10 đầy đủ, khó cô lập lỗi",
+      "gọi LLM thật → phi-tất-định + tốn tiền + kéo redact-raw-args chưa tới lượt"
+    ]
+  },
+  "slices": [
+    {
+      "id": 1,
+      "name": "taskloop-happy-path",
+      "user_action": "Giao 1 task 2 bước (TaskEnvelope) qua run_task_loop",
+      "system_behavior": "Plan (LLM fake) → decompose gate μ↓ → order next_node(deps) → delegate 1 worker scope⊆parent → worker fs_write/fs_read thật qua execute_tool → emit events.jsonl → judge_acceptance trên evidence thật → FINISHED; budget max_steps chạm → BLOCKED.",
+      "visible_output": "Outcome{status=FINISHED, run_id, evidence_ids(2 thật)} + events.jsonl seq gap-free chứa tool.requested/completed(N1,N2)+delegation.finished.",
+      "acceptance": [
+        "AC-1 FINISHED với đúng 2 evidence THẬT (tool_result), 0 scaffolding tính",
+        "AC-2 events.jsonl: tool.requested/completed N1+N2 + delegation.finished, seq gap-free",
+        "AC-3 order: next_node trả N1 trước N2 (N2 depends_on N1)",
+        "AC-4 scope⊆parent property: ∀ child-cap ⊄ parent → REJECTED fail-closed",
+        "AC-5 μ↓: accept_decomposition chấp nhận chỉ khi μ co ngặt + coverage; RENAME(Jaccard>0.80)/STUCK bị từ chối",
+        "AC-6 budget: max_steps chạm → BLOCKED, không vượt K step (enforce ở discipline/loop)",
+        "AC-7 worker KHÔNG set verdict (audit): chỉ gate ghi acceptance",
+        "AC-8 no-bypass (audit): 0 call-site gọi tool/LLM ngoài execute_tool"
+      ],
+      "status": "active",
+      "contract": {
+        "input": { "TaskEnvelope": { "task_id": "string", "user_request": "string", "context": "object?" } },
+        "output": { "Outcome": { "status": "FINISHED|BLOCKED|FAILED", "run_id": "string", "evidence_ids": ["string"] } },
+        "seams_cham": {
+          "execution_core": "execute_tool(ToolRequest) -> CapabilityResult",
+          "orchestration": ["run_task_loop(TaskEnvelope) -> Outcome", "DelegationManager.delegate(DelegationRequest) -> DelegationResult"]
+        },
+        "errors": ["DELEGATION_SCOPE_EXCEEDS_PARENT", "CAPABILITY_NOT_IN_SCOPE", "PLAN_DECOMPOSE_NOT_SHRINKING", "PLAN_RENAME_DETECTED", "ACCEPTANCE_EVIDENCE_MISSING", "ACCEPTANCE_SCAFFOLDING_REJECTED", "BUDGET_EXHAUSTED", "SANDBOX_PATH_ESCAPE", "POLICY_DENIED"],
+        "example": {
+          "in": { "task_id": "T0", "user_request": "tạo out.txt=X rồi ghi len(X) vào len.txt" },
+          "plan_fake": ["N1(work): fs_write out.txt==X", "N2(work,depends_on N1): fs_read out.txt → fs_write len.txt==len(X)", "N_reduce(synthetic): gom → AC gốc T0"],
+          "out": { "status": "FINISHED", "run_id": "run-…", "evidence_ids": ["tool_result:fs_write", "tool_result:fs_read"] }
+        }
+      }
+    },
+    { "id": 2, "name": "taskloop-resume-sqlite (SPIKE-1)", "status": "parked", "ghi_chu": "resume 0 side-effect từ SQLite = D3/SPIKE-1, ẩn số cao nhất — tách khỏi lát-đầu" }
+  ],
+  "plan_buoc_code": [
+    "1 src/ports/ Protocol (Tool/Delegation/EventSink/SafeTool)",
+    "2 Execution-Core kernel+freeze+SessionFactory(scope-shrink)+StateStore in-memory",
+    "3 Execution-Core execute_tool chokepoint (tool.requested → scope-check → middleware → tool.completed|failed)",
+    "4 Discipline json_gate+budget(max_steps enforce Ở ĐÂY)+finish_gate+condense",
+    "5 Tools-Safety fs_write/fs_read jail + PolicyGate fail-closed + SafeToolPort",
+    "6 Orchestration LLM-plan qua execute_tool = simulator tất định + parse_decision",
+    "7 Orchestration decompose gate accept_decomposition (μ↓ + coverage + RENAME/STUCK) + Tree/Node/DoneWhen",
+    "8 Orchestration next_node() order",
+    "9 Orchestration DelegationManager.delegate (cửa RIÊNG, scope⊆parent, child session, delegation.finished)",
+    "10 Worker execute_tool tool thật (fs_write/fs_read → tool_result evidence)",
+    "11 Control-Plane EventEmitter(seq gap-free)+EventLogger(events.jsonl)+Redactor stub",
+    "12 Orchestration judge_acceptance (evidence THẬT, scaffolding từ chối, all_accepted → FINISHED)",
+    "13 Orchestration run_task_loop driver + budget guard (BLOCKED)",
+    "14 Tests: integration(AC-1/2/3/6) + property(AC-4/5) + audit(AC-7/8)"
+  ],
+  "files_modules_cham": {
+    "src/ports": ["ports.py"],
+    "src/execution_core": ["kernel.py", "session.py", "bootstrap.py", "schemas.py"],
+    "src/discipline": ["json_gate.py", "budget.py", "finish_gate.py", "condense.py"],
+    "src/tools_safety": ["fs_tools.py", "sandbox.py", "policy.py", "safe_tool_port.py"],
+    "src/orchestration": ["loop.py", "tree.py", "node.py", "accept.py", "delegation_manager.py", "policy.py", "broker.py", "contracts.py", "judge.py", "state.py", "evidence.py", "llm_sim.py"],
+    "src/control_plane": ["emitter.py", "event_log.py", "redactor.py"],
+    "config": ["runtime_event_types.yaml (allowlist tool.requested/completed/failed — OQ-3 reconcile)"],
+    "jail": ["var/workspace/"],
+    "tests": ["test_slice01_e2e.py", "test_order_nextnode.py", "prop_scope_shrink.py", "prop_mu_shrink.py", "test_budget_blocks.py"],
+    "tests_audit": ["test_no_bypass.py", "test_worker_no_verdict.py"],
+    "khong_cham": ["src/knowledge (optional, boundary)"]
+  },
+  "risks": [
+    "RS-1 fake LLM-plan lệch cấu trúc → parse_decision/μ↓ sai (kiểm AC-1/AC-5)",
+    "RS-2 budget enforce nhầm ở core thay vì discipline → AC-6 không cắt thật",
+    "RS-3 scope-check không fail-closed → phá D2/M3 privilege escalation (kiểm AC-4 property)",
+    "RS-4 bypass chokepoint ẩn → mất audit+scope (kiểm AC-8 audit)",
+    "RS-5 seq không gap-free khi delegate tạo child session (kiểm AC-2)",
+    "RS-6 (boundary) resume/SPIKE-1 → slice-02, không gỡ ở đây",
+    "RS-7 (open-Q) redact-raw-args khi bật write-tool THẬT → trước GĐ12 Security, không bịa đã-làm"
+  ],
+  "parking_lot": [
+    "resume từ SQLite / SPIKE-1 / atomic-txn (slice-02)",
+    "control-plane UI + SSE + snapshot + RuntimeCommand (E21/R4)",
+    "RAG/Knowledge (E08)",
+    "roles catalog / RoleView allowlist union−forbidden (E09)",
+    "LLM thật + redact-raw-args production (D4)",
+    "3 guard còn lại (no-progress, repeat-decision, parse-budget) + MAX_DEPTH + per-root step",
+    "multi-round phức tạp / retry K vòng"
+  ],
+  "confirmed": [
+    "Slice-01 = live-slice GĐ8 (finish-by-evidence-tối-thiểu) TRỪ resume + 1 guard budget",
+    "Constitution: 7 non-goals chốt; goal = lát cắt sống tất định vòng lặp lõi",
+    "Scope IN 9 chặng happy-path + 1 guard; Boundary OUT 7 nhóm có đích",
+    "8 AC đo được (oracle PASS/FAIL: integration/property/audit)",
+    "Plan 14 bước bám Module Map GĐ10 + layout Delivery GĐ11; files 6 module, Knowledge không chạm",
+    "Invariant chạm: D1(AC-8)/D2(AC-4)/D5(AC-7) + event-log-first(AC-2) + μ↓(AC-5) + bounded(AC-6)"
+  ],
+  "open": [
+    "RS-6 resume/SPIKE-1/D3 → slice-02 (ẩn số cao nhất, tách có chủ đích)",
+    "RS-7 redact-raw-args/D4 → gắn TRƯỚC khi bật write-tool THẬT (GĐ12 Security), slice fake chưa chạm"
+  ],
+  "do_not_touch": [],
+  "do_not_touch_ghi_chu": "repo rebuild greenfield (chưa có code cũ); nhưng CẤM sửa artifact pipeline GĐ5–14 (hợp đồng stage trước).",
+  "gate": "GO",
+  "gate_cau_hoi": "Slice đã đóng khung đủ để dựng đúng một lát, không trôi build cả app chưa?",
+  "gate_nguoi_duyet": "Dev nhận slice đã đóng khung (tự-quyết — product owner: không hỏi approval)",
+  "gate_ly_do": "Scope/Boundary/Acceptance rõ + đo được (8 AC oracle); non_goals chốt → biết KHÔNG làm gì; plan bám đúng 2 seam công khai + layout module GĐ10/GĐ11; ẩn số rủi ro cao nhất (resume) tách khỏi lát-đầu → bắt đầu ngay rủi ro thấp (mọi chặng có tiền lệ chạy ở gốc). fake-trước-real giữ slice tất định.",
+  "gate_phuong_an_da_loai": [
+    "Gộp resume/SPIKE-1 vào slice-01 — loại: kéo ẩn số cao nhất vào lát-đầu, resume vướng thì cả lát tắc",
+    "Nhồi 4 guard + multi-round — loại: 1 guard đủ chứng minh phanh; còn lại = S3.5.2 đầy đủ, vi phạm 'đúng một slice'",
+    "Gọi LLM thật — loại: phá fake-trước-real, thêm phi-tất-định + tốn tiền + kéo redact-raw-args chưa tới lượt",
+    "Bật redact-raw-args thật trong slice — loại: slice fake không sinh secret; gắn đúng lúc trước write-tool THẬT (open-Q RS-7)"
+  ],
+  "ban_giao": {
+    "code_that_slice01": "lượt sau /frame BUILD theo Plan §4, đúng DoD GĐ11",
+    "slice_02": "resume/SPIKE-1 khi slice-01 xanh",
+    "uat": "map AC→test→result sau build (GĐ12)"
+  },
+  "artifact_path": "rebuild-hex-agent/frame/slice-01-taskloop-happy-path.md",
+  "state_json": "rebuild-hex-agent/pipeline/_frame.json"
+}

@@ -1,0 +1,9 @@
+{
+  "skill": "checkpoint",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "Output outputs/checkpoint/delivery.md LÀ một phiếu checkpoint T-11 đúng cấu trúc hợp đồng (Task/Giai đoạn/Owner/Artifact/Kiểm lúc ISO/Checklist/Verdict/Lý do + khối ═══ CHECKPOINT ═══ 9/9 mục). Đối chiếu với fixture mediremind: (1) T-11 tồn tại trong progress/progress.json dòng 50-52 đúng giai_doan gd11_delivery + owner delivery + artifact codebase/delivery-standards.md; (2) MỌI ✓ đều bám artifact THẬT — delivery-standards.md có đủ 9 mục §1-§9, DoD 7 điều kiện, PR Checklist 7 mục, §8 map verbatim NFR-1 ≤60s/NFR-2 p95≤300ms/NFR-5 99.5%, §4 test-pyramid 3 tầng, §6 audit-log at-rest NFR-4; contracts scheduling-v1+adherence-v1 tồn tại trong docs/contracts/; codebase/pointer.md tồn tại; (3) dùng ĐÚNG checklist GĐ11 từ definition-of-done.md dòng 28 + Luật cổng GĐ11 dòng 35 (pointer.md + test-pyramid + không nới NFR-4) — không lẫn giai đoạn; (4) không đụng progress.json (T-11 trang_thai đặt sẵn trong fixture, không do phiếu lật), không sửa artifact — thuần kiểm+phán; (5) kết đủ hai nhánh: PASS→/progress lật done + mở pg-build→/fanout, FAIL→—. Xử lý đúng OQ-A/OQ-B: ghi chú chúng là cổng GĐ13, KHÔNG chặn phiếu GĐ11, không giả vờ đã đóng.",
+  "top_failure": "Vị trí/tên file: phiếu nằm ở outputs/checkpoint/delivery.md thay vì đúng path hợp đồng progress/checkpoints/T-11.md (tên nên là T-11.md, không phải delivery.md). Đây là lệch path nhẹ (một phần do convention của harness outputs/<skill>/), không phải bịa — nội dung tự nhận đúng là T-11 và theo trọn khung phiếu, nên không rớt gate 1.",
+  "verdict_one_line": "Phiếu PASS T-11 sạch và trung thực: mọi ✓ truy được về artifact THẬT trong fixture, dùng đúng checklist+Luật cổng GĐ11, đúng vai không đụng progress/artifact, kết nối /progress+/fanout — chỉ lệch nhẹ tên/đường-dẫn file (delivery.md thay vì progress/checkpoints/T-11.md)."
+}

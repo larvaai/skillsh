@@ -1,0 +1,9 @@
+{
+  "skill": "grade",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "3/3 khuyết tật cài sẵn (mục E) — bắt đủ: (1) RỚT GATE, (2) rớt Bám-code do bịa Kafka/microservice, (3) rớt Lời-văn/3-tầng do nhảy thẳng jargon không neo; bonus bắt thêm sai-mức (tên hàm ở L3) và thiếu 'vấn đề trước / cho ai'. Không thiếu cái nào.",
+  "evidence": "outputs/grade/grade.md dùng ĐÚNG explain/rubric.md (7 tiêu chí, gate 1/4/5) — không phải rubric tạm vì explain/rubric.md có thật. Chấm 1/14, RỚT GATE ở 3 xương sống (1 Mức=0, 4 Lời văn=0, 5 Bám code=0), khớp yêu cầu ANSWER-KEY mục E. Bảng 8 dòng đối chiếu claim↔code; grep toàn codebase cho kafka/microservice/sidecar/DoseConfirmed/orchestrator/DAG = 0 hit → mọi verdict 'BỊA' đúng. Điểm đúng duy nhất được ghi nhận (dispatchDue/confirmDose có thật, window scan thật) cũng khớp code (reminder.service.ts:9). Khung report bám meta-rubric.md, không lấn vai (không sửa output, chỉ chỉ đòn bẩy).",
+  "top_failure": "NONE (nhỏ: output kèm 2 mục phụ 'Bằng chứng đối chiếu' + 'Vì sao rớt gate' ngoài khung phẳng — hữu ích cho grader nhưng meta-rubric nói 'không thêm ngoài khung'; không ảnh hưởng hiệu quả).",
+  "verdict_one_line": "Grade chạy sạch đúng hợp đồng: dùng rubric thật của explain, RỚT GATE chính xác, recall 3/3 phần bịa được truy về code — hiệu quả tối đa."
+}

@@ -1,0 +1,9 @@
+{
+  "skill": "operate",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "outputs/operate/operate.md sinh đủ 3 artifact: Ops Dashboard (đủ 4 nhóm Business·Product·Engineering·Operations; DORA đủ 4 chỉ số dòng 42-45), Incident Process (đủ 5 bước dòng 65-83), Iteration Loop (nhịp review 2 tuần + đường về backlog GĐ9 dòng 95-113). Bám nguồn xuất sắc: đối chiếu fixture/mediremind/codebase/ship.md xác nhận ship.md THẬT là NO-GO (0/2 chữ ký, rollback chưa thử, OQ-A/OQ-B treo) và KHÔNG phân công incident owner — bản operate bắt đúng cả hai planted gap: in block ⚠️ (dòng 8-17) chỉnh theo thực tế NO-GO, để MỌI số vận hành = 'chưa có số' + nguồn lấy (không bịa), để incident owner thành OPEN-Q O-1 (dòng 72-74, không bịa tên). Business nối THẲNG SM-1/SM-2 khớp BIBLE §3 dòng 18-20 (+≥15 điểm/30 ngày, ≥60% caregiver-link); NFR-1/2/5 (60s, 300ms p95, 99.5%) trích đúng. Traceability 2 chiều: mỗi item I-1..I-4 ↔ gap G-1..G-4 cụ thể. Cổng câu chuẩn 'Đạt mục tiêu chưa? Làm gì tiếp?' (dòng 132), phân vai Ops/SRE+PO viết · CEO/CTO duyệt, không tự quyết. Khối bàn giao đủ mục-tiêu+học-được+item+path, /backlog là đường chính. _index.json ghi trang_thai/cho_duyet/muc_tieu_goc_gd1/item_ve_backlog đúng schema.",
+  "top_failure": "NONE — chỉ friction rất nhẹ: thêm nhánh bàn giao ngoài template (→/uat→/ship) nhưng hợp lý vì hệ thực tế NO-GO, không vi phạm hợp đồng.",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng và trung thực: bắt đủ 2 planted gap (NO-GO + thiếu incident owner), từ chối bịa số/tên, đủ 3 artifact + DORA 4 + cổng + traceability 2 chiều — gate PASS, 14/14."
+}

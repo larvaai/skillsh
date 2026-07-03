@@ -1,0 +1,32 @@
+{
+  "project": "/Users/uspro/Desktop/skillsh/experiments/skill-fake-test/fixture/mediremind",
+  "slug": "mediremind",
+  "giai_doan": "gd6_shape",
+  "cho_duyet": true,
+  "updated_at": "2026-07-03T00:00:00Z",
+  "input_source": "ngoài pipeline (fixture: docs/domain-model.md + problem/requirements.md), CHƯA qua cổng GĐ5 — đã in cảnh báo",
+  "style": "modular_monolith",
+  "modules": ["Scheduling", "Reminders", "Adherence", "Identity-Access", "worker-scheduler"],
+  "da_chot": [
+    "ADR-001 modular monolith (loại: microservices, monolith không tách module)",
+    "ADR-002 DoseEvent một-chủ-ghi = Adherence (loại: mỗi module tự ghi, tách service riêng)",
+    "ADR-003 xác-nhận-liều đồng bộ+idempotent, dispatch async (loại: nhắc đồng bộ trong request, chống trùng ở client)",
+    "ADR-004 một DB schema-per-module, cấm cross-module query (loại: DB per service, schema phẳng chung)",
+    "ADR-005 worker nền cho sinh liều/đóng missed/dispatch (loại: lazy khi mở app, cron ngoài)"
+  ],
+  "dang_mo": [
+    "loại DB/message-queue/scheduler/Identity-provider/push+sms-provider → GĐ7",
+    "fallback channel push↔sms khi một channel lỗi → GĐ7",
+    "khung pháp lý cụ thể + retention + ngưỡng rate-limit (requirements chưa cho số) → GĐ7",
+    "số region / multi-AZ để đạt availability 99.5% → GĐ7"
+  ],
+  "nfr_bam_nguon": {
+    "NFR-1": "reminder ≤60s → worker nền + queue",
+    "NFR-2": "ghi liều ≤300ms p95 → đường nóng đồng bộ mỏng idempotent",
+    "NFR-3": "50k user / 250k DoseEvent/ngày → schema-per-module + index (patient_id,status,scheduled_time)",
+    "NFR-4": "dữ liệu nhạy cảm → Confidential + encrypt at-rest + audit append-only caregiver",
+    "NFR-5": "99.5% → target + blue-green, multi-AZ cụ thể để GĐ7"
+  },
+  "artifact_path": "experiments/skill-fake-test/outputs/shape/shape.md",
+  "handoff_to": "stack"
+}

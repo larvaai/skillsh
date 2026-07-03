@@ -1,0 +1,63 @@
+{
+  "project": "/Users/uspro/Desktop/skillsh/experiments/skill-fake-test/fixture/mediremind",
+  "giai_doan": "gd9_backlog",
+  "cho_duyet": true,
+  "nguon": ["gd8_live_slice", "gd4_prd", "gd5_domain"],
+  "nguon_note": "chạy bằng file fixture user trỏ trong prompt (ngoài state đã gate) — có block cảnh báo trong artifact",
+  "roadmap": {
+    "themes": [
+      "T1 — Uống đúng & xác nhận liều (SM-1)",
+      "T2 — Caregiver theo dõi tuân thủ (SM-2)",
+      "T3 — Bảo vệ dữ liệu sức khoẻ (NFR-4)"
+    ],
+    "releases": ["R1", "R2", "R3"]
+  },
+  "backlog": { "epics": 4, "features": 7, "stories_co_ac": 9 },
+  "stories": [
+    { "id": "STORY-dose-confirm", "epic": "EPIC-adherence-core", "feature": "FEAT-confirm-dose",
+      "story": "Là patient, tôi muốn bấm Đã uống từ reminder, để liều được ghi nhận là đã uống và tỉ lệ tuân thủ được cập nhật.",
+      "ac": ["AC-dose-confirm-1", "AC-dose-confirm-2", "AC-dose-confirm-3"],
+      "test_ref": "TC-DOSE-CONFIRM-001", "release": "R1", "status": "todo",
+      "la_live_slice_gd8": true },
+    { "id": "STORY-dose-ownership-guard", "epic": "EPIC-adherence-core", "feature": "FEAT-confirm-dose",
+      "story": "Là patient, tôi muốn chỉ mình xác nhận được liều của mình, để không ai ghi hộ liều của tôi.",
+      "ac": ["AC-dose-ownership-guard-1", "AC-dose-ownership-guard-2"],
+      "test_ref": "TC-DOSE-OWNERSHIP-001", "release": "R1", "status": "todo",
+      "va_defect_gd8": "o#5 Live Slice FAIL — thiếu kiểm dose.userId===req.userId" },
+    { "id": "STORY-adherence-rate", "epic": "EPIC-adherence-core", "feature": "FEAT-adherence-rate",
+      "story": "Là patient, tôi muốn thấy tỉ lệ tuân thủ theo kỳ, để biết mình uống đúng đến đâu.",
+      "ac": ["AC-adherence-rate-1"], "test_ref": "TC-ADHERENCE-RATE-001", "release": "R1", "status": "todo" },
+    { "id": "STORY-dose-missed", "epic": "EPIC-adherence-core", "feature": "FEAT-adherence-rate",
+      "story": "Là hệ thống, tôi muốn đánh dấu liều quá hạn là missed, để tỉ lệ tuân thủ phản ánh đúng thực tế.",
+      "ac": ["AC-dose-missed-1"], "test_ref": "TC-DOSE-MISSED-001", "release": "R1", "status": "todo",
+      "open_q": "grace window (quá hạn bao lâu) chưa có trong Domain/PRD" },
+    { "id": "STORY-medication-create", "epic": "EPIC-scheduling", "feature": "FEAT-medication-schedule",
+      "story": "Là patient, tôi muốn khai một loại thuốc, để lập lịch uống cho nó.",
+      "ac": ["AC-medication-create-1"], "test_ref": "TC-MEDICATION-CREATE-001", "release": "R1", "status": "todo" },
+    { "id": "STORY-schedule-create", "epic": "EPIC-scheduling", "feature": "FEAT-medication-schedule",
+      "story": "Là patient, tôi muốn đặt lịch uống cho một thuốc, để hệ sinh ra các liều cần uống.",
+      "ac": ["AC-schedule-create-1", "AC-schedule-create-2"], "test_ref": "TC-SCHEDULE-CREATE-001", "release": "R1", "status": "todo" },
+    { "id": "STORY-caregiver-link", "epic": "EPIC-caregiver-view", "feature": "FEAT-caregiver-link",
+      "story": "Là patient, tôi muốn mời một caregiver theo dõi tuân thủ của tôi, để người thân nắm tình hình.",
+      "ac": ["AC-caregiver-link-1"], "test_ref": "TC-CAREGIVER-LINK-001", "release": "R1", "status": "todo" },
+    { "id": "STORY-caregiver-view-report", "epic": "EPIC-caregiver-view", "feature": "FEAT-caregiver-report-view",
+      "story": "Là caregiver đã được link, tôi muốn xem báo cáo tuân thủ của patient, để biết họ có uống đúng không.",
+      "ac": ["AC-caregiver-view-report-1", "AC-caregiver-view-report-2", "AC-caregiver-view-report-3"],
+      "test_ref": "TC-CAREGIVER-VIEW-001", "release": "R1", "status": "todo" },
+    { "id": "STORY-audit-caregiver-access", "epic": "EPIC-security-baseline", "feature": "FEAT-access-control",
+      "story": "Là hệ thống, tôi muốn ghi audit-log mọi lần caregiver truy cập dữ liệu patient, để tuân thủ NFR-4.",
+      "ac": ["AC-audit-caregiver-access-1"], "test_ref": "TC-AUDIT-CAREGIVER-001", "release": "R1", "status": "todo" }
+  ],
+  "da_chot": [
+    "R1 gồm adherence-core + scheduling + caregiver-view + security-baseline (lý do: slice GĐ8 chứng minh trục Adherence; MVP phải đo cả SM-1 lẫn SM-2)",
+    "confirm-dose là feature đầu R1 = chính Live Slice GĐ8",
+    "ownership-guard vào R1 để vá ô #5 GĐ8 trước khi build rộng",
+    "NFR-1 60s hoãn sang R2 (EPIC-reminder-timeliness) — không chặn go-live MVP"
+  ],
+  "dang_mo": [
+    "grace window cho DoseEvent missed: Domain/PRD chưa nêu con số — chốt trước khi viết AC biên dose-missed (GĐ5)",
+    "OQ-B retention/mã hoá dữ liệu: treo từ GĐ6/GĐ7 — chờ Delivery Standards GĐ11, không đặt story R1"
+  ],
+  "handoff_ke": "modules",
+  "artifact_path": "experiments/skill-fake-test/outputs/backlog/backlog.md"
+}

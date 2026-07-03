@@ -1,0 +1,162 @@
+{
+  "project": "hex-agent-rebuild",
+  "slug": "hex-agent-rebuild",
+  "release": "R1-nền + alpha nội bộ",
+  "giai_doan": "gd13_ship",
+  "artifact": "pipeline/13-ship.md",
+  "artifact_path": "rebuild-hex-agent/pipeline/13-ship.md",
+  "trang_thai": "da_go",
+  "cho_duyet": false,
+  "quyet_dinh": "go",
+  "quyet_dinh_loai": "GO cho pha ALPHA nội bộ (rollout theo bậc) — KHÔNG mở write_tools_enabled/delegation_enabled ở bản này",
+  "nhan_tu": "uat",
+  "ban_giao": "operate",
+  "nguon": [
+    "gd12_uat (Test & Verification Report: 28/28 AC lõi có test · 26 PASS · 2 PENDING R3+resume · 0 FAIL · UAT ✔ PO + Security ✔ CISO KÝ-CÓ-ĐIỀU-KIỆN 2026-07-02; 2 blocker: redact-raw-args trước write-tool · scope-property trước delegation; điều kiện đóng R1: SPIKE-1/D3 resume xanh staging)",
+    "gd11_delivery (feature flag write_tools_enabled/delegation_enabled/rag_enabled default OFF · rollback = tắt flag qua features.yaml + event-log replay · migration SQLite forward-only + schema_version + rollback script · incident on-call theo owner module)",
+    "gd8_skeleton (đường đi E2E finish-by-evidence tối thiểu + SPIKE-1 resume; run_smoke.py offline deterministic = DoD S0)",
+    "gd10_modules (on-call theo owner: Team Platform chokepoint/session/resume · Team Safety jail/policy · Team Observability secret/audit)",
+    "evidence-A/B/C + ATLAS (orchestrator/loop.py:run 93-147 · resume 217-273 · EventLogger→events.jsonl/summary.json observability/event_log.py:102 · SSE GET /api/stream + GET /api/snapshot · SQLite=chân lý resume + event-log bất biến)"
+  ],
+  "input_ngoai_pipeline": false,
+  "canh_bao_input_ngoai": null,
+  "updated_at": "2026-07-02T00:00:00Z",
+
+  "nhan_tu_gd12": {
+    "pass_rate": "26/28",
+    "ac_loi_total": 28,
+    "ac_pass": 26,
+    "ac_pending": 2,
+    "ac_fail": 0,
+    "gap_bi_giau": 0,
+    "uat_signoff": "✔ PO — KÝ CÓ ĐIỀU KIỆN (2026-07-02) — ký R1-PASS; M1/M2/M3 đầy đủ khi R3 xanh staging",
+    "security_signoff": "✔ CISO — KÝ CÓ ĐIỀU KIỆN (2026-07-02) — D1 PASS; blocker redact-raw-args + scope-property",
+    "ship_khong_kiem_lai_test": "ship NHẬN nguyên số GĐ12, KHÔNG kiểm lại chất lượng test (→ /uat nếu phát hiện gap)"
+  },
+
+  "go_no_go_checklist": {
+    "1_release_note": { "owner": "Release manager", "trang_thai": "x", "ghi_chu": "R1-nền + phanh runtime; write-tool/delegation OFF sau flag (nội bộ 1 trang)" },
+    "2_deployment_plan": { "owner": "Team Platform", "trang_thai": "x", "ghi_chu": "CD trunk-xanh → staging tự động (run_smoke.py offline + E2E slice); prod = pha sau" },
+    "3_rollback_plan_da_test": { "owner": "Team Platform", "trang_thai": "x", "ghi_chu": "tắt flag features.yaml + pin version + không đụng run đang chạy + resume/replay; test = smoke offline dựng lại được (config bậc-1)" },
+    "4_data_migration_plan": { "owner": "Team Platform", "trang_thai": "x", "ghi_chu": "SQLite/AgentState forward-only + schema_version + rollback script; alpha KHÔNG đổi schema → migration N/A pha này, script sẵn cho pha có schema change" },
+    "5_feature_flag_plan": { "owner": "Team Platform", "trang_thai": "x", "ghi_chu": "write_tools_enabled=OFF · delegation_enabled=OFF · rag_enabled=OFF (default an-toàn-nhất); đọc config/features.yaml runtime" },
+    "6_user_communication": { "owner": "PO", "trang_thai": "N/A", "ly_do": "alpha NỘI BỘ (đội build + PO), chưa người dùng ngoài → comms = 1 tin nội bộ; bật khi tới pilot" },
+    "7_training_material": { "owner": "PO", "trang_thai": "N/A", "ly_do": "chưa người dùng nghiệp vụ ở alpha; runbook §3 đủ cho dev trực; training khi tới beta có UI" },
+    "8_support_playbook": { "owner": "Team Platform", "trang_thai": "x", "ghi_chu": "= Runbook §3 (start/inspect/resume) + Incident process GĐ11 §12 (on-call theo owner module)" },
+    "9_monitoring_dashboard_alert": { "owner": "Team Observability", "trang_thai": "x", "ghi_chu": "events.jsonl + summary.json + 6 metric loop; alert cứng false_finish_total>0; ⚠️ ngưỡng-số P95/error-rate = OQ-1 chưa có → Operate GĐ14, KHÔNG bịa" },
+    "10_incident_owner": { "owner": "—", "trang_thai": "x", "ghi_chu": "Team Platform (chokepoint/session/resume) · Team Safety (jail/policy) · Team Observability (secret/audit) — owner module GĐ10" },
+    "11_uat_signoff": { "owner": "PO", "trang_thai": "x", "ghi_chu": "✔ KÝ CÓ ĐIỀU KIỆN (2026-07-02) — kéo từ GĐ12, KHÔNG bịa vô-điều-kiện" },
+    "12_security_signoff": { "owner": "CISO", "trang_thai": "x", "ghi_chu": "✔ KÝ CÓ ĐIỀU KIỆN (2026-07-02) — kéo từ GĐ12; blocker redact-raw-args + scope-property → thành rollout gate" }
+  },
+  "bon_thu_chan": {
+    "rollback_da_test": "✔ config bậc-1 (tắt flag) test được trên smoke offline; rollback có-schema-migration chưa áp (alpha không đổi schema) — open-Q",
+    "monitoring_alert_bat": "✔ events.jsonl + 6 metric loop; alert cứng false_finish>0; ngưỡng-số OQ-1 treo minh bạch",
+    "incident_owner_co_ten": "✔ Team Platform / Safety / Observability (theo owner module GĐ10)",
+    "uat_security_signoff_gd12": "✔ KÉO từ GĐ12 (ký-có-điều-kiện, KHÔNG bịa vô-điều-kiện)"
+  },
+
+  "rollback_plan": {
+    "trigger": [
+      "false_finish_total > 0 (báo-xong-khống — phá M1) → P1 lùi ngay",
+      "child-cap ⊄ parent lọt / delegation_rejected bất thường (leo quyền — M3) → lùi",
+      "secret lọt ui_payload/jsonl (D4) → lùi + dừng write-tool flag",
+      "resume re-emit tool.requested bước đã done / checkpoint nửa-ghi (SPIKE-1 fail) → lùi flag liên quan",
+      "budget/guard không cắt runaway (M2) → lùi",
+      "⚠️ ngưỡng P95/error-rate = OQ-1 chưa có số → alert định-tính + 5 tín hiệu invariant là trigger cứng; số bổ sung ở Operate"
+    ],
+    "cach_lui": {
+      "bac_1_config_giay": "tắt flag config/features.yaml (write/delegation/rag → OFF) → hành vi nguy hiểm ngừng ngay, KHÔNG redeploy",
+      "bac_2_version_phut": "pin lại version bản trước (redeploy) nếu lỗi ở code nền, không chỉ ở flag",
+      "khong_dung_run_dang_chay": "run in-flight giữ SessionIdentity + SQLite checkpoint riêng; config mới chỉ áp run MỚI → 0 state bleed (I2/I3)"
+    },
+    "du_lieu_luc_loi": "GIỮ nguyên KHÔNG xoá — event-log append-only là nguồn audit; điều tra build_snapshot(events) replay tới seq sự cố (deterministic); run lỗi → resume cùng run_id (0 side-effect I10/I11) HOẶC đánh BLOCKED. Schema change (pha sau) → rollback-script forward-only; point-of-no-return = migrate schema mà bản cũ không đọc được checkpoint mới → từ chối resume tường minh",
+    "da_test": "✔ config bậc-1 = smoke offline dựng lại từ config đã lùi (run_smoke.py deterministic, DoD S0) + tắt flag → write bị scope-check chặn fail-closed",
+    "phuong_an_loai": [
+      "rollback-database/xoá bản ghi lỗi — loại: phá event-log bất biến + mất dữ liệu resume; xoá evidence = phá điểm bán",
+      "redeploy toàn bộ cho mọi sự cố — loại: chậm (phút vs giây), tăng MTTR; tắt flag đủ và nhanh hơn cho đa số sự cố"
+    ]
+  },
+
+  "runbook": {
+    "kieu_trien_khai": "rolling qua flag (single-deployable) = canary-theo-hành-vi (mở dần capability qua features.yaml)",
+    "ly_do_chon": "single-node single-deployable (modular monolith ADR-005) chưa nhiều instance → blue-green thừa; chưa traffic thật → canary-% không đo được. Mở dần hành vi nguy hiểm qua flag = canary đúng cho hệ này",
+    "deploy": "merge trunk xanh → CI đủ gate (lint→type→unit→property→integration+resume→audit→contract→build; đỏ = KHÔNG deploy) → CD staging tự động → xác nhận features.yaml an-toàn-nhất (write/delegation/rag OFF)",
+    "kiem_tra_sau_deploy_smoke": [
+      "orchestrator.run(task='task 2 bước finish-by-evidence') → kỳ vọng trả run_id, terminal FINISHED (không BLOCKED/FAILED)",
+      "observability.inspect list → thấy run_id status=FINISHED; observability.inspect summary <run_id> → tool_calls>0 · false_finish_total=0 · budget_tripped=0",
+      "đọc var/<run_id>/events.jsonl (seq order) → tool.requested/completed N1,N2 + delegation.finished; seq monotonic gap-free; 0 secret ui_payload (D4)",
+      "mở UI: GET /api/snapshot (+ GET /api/stream SSE) → snapshot fold khớp terminal-status; UI chỉ đọc ui_payload (UI ⊥ core ARC-1)",
+      "kiểm resume: kill giữa chừng → orchestrator.resume(run_id=<run_id>) → SPIKE-1/D3: KHÔNG re-emit tool.requested bước đã done · round_no liên tục · không checkpoint nửa-ghi (điều kiện chặn ĐÓNG R1)"
+    ],
+    "nguong_hong_rollback_ngay": "false_finish>0 · secret lọt jsonl/ui_payload · child-cap⊄parent lọt · resume re-emit/nửa-ghi · guard không cắt runaway → khối C rollback",
+    "rollback": "1. tắt flag features.yaml (<giây, ai bấm = owner module liên quan) → run mới theo config lùi, run đang chạy giữ nguyên. 2. lỗi code nền → pin version (phút). 3. GIỮ events.jsonl/SQLite, điều tra bằng inspect summary + build_snapshot replay. 4. chạm invariant = P1, thêm regression-test trước khi bật lại"
+  },
+
+  "rollout_strategy": {
+    "kieu": "theo LOẠI TASK + theo FLAG hành vi (không theo % vì chưa traffic thật)",
+    "bac": [
+      { "bac": "1_internal_alpha", "pham_vi": "đội build + PO · smoke offline (run_smoke.py) + task 2-bước finish-by-evidence", "flag": "tất cả OFF", "quan_sat": "tới khi smoke xanh ổn định + SPIKE-1 resume xanh", "tien": "smoke xanh · false_finish=0 · resume D3 pass a/b/c → ĐÓNG R1", "lui": "tắt run, sửa code nền" },
+      { "bac": "2_pilot_1_loai_task", "pham_vi": "nội bộ · đúng 1 loại task (đọc→biến đổi→ghi trên fs jail)", "flag": "write_tools_enabled=ON ⟺ redact-raw-args (TC-REDACT-RAWARGS-003) xanh (Security blocker)", "quan_sat": "1 loại task đủ số lần chạy", "tien": "0 secret lọt jsonl · sandbox-escape=0 · budget cắt đúng · PO OK", "lui": "tắt write_tools_enabled → read-only" },
+      { "bac": "3_beta_nhieu_loai_task", "pham_vi": "nội bộ · nhiều loại task cần multi-agent", "flag": "delegation_enabled=ON ⟺ D2 scope-property (TC-DELEGATE-SCOPE-001) + finish-by-evidence + bounded-guards + μ-proof xanh trên bộ nghiệm thu (M1/M2/M3 → R3)", "quan_sat": "nhiều loại task, theo dõi delegation", "tien": "delegation_rejected chỉ khi đúng vi phạm · 0 leo quyền · M1/M2/M3 xanh", "lui": "tắt delegation_enabled → single-agent" },
+      { "bac": "4_gradual", "pham_vi": "mở dần loại task + (khi có) người dùng nghiệp vụ; rag_enabled tuỳ nhu cầu", "flag": "rag_enabled ON tuỳ nhu cầu (health-gated never raises)", "quan_sat": "theo tải tăng dần", "tien": "metric loop ổn định qua các loại task · NFR-số baseline có (Operate)", "lui": "tắt flag loại task/rag đó" },
+      { "bac": "5_full", "pham_vi": "toàn phạm vi dự kiến (vẫn single-node nội bộ ở MVP; public transport = E21 R4 sau)", "flag": "theo nhu cầu", "quan_sat": "vận hành liên tục", "tien": "ổn định ở gradual + pentest/DAST khi có transport public", "lui": "theo Rollback §2" }
+    ],
+    "ly_do_di_tung_bac": "hệ đụng token/tiền·scope/quyền·secret·resume → không bật hành vi nguy hiểm một phát; chia bậc theo flag (write→delegation) khớp đúng 2 blocker Security GĐ12; KHÔNG gộp bậc vì mỗi flag là ranh giới điểm-bán riêng (M3 leo-quyền ở delegation · D4 rò-secret ở write-tool)"
+  },
+
+  "gate": "GO",
+  "gate_loai": "GO cho pha ALPHA nội bộ (rollout theo bậc) — KHÔNG mở write/delegation bản này",
+  "gate_cau_hoi": "Đưa lên có an toàn không, và lên bằng cách nào để lỡ sai thì lùi được?",
+  "gate_nguoi_duyet": "CTO + PO (ký GO/NO-GO) — tự-quyết, product owner: không hỏi approval; Release manager/Tech lead (vai ship) trình đủ 4 artifact + khuyến nghị, KHÔNG tự bấm GO",
+  "gate_nguoi_ky": "CTO ✔ + PO ✔ (2026-07-02)",
+  "gate_ly_do": "(1) 4 thứ chặn xanh cho phạm vi alpha (rollback đã-test config · monitoring bật · incident owner có tên · UAT+Security kéo GĐ12 ký-có-điều-kiện); (2) write-tool/delegation để sau flag khớp đúng 2 blocker Security GĐ12; (3) rollback tức-thì tắt-flag qua features.yaml đã test smoke offline, event-log bất biến + SQLite-truth → lùi không mất dữ liệu không đụng run đang chạy; (4) rollout theo bậc-theo-flag chia rủi ro đúng ranh giới điểm-bán",
+  "rollback_trigger_sau_go": "false_finish_total>0 · secret lọt jsonl/ui_payload · child-cap⊄parent lọt · resume re-emit/checkpoint nửa-ghi · guard không cắt runaway → tắt flag liên quan ngay, P1 nếu chạm invariant",
+  "rollout_gate_bac_ke": [
+    "Mở pilot (bật write_tools_enabled) ⟺ redact-raw-args (TC-REDACT-RAWARGS-003) xanh · ai: Team Safety↔Observability · xong khi: test 0-secret-in-jsonl xanh staging",
+    "Mở beta (bật delegation_enabled, release R3) ⟺ D2 scope-property + finish-by-evidence + bounded-guards + μ-proof xanh trên bộ nghiệm thu (M1/M2/M3 thật) · ai: Team Orchestration · xong khi: R3 xanh staging",
+    "ĐÓNG R1 ⟺ SPIKE-1/D3 resume (TC-RESUME-NOREPLAY-001/ATOMIC-002/SQLITE-TRUTH-003) pass a/b/c xanh staging · ai: Team Platform · fail → phương án B orchestrator tự viết resume (không đổi Standards)"
+  ],
+  "gate_phuong_an_loai": [
+    "NO-GO tới khi 28/28 PASS-live + mọi flag mở — loại: trộn vai GĐ13 với GĐ8/GĐ12 (code R3 + chạy staging là /frame); chặn cổng = nghẽn pipeline; đúng = GO alpha + rollout gate có địa chỉ, không phủ định cứng",
+    "GO full ngay bật cả write + delegation — loại: vi phạm 2 blocker Security GĐ12 (redact-raw-args + scope-property chưa xanh) → mở đúng 2 ranh giới rò-secret/leo-quyền khi chưa có test chặn = ký nhầm cho lên thứ không lùi-an-toàn",
+    "Rollback bằng rollback-database/xoá bản ghi lỗi — loại: phá event-log bất biến (audit+replay) + mất dữ liệu resume; xoá evidence phá điểm bán; tắt-flag + resume-từ-checkpoint an toàn hơn",
+    "Blue-green/canary-theo-% — loại: single-node single-deployable chưa nhiều instance / chưa traffic thật → blue-green thừa, canary-% không đo được; canary-theo-hành-vi (mở dần flag) đúng"
+  ],
+
+  "khong_lan_vai": {
+    "khong_kiem_lai_chat_luong_test": "→ /uat (nhận nguyên số GĐ12; phát hiện gap chất lượng → trả về /uat)",
+    "khong_viet_code_tinh_nang": "→ /frame · /delivery (ship chỉ dàn cảnh phát hành: flag/deploy step/rollback step)",
+    "khong_dung_ops_dashboard_dai_han": "→ /operate (ship đặt monitoring go-live tối thiểu; dashboard 4-nhóm-metric dài hạn là GĐ14)",
+    "khong_tu_bam_go": "cổng là quyết định CTO+PO; ship chỉ khuyến nghị kèm lý do + phương án loại (chế độ tự-quyết → đóng vai CTO+PO tự ký, ghi rõ)"
+  },
+
+  "open_q": [
+    "SPIKE-1/D3 (kế thừa GĐ8/GĐ11/GĐ12): resume round-trip pass a/b/c — điều kiện chặn ĐÓNG R1; fail → phương án B orchestrator tự viết (không đổi Standards)",
+    "ADR-006/D4 (kế thừa): redact-raw-args (TC-REDACT-RAWARGS-003) — rollout gate mở pilot (bật write_tools_enabled)",
+    "D2 scope-property + M1/M2/M3 R3: — rollout gate mở beta (bật delegation_enabled)",
+    "OQ-1 (kế thừa GĐ11): NFR-số (P95 loop · ngưỡng alert/error-rate) chưa có → đo ở Operate GĐ14, KHÔNG bịa; alert cứng tạm = false_finish_total>0 + 5 tín hiệu invariant",
+    "Rollback có-schema-migration: chưa test (alpha không đổi schema); script forward-only + rollback đã đặt GĐ11 §10 → test khi tới pha có migration",
+    "pentest ngoài + DAST public + DR đa-region: HOÃN tới khi có transport public (E21 R4) — gap có địa chỉ, không giấu"
+  ],
+
+  "trang_thai_note": "da_go = cổng đã tự-quyết GO cho pha ALPHA (chế độ tự-quyết, product owner không hỏi approval); CTO+PO đã ký 2026-07-02. Bậc rollout kế (pilot/beta) chưa mở — quay lại /ship khi rollout gate xanh. cho_duyet:false = không chờ approval người.",
+
+  "handoff_to": "operate",
+  "handoff_liet_ke": [
+    "operate (GĐ14 — chính: đo metric sau release, đóng vòng target GĐ1 bằng false_finish_total=0/budget_tripped/delegation_rejected, nạp roadmap kế)",
+    "ship (quay lại khi mở bậc pilot/beta — rollout gate: redact-raw-args → pilot; scope-property+M1/M2/M3 → beta)",
+    "operate (rollout gặp sự cố lớn chạm invariant → xử incident)",
+    "uat + frame (phát hiện gap chất lượng R3/resume/redact chưa xanh → /uat kiểm lại hoặc /review đào sâu, rồi /frame code)"
+  ],
+  "theo_doi": [
+    "false_finish_total = 0 (điểm bán M1 — alert cứng nếu >0) → Operate đối chiếu target GĐ1",
+    "budget_tripped_total / delegation_rejected_total{reason} (M2/M3) → Operate",
+    "SPIKE-1/D3 resume — chặn ĐÓNG R1",
+    "redact-raw-args → rollout gate pilot · scope-property+M1/M2/M3 → rollout gate beta",
+    "OQ-1 NFR-số (P95 loop/alert threshold) → Operate GĐ14, không bịa",
+    "pentest/DAST public + DR đa-region → sau khi có transport public (E21 R4)"
+  ],
+  "artifact_path_this": "rebuild-hex-agent/pipeline/13-ship.md",
+  "state_json": "rebuild-hex-agent/pipeline/ship.json",
+  "prev_artifact_path": "rebuild-hex-agent/pipeline/12-uat.md"
+}

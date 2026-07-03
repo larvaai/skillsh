@@ -1,0 +1,9 @@
+{
+  "skill": "tune",
+  "gate": "fail",
+  "effectiveness": 1,
+  "recall": "n/a",
+  "evidence": "outputs/tune/ chỉ có 1 file design.md (16KB) — tự khai ngay dòng 3: 'Đây là bản THIẾT KẾ (chưa chạy 5 variant)'. Không có experiments/runs/<ts>/ mới cho fixture streak.ts (chỉ tồn tại runs/20260701-143138 cũ, không liên quan). => Rớt cả 3 tiêu chí xương sống của rubric: (1) Đủ mục kết luận = 0 — không có baseline đã chấm, không có bảng so với số thật (bảng chỉ toàn dấu chấm, dòng 199-206), không có bản thắng thật. (2) Điểm từ grade thật = 0 — zero grade.txt, zero output.txt của variant nào; không con số nào truy được về grade thật. (3) Báo cáo đọc-được = 0 — không có kết quả để Son quét quyết, chỉ là kế hoạch. Thêm: 'CẢNH BÁO CHẶN' dòng 15-17 khẳng định teen KHÔNG có rubric.md, nhưng thực tế .claude/skills/teen/rubric.md ĐÃ tồn tại (9238 bytes, tạo 17:31 cùng phút design.md) — tiền đề trung tâm của thiết kế sai. Điểm cộng: thiết kế bám đúng 7 bước + kiểm 5 Luật cứng (dòng 241-253), fixture streak.ts có thật và được chép đúng, các hướng A-E mỗi cái nhắm 1 tiêu chí khác (không trùng), giữ đúng vai không đụng bản thật. Nhưng tune tồn tại để CHẠY thí nghiệm và ra số — bản này dừng ở giấy, không chạy gì.",
+  "top_failure": "Chỉ giao bản THIẾT KẾ dry-run, KHÔNG chạy thí nghiệm: không baseline, không variant, không grade.txt, không bảng so số thật, không bản thắng — rớt cả 3 gate xương sống (đủ-mục / điểm-từ-grade-thật / báo-cáo-đọc-được). Cả lý do tồn tại của tune ('nói hướng nào thắng bằng SỐ') không được thực thi. Kèm lỗi sự thật: khẳng định teen thiếu rubric trong khi teen/rubric.md đã có.",
+  "verdict_one_line": "Bản thiết kế đẹp và bám hợp đồng về cấu trúc, nhưng là dry-run trên giấy — không chạy baseline/variant/grade nào nên rớt sạch 3 gate xương sống; gate FAIL, effectiveness 1."
+}

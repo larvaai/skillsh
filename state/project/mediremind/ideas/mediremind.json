@@ -1,0 +1,29 @@
+{
+  "project": "/Users/uspro/Desktop/skillsh/experiments/skill-fake-test/fixture/mediremind",
+  "slug": "mediremind",
+  "updated_at": "2026-07-03T00:00:00Z",
+  "ten_y_tuong": "MediRemind — app nhắc uống thuốc & theo dõi tuân thủ (adherence)",
+  "giai_doan": "done_handoff",
+  "cho_duyet": false,
+  "do_ro": "ro_rang",
+  "do_kha_thi": "kha_thi_ro",
+  "trang_thai": "done_handoff",
+  "phan_bien": [],
+  "an_so_can_kiem_chung": [],
+  "da_chot": [
+    "GĐ0: Router = rõ ràng + khả thi rõ → Nhánh C, lướt nhanh; không cần spike, không có điểm bất-khả-thi.",
+    "GĐ1: đáng đầu tư — SM-1 on-time dose rate +≥15 điểm% sau 30 ngày (đo bằng log liều trong app); SM-2 ≥60% caregiver-link kích hoạt tuần đầu.",
+    "GĐ1: chọn đo tuân thủ bằng xác nhận thủ công theo liều; loại đo tự động bằng phần cứng/cảm biến (chi phí+độ khó cao).",
+    "GĐ2-4: MVP = khai thuốc+lịch · sinh DoseEvent · nhắc push (SMS fallback) · xác nhận liều · tính adherence · caregiver chỉ-xem · audit-log. Out = clinic admin, cấp cứu, caregiver sửa lịch, đo tự động, EHR/thanh toán.",
+    "GĐ5: 4 bounded context (Identity&Access, Scheduling, Reminders, Adherence); DoseEvent state machine pending→taken/skipped/missed; BR caregiver chỉ-xem + audit bắt buộc + cửa sổ on-time; DỪNG."
+  ],
+  "dang_mo": [
+    "OQ-2: ngưỡng số cứng NFR-1/2/3 (giây/ms/số user) → spec NFR GĐ6.",
+    "OQ-3: sinh DoseEvent + dispatch reminder realtime hay batch/cron? → kiến trúc /shape GĐ6.",
+    "OQ-4: retention dữ liệu sức khoẻ bao lâu (NFR-4) → security spec GĐ6.",
+    "Ranh giới ghi DoseEvent giữa Scheduling↔Adherence → contract module GĐ6/GĐ10.",
+    "BR-4: độ rộng cửa sổ on-time chính xác → cấu hình/NFR GĐ6.",
+    "OQ-cost: định lượng chi phí y tế / ROI tuyệt đối — thiếu số trong input, không chặn."
+  ],
+  "artifact_path": "experiments/skill-fake-test/outputs/idea/"
+}

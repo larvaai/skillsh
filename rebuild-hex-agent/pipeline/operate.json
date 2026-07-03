@@ -1,0 +1,130 @@
+{
+  "project": "hex-agent-rebuild",
+  "slug": "hex-agent-rebuild",
+  "stage": "operate",
+  "gd": 14,
+  "giai_doan": "gd14_operate",
+  "release_dang_van_hanh": "R1-nền + alpha nội bộ (GO GĐ13, 2026-07-02)",
+  "artifact": "pipeline/14-operate.md",
+  "artifact_path": "rebuild-hex-agent/pipeline/14-operate.md",
+  "state_json": "rebuild-hex-agent/pipeline/operate.json",
+  "trang_thai": "dang_do",
+  "cho_duyet": true,
+  "nhan_tu": "ship",
+  "next": "backlog",
+  "prev_artifact_path": "rebuild-hex-agent/pipeline/13-ship.md",
+
+  "muc_tieu_goc_gd1": {
+    "M1": "zero false-finish = 0 lần FINISHED khi có AC thiếu evidence thật (all_accepted, state.py:35-37) [gate]",
+    "M2": "bounded = mọi task về terminal <= max_rounds (không runaway)",
+    "M3": "no-escalation = 0 delegation scope con ⊄ cha (policy.py:25-26)",
+    "OQ-1": "baseline chi phí/false-finish thực CHƯA có số → đo ở Operate, KHÔNG bịa"
+  },
+  "business_dat": "MỘT PHẦN — nền R1 an toàn ĐẠT (0 sandbox-escape · 0 secret rò ui_payload); M1/M2/M3 CHƯA tuyên được vì R3 (multi-agent) chưa live (GĐ12: 2 PENDING). false_finish=0 trên smoke, chưa có số production.",
+
+  "dashboard": {
+    "business": {
+      "M1_false_finish_total": { "target": 0, "hien": "0 trên smoke/nghiệm-thu-R1", "production": "chưa có số (R3 chưa live)", "cach_lay": "đếm false_finish_total qua các loại task thật sau khi mở beta (delegation ON)" },
+      "M2_budget_tripped_total": { "target": "100% task terminal <= max_rounds", "hien": "guard cắt đúng trên smoke", "production": "chưa có số", "cach_lay": "budget_tripped_total / tổng-run" },
+      "M3_delegation_rejected_scope": { "target": "0 child-cap ⊄ parent lọt", "hien": "chưa có số (delegation OFF)", "cach_lay": "delegation_rejected_total{reason=scope} sau khi mở beta; alert nếu child-cap lọt >0" },
+      "baseline_chi_phi_OQ1": { "hien": "chưa có số", "cach_lay": "token/USD trung bình/task = llm_calls × giá model, sau >=1 tuần beta" }
+    },
+    "product": {
+      "pct_task_FINISHED": { "hien": "chưa có số production", "cach_lay": "task_finished_total / (finished + blocked + failed)" },
+      "round_tb_moi_task": { "hien": "chưa có số", "cach_lay": "trung bình round_no lúc terminal (summary.json)" },
+      "ti_le_runaway_blocked": { "target": "thấp & mọi runaway BỊ chặn", "hien": "chưa có số", "cach_lay": "task_blocked_total{reason∈max_rounds/no-progress/repeat} / tổng-run" },
+      "do_sau_decompose_tb": { "target": "< MAX_DEPTH(6)", "hien": "chưa có số", "cach_lay": "max depth cây kế hoạch/run (Journal/Tree)" },
+      "ti_le_AC_pass_lan_dau": { "hien": "chưa có số", "cach_lay": "AC passed-lần-1 / tổng-AC" }
+    },
+    "engineering": {
+      "observability_goc": {
+        "tool_calls": "chưa có số production (nguồn: summary.json/metrics, event_log.py:102)",
+        "llm_calls": "chưa có số production (nguồn: metrics)",
+        "parse_errors": "theo dõi trong parse-budget CONSECUTIVE (nguồn: metrics)",
+        "same_tool_blocks": "budget_tripped_total{reason=same_tool}",
+        "policy_blocks": "tool.failed{reason=policy} (PolicyGate fail-closed)",
+        "tool_failures": "metrics failures (tool.failed không phải policy)"
+      },
+      "DORA": {
+        "lead_time": { "hien": "chưa có số (OQ-1)", "nguon": "CI timestamp", "ky_vong": "thấp (trunk-based)" },
+        "deployment_frequency": { "hien": "chưa có số (OQ-1)", "nguon": "CD log", "ky_vong": "cao (trunk-based single-deployable)" },
+        "change_failure_rate": { "hien": "chưa có số (OQ-1)", "nguon": "CI + incident log" },
+        "mttr": { "hien": "chưa có số (OQ-1)", "nguon": "incident process", "ky_vong": "thấp (rollback = tắt flag)" }
+      }
+    },
+    "operations": {
+      "uptime": { "target": ">=99.9% (chốt khi có transport public)", "hien": "chưa có số (single-node nội bộ)" },
+      "resume_success_rate": { "target": "100% resume 0-side-effect (SPIKE-1/D3)", "hien": "điều-kiện-chặn ĐÓNG R1 CHƯA xanh staging" },
+      "sandbox_escape_attempts": { "target": 0, "hien": 0, "nguon": "TC-SANDBOX-ESCAPE-001 smoke offline GĐ13", "alert": "cứng nếu >0" },
+      "secret_ro_ui_payload_jsonl": { "target": 0, "hien": 0, "nguon": "redact 15 SECRET_KEYS · D4", "alert": "cứng nếu >0" },
+      "p95_latency_loop": { "hien": "chưa có số (OQ-1)", "cach_lay": "thời gian round từ event timestamp" },
+      "incident_count": 0,
+      "support_tickets": "N/A ở alpha (chưa người-dùng-ngoài)"
+    }
+  },
+
+  "incident_process": {
+    "so_incident_hien_tai": 0,
+    "alert_cung": ["false_finish_total>0 (M1)", "child-cap ⊄ parent lọt / delegation_rejected bất thường (M3)", "secret lọt ui_payload/jsonl (D4)", "sandbox-escape attempt>0", "guard không cắt runaway (M2)"],
+    "owner_theo_vung": {
+      "Team Platform": "chokepoint/session/resume (false-finish, checkpoint nửa-ghi, resume re-emit)",
+      "Team Safety": "jail/policy (sandbox-escape, policy_blocks bất thường)",
+      "Team Observability": "secret/audit (secret rò ui_payload/jsonl, seq gap)",
+      "Team Orchestration": "loop/acceptance/delegation (leo quyền, judge honor-system, μ-proof)"
+    },
+    "5_buoc": ["phát hiện (alert metric loop)", "phân loại (SEV1 chạm invariant / SEV2 runaway / SEV3 cục bộ)", "owner (theo vùng module GĐ10)", "khắc phục (tắt flag Runbook GĐ13 §3C, không rollback-DB)", "hậu kiểm (post-mortem không đổ lỗi → action item về backlog)"],
+    "playbooks": {
+      "A_AC_passed_nhung_sai": "honor-system gap (O tự-chấm) → Team Orchestration+Observability → siết evidence types + verifier độc lập về backlog (E15→E21)",
+      "B_runaway_khong_bi_chan": "phá M2 → Team Platform+Orchestration → vá guard đúng tầng + property-test cắt-đúng về backlog",
+      "C_secret_ro_trong_log": "phá invariant #7 D4 → Team Observability+Safety → tắt write-tool, bật redact-raw-args làm rollout-gate pilot về backlog"
+    },
+    "ke_thua_gd13": "alert rule + incident owner + rollback (tắt flag features.yaml + replay) — KHÔNG dựng lại"
+  },
+
+  "iteration_loop": {
+    "nhip_review": "2 tuần (Ops/SRE + PO mỗi nhịp; CTO/CEO theo tháng hoặc khi SEV1)",
+    "ly_do_nhip": "2-tuần: alpha thay đổi nhanh (đóng R1/R3), đủ dày bắt drift sớm; loại tuần (quá dày, tải thấp 0-incident) + tháng (quá thưa khi số production còn trống)",
+    "hoc_duoc": ["M1/M2/M3 chưa có số production vì R3 chưa build (GĐ12 2 PENDING)", "resume SPIKE-1/D3 điều-kiện-chặn ĐÓNG R1 chưa xanh staging", "OQ-1 DORA+NFR-số chưa set", "an toàn biên đã chứng minh (0 escape/secret)"]
+  },
+  "item_ve_backlog": [
+    { "id": "I-1", "item": "đóng R3 (multi-agent TaskLoop + Delegation + Acceptance) để có số M1/M2/M3 thật", "ly_do": "Business dashboard — M1/M2/M3 chưa có số production vì R3 chưa live", "tro_toi": "backlog R3 E09/E10 story ⭐ LÕI đã có AC" },
+    { "id": "I-2", "item": "đóng SPIKE-1/D3 resume (0 side-effect) để chốt uptime/resume-success", "ly_do": "Operations resume-success = điều-kiện-chặn ĐÓNG R1 chưa xanh staging", "tro_toi": "backlog R1 F1.6 story S1.6.1 (4 AC SPIKE-1)" },
+    { "id": "I-3", "item": "set baseline OQ-1 (4 DORA + ngưỡng NFR P95/error-rate) + bật redact-raw-args làm rollout-gate pilot", "ly_do": "DORA + Operations nhiều ô chưa có số = OQ-1; playbook C cần redact xanh", "tro_toi": "đo tại Operate + đưa redact-raw-args + test 0-secret vào backlog" }
+  ],
+  "uu_tien_goi_y": "I-1 ≈ I-2 (cùng chặn tuyên-đạt-mục-tiêu) > I-3 (đo/hạ-tầng) — CEO/CTO chốt thứ tự đầu tư, operate KHÔNG tự chốt",
+
+  "cong_go_no_go": {
+    "cau_hoi": "Đạt mục tiêu chưa? Làm gì tiếp?",
+    "dat_muc_tieu_gd1": "MỘT PHẦN (nền R1) — CHƯA tuyên M1/M2/M3",
+    "gate": "GO",
+    "gate_loai": "GO — mở vòng lặp kế (R3-first) tại /backlog GĐ9; alpha TIẾP TỤC vận hành, CHƯA tuyên đạt mục tiêu",
+    "nguoi_duyet": "CTO ✔ + PO ✔ (2026-07-02, nhịp đầu) — tự-quyết đóng vai người duyệt",
+    "ly_do_go": "nền R1 an toàn (0 escape/0 secret/guard cắt đúng) đủ vận hành tiếp; M1/M2/M3 chưa có số vì R3 chưa live (không phải hỏng) → vòng kế đóng R3+resume+OQ-1, không thêm feature; 0 incident + lùi vài-giây → rủi ro thấp; số treo có địa chỉ đo",
+    "ceo_cto_phai_chot": "thứ tự đầu tư I-1/I-2/I-3 + mốc coi-như-đạt-M1 (operate đề xuất: >=1 tuần beta delegation ON, false_finish=0 nhiều loại task — nhưng CEO/CTO chốt)",
+    "phuong_an_da_loai": [
+      "(a) tuyên ĐÃ ĐẠT M1 đóng dự án — loại: smoke không chứng minh M1 ở multi-agent (R3 chưa live) = báo-xong-khống tầng operate",
+      "(b) NO-GO/dừng vận hành tới khi R3 xong — loại: nền R1 an toàn + 0 incident, dừng là lãng phí",
+      "(c) đưa feature mới/E11-E14 vào vòng kế — loại: park-with-trigger YAGNI, chưa chạm metric-threshold; đóng cái đang treo trước",
+      "(d) operate tự chọn I-1 lên roadmap + tự viết story R3 — loại: lấn vai /backlog + lấn quyền CEO/CTO"
+    ]
+  },
+
+  "ban_giao": {
+    "chinh": "backlog (GĐ9 — đóng vòng: I-1 R3 · I-2 resume · I-3 OQ-1; phân rã Epic→Feature→Story→AC)",
+    "phu": [
+      "review (đào honor-system Playbook A trước khi sửa)",
+      "idea/partner (verifier độc lập tách judge — ý mới)",
+      "frame (build slice nhỏ đã rõ, vd bật redact-raw-args + test 0-secret)"
+    ],
+    "chi_liet_ke_khong_chon_ho": true
+  },
+
+  "open_q": [
+    "OQ-1: baseline 4 DORA + ngưỡng NFR-số (P95 loop/error-rate) + baseline chi phí/false-finish → ĐO qua các nhịp Operate, KHÔNG bịa",
+    "R3 chưa build (GĐ12 2 PENDING) → M1/M2/M3 chưa có số production → về backlog I-1",
+    "SPIKE-1/D3 resume chưa xanh staging → uptime/resume-success chưa chốt → về backlog I-2 (fail → phương án B GĐ7)",
+    "honor-system gap (O self-score, judge≠doer chưa tách, ATLAS §12) → Playbook A → /review + /idea (verifier độc lập)"
+  ],
+  "traceability": "nhận ship(13) Go/No-Go+Runbook+Rollback + backlog(9) M1/M2/M3 + idea(1) Business Case → sinh Ops Dashboard 4 nhóm (Business↔M1/M2/M3 GĐ1) + Incident 5-bước+3 playbook + Iteration 2-tuần → bàn giao backlog(9). Sợi liền: ngược (Business↔GĐ1 · Incident↔owner/alert/rollback GĐ13 · item↔chỉ-số) + xuôi (item→roadmap kế GĐ9).",
+  "updated_at": "2026-07-02T00:00:00Z"
+}

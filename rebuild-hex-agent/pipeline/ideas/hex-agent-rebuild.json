@@ -1,0 +1,40 @@
+{
+  "project": "rebuild-hex-agent",
+  "slug": "hex-agent-rebuild",
+  "updated_at": "2026-07-02T00:00:00Z",
+  "ten_y_tuong": "HexAgent (clean rebuild) — agent tự-điều-phối: giao 1 task → plan → order → delegate → finish khi mọi AC có bằng chứng thật, có biên",
+  "giai_doan": "done_handoff",
+  "cho_duyet": false,
+  "do_ro": "ro_rang",
+  "do_kha_thi": "kha_thi_ro",
+  "trang_thai": "done_handoff",
+  "phan_bien": [],
+  "an_so_can_kiem_chung": [],
+  "da_chot": [
+    "GĐ0: Router = rõ ràng × khả thi rõ (bản gốc đã chạy, 327 tests) → Nhánh C",
+    "GĐ1: GO — đáng đầu tư. Metric M1 zero false-finish (all_accepted chỉ true khi mọi AC passed ∧ evidence≠∅). Loại: chỉ-wrap-single-agent (mất lõi P3); đợi-số-production (rebuild dựa hệ đã chạy)",
+    "GĐ2-4 GATE1: GO — MVP = giao 1 task, agent plan+delegate+finish CÓ BIÊN. Loại: hoãn-delegation (mất điểm bán); full-control-UI-ngay (UI là consumer, event-log-first đủ)",
+    "GĐ2-4 GATE2: GO — PRD tin cậy; NFR neo file:line gốc (max_steps=100/max_depth=8; MAX_DEPTH=6; 0 secret ui_payload; resume SQLite-truth)",
+    "GĐ5: GO — Domain đủ rõ → DỪNG. 6 bounded context; entity có identity+lifecycle; 5 rule bất biến; 6 domain event; data ownership rõ. Loại: gộp-Discipline-vào-Core (coupling); Node-như-DB-row (sai domain)"
+  ],
+  "dang_mo": [
+    "OQ-1: baseline chi phí/false-finish thực chưa có số production → mang sang GĐ Operate, KHÔNG bịa",
+    "OQ-2: danh mục đầy đủ ~50 event / 16 command (config/runtime_*_types.yaml) → chốt ở shape/skeleton",
+    "OQ-3: reconcile mismatch tên event — kernel phát tool.requested/completed vs registry khai tool.call_requested/before_call/after_call → shape",
+    "Ranh giới v0 (read-only single-agent timeline) vs full rebuild → shape quyết"
+  ],
+  "domain": {
+    "bounded_contexts": ["Orchestration", "Execution Core", "Discipline", "Tools & Safety", "Observability/Control Plane", "Knowledge"],
+    "entities": ["Task/Goal", "Plan", "Node(work|reduce)", "DoneWhen", "DependencyEdge", "Run", "Session/SessionIdentity", "Delegation", "AcceptanceCriterion", "Evidence", "Budget", "Event(RuntimeEvent)", "Command(RuntimeCommand)", "Checkpoint", "Permission"],
+    "invariant_rules": [
+      "Chỉ FINISHED khi mọi AC có evidence thật (scaffolding không tính)",
+      "Worker không tự ghi verdict — chỉ gate ghi",
+      "Scope child ⊆ parent",
+      "Plan phải có chứng minh dừng μ(node)=len(done_when) co ngặt",
+      "Mọi hành động qua execute_tool (một chokepoint)"
+    ],
+    "domain_events": ["TaskAccepted", "PlanDecomposed", "NodeDelegated", "AcceptanceJudged", "TaskFinished", "TaskBlocked"]
+  },
+  "handoff_to": ["shape", "stack", "frame", "explain"],
+  "artifact_path": "rebuild-hex-agent/pipeline/05-idea-domain.md"
+}

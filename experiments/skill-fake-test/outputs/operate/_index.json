@@ -1,0 +1,18 @@
+{
+  "stage": "operate",
+  "gd": 14,
+  "trang_thai": "dang_do",
+  "cho_duyet": true,
+  "muc_tieu_goc_gd1": "SM-1: on-time dose rate +≥15 điểm phần trăm sau 30 ngày (BIBLE §3); SM-2: ≥60% caregiver-link kích hoạt xem báo cáo tuần đầu",
+  "business_dat": "chưa đo được — hệ chưa go-live (ship.md = NO-GO, G-1..G-4 còn treo)",
+  "item_ve_backlog": [
+    "I-1 đóng UAT (G-1) trước go-live",
+    "I-2 chốt & diễn tập rollback (G-4)",
+    "I-3 đóng OQ-A/OQ-B (G-3, retention/queue)",
+    "I-4 phân công incident owner + escalation (thiếu ở ship.md)"
+  ],
+  "artifact_path": "experiments/skill-fake-test/outputs/operate/operate.md",
+  "next": "backlog",
+  "canh_bao": "chạy bằng đầu vào ngoài pipeline — ship.md CHƯA qua cổng GĐ13 (0/2 chữ ký), đã in block ⚠️",
+  "updated_at": "2026-07-03T17:25:00Z"
+}

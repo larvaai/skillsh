@@ -1,0 +1,22 @@
+CHẤM: explain · hex_agent · L3 · overview   variant=A
+avgTotal=13.5/14   gate=đạt   graderTotals=[14,13]
+
+--- Giám khảo #1 — total 14/14 · gate đạt
+  1_muc = 2 — Bám đúng L3: dừng ở Zoom 2 kỹ + chạm Zoom 3 (module map + trách nhiệm), và mọi tên code (execute_tool, delegate, AgentKernel/KernelSession) chỉ gọi tên SAU khi đã neo vào một bước trong luồng — đúng hành vi mức.
+  2_che_do = 2 — Overview trọn vẹn theo thang zoom: vấn đề + cho ai → ý tưởng cốt lõi một câu → bản đồ 'bạn ở đây' 8 bước → module map → nhắc lại giá trị; đủ 'app làm gì + cho ai + vì sao tồn tại'.
+  3_du_y = 2 — Đủ ý cho phạm vi overview L3: một-cửa-duy-nhất, guard/finish gate, delegation đi cửa riêng, SQLite là nguồn sự thật, control/ đang làm dở — không thiếu mảnh cốt lõi, không thừa.
+  4_loi_van = 2 — Câu ngắn, phẳng, vấn-đề-trước-thuật-ngữ-sau; bullet chỉ dùng ở tầng liệt kê module, không trích số dòng — đúng principles E1–E4.
+  5_bam_code = 2 — Đối chiếu code thật: execute_tool (core/kernel.py:106), llm.chat là tool qua cửa (graph/runtime.py:97), delegation/manager.py sequential chokepoint + policy depth/scope, allowed_capabilities + frozen kernel (core/session.py, kernel.py), path var/agent_runs/<run_id>/langgraph.sqlite (orchestrator/checkpoint.py:32), control/ chỉ có contracts+emitter — mọi claim khớp, không bịa.
+  6_ranh_gioi = 2 — Đúng vai explain: dạy người hiểu theo mức, không dựng .ai-understanding/, không đào side-effect sâu, không liệt gap; còn trỏ đúng sang trace cho nhu cầu theo-dấu mức L5.
+  7_ket = 2 — Kết bằng gợi ý đúng mức (đào sâu một module cụ thể hoặc hỏi lại bước nào thắc mắc) và hand off đúng sibling: nâng lên trace khi user muốn theo dấu giá trị xuyên bước (L5), kèm câu hỏi định hướng.
+  SỬA TRƯỚC TIÊN: Bản này đã đạt trần rubric (14/14, qua gate); nếu muốn tinh chỉnh thì rút bớt phần đuôi — câu hand off L5/trace hơi dài, gói gọn lại sẽ giữ nhịp gọn hơn mà không mất ý.
+
+--- Giám khảo #2 — total 13/14 · gate đạt
+  1_muc = 2 — Bam dung L3: dung o Zoom 2 (luong 8 buoc ky) + cham Zoom 3 (module map co trach nhiem); moi ten code (execute_tool, delegate, AgentKernel/KernelSession, llm.chat) deu duoc neo vao mot buoc luong TRUOC khi goi ten, dung Luat neo.
+  2_che_do = 1 — Tu dan nhan 'flow' nhung cau truc lai la overview (van de+cho ai -> y tuong cot loi -> ban do luong -> module map -> vi sao dang); do mot cuc luong khong dung cho xac nhan tung buoc nhu flow mode yeu cau — dung/tron nhe.
+  3_du_y = 2 — Nam tron cot loi (mot cua cho moi hanh dong = audit/chan/tua duoc; SQLite = mot nguon su that cho resume; giao viec di cua rieng) va diem danh du 6 module voi trach nhiem, khong thua khong thieu cho pham vi L3.
+  4_loi_van = 2 — Cau ngan, phang, mot y moi cau; bullet chi dung o tang module cuoi (duoc phep); khong trich so dong; dam dung de dan huong — dung principles.
+  5_bam_code = 2 — Moi claim khop code that: execute_tool la chokepoint co phat event + kiem scope + chuoi middleware, llm.chat di qua execute_tool (MAP.md xac nhan), var/agent_runs/<run_id>/langgraph.sqlite dung, run/resume facade o orchestrator/loop.py, node names, delegation chokepoint+policy depth/budget/scope, finish_gate chan code chua validate, frozen kernel vs per-run session, core/ khong import langgraph, control/ moi co contracts+EventEmitter chua co transport/UI — zero bia.
+  6_ranh_gioi = 2 — Dung vai explain: day nguoi hieu theo muc, khong dung atlas artifact, khong liet gap, khong phan so phan file; con chu dong tu choi lam viec cua trace ('theo dau mot gia tri... do la L5 — dung skill trace').
+  7_ket = 2 — Ket bang goi y dung muc (di sau mot module cu the / hoi mot trong 8 buoc) va hand off dung sibling `trace` cho nhu cau L5 kem cau hoi dinh huong.
+  SỬA TRƯỚC TIÊN: Quyet dut khoat che do: neu la flow thi di tung buoc va dung cho xac nhan sau moi buoc; neu la overview thi bo nhan 'flow' o cau mo — hien tai tu goi flow nhung giao mot overview lien mach, gay le che do (tieu chi 2). Sua cho nay la don bay lon nhat de len 14/14.

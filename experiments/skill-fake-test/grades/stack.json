@@ -1,0 +1,9 @@
+{
+  "skill": "stack",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "Output duy nhất: outputs/stack/tech-decision.md. Đối chiếu nguồn fixture: mọi neo đều THẬT, không bịa — BIBLE §8 'Đội: 3 dev, mạnh TypeScript, chưa ai giỏi Go/Java' (BIBLE.md:53) khớp trọng số Fit team=5; NFR-1..5 khớp verbatim (BIBLE.md:38-43); architecture.md ép Postgres+Redis, 4 module, và CHÍNH XÁC chuyển OQ-A (managed queue vs cron) sang GĐ7 (§7) + OQ-B retention còn treo (§6). Vì architecture.md là artifact GĐ6 đã qua cổng trong workspace → bản in KHÔNG kèm block ⚠️ 'đầu vào ngoài' là đúng luật. Gate: (1) Artifact — 5 ma trận CÓ ĐIỂM×trọng số cho hạng mục mở/rủi ro (framework 113/101/88 số học kiểm đúng, queue 93/80/64, auth, deploy, ORM) + hạng mục đã ép ghi 1 dòng không mở ma trận giả (Postgres §2.2, Push/SMS §2.5); 3 ADR đủ 5 mục có 'đã loại' → PASS. (2) Đọc-3-tầng — mở bằng bảng GÓC NHÌN LÃNH ĐẠO nghiệp vụ + 'Một dòng cho CTO', jargon nằm dưới, 'Tự soi trước khi chốt' đủ 3 câu → PASS. (3) Bám nguồn — mọi trọng số/candidate truy về Brief/§8/NFR; ẩn số NFR-1 gắn nhãn ⏳CHƯA-ĐO thay vì bịa số → PASS. C4 đủ-là-đủ, C5 traceability hai chiều, C6 cổng đúng câu + CTO duyệt + tự khai điều-kiện-3 (spike) CHƯA đủ nên KHÔNG tự tuyên GO, từ chối đóng OQ-B vì là chính sách (không lấn vai), C7 bàn giao trỏ skeleton là mạch chính + partner/frame + lui shape. Điểm 2/2/2/2/2/2/2 = 14/14.",
+  "top_failure": "Spike NFR-1 chưa có số p95 đo thật (⏳ CHƯA ĐO) nên OQ-A chưa đóng CỨNG được — nhưng đây là hành vi ĐÚNG hợp đồng ở giai đoạn giấy: stack chỉ nêu spike+time-box+cách đo, dev đo ở GĐ8; artifact khai trung thực thay vì bịa số, và cổng tự khai chưa qua đủ. Không phải lỗi gate.",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng trên dữ liệu giả MediRemind: 14/14, 3 gate PASS, mọi neo truy về nguồn thật, ẩn số NFR-1 khai trung thực CHƯA-ĐO thay vì bịa — hiệu quả."
+}

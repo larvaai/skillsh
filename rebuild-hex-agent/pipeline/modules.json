@@ -1,0 +1,128 @@
+{
+  "project": "hex-agent-rebuild",
+  "slug": "hex-agent-rebuild",
+  "giai_doan": "gd10_modules",
+  "nhan_tu": "gd6_shape + gd5_domain (+ roadmap epic REBUILD-BRIEF/evidence-C — backlog GĐ9 CHƯA qua cổng project này)",
+  "input_ngoai_pipeline": true,
+  "canh_bao_input_ngoai": "Roadmap+Backlog lấy từ REBUILD-BRIEF §Roadmap + evidence-C (epic E01–E21), chưa qua cổng /backlog GĐ9; map feature dùng EPIC thay story. Ranh giới module bám domain GĐ5 (đã qua cổng) nên vững; chỉ phần phủ-feature dùng epic.",
+  "updated_at": "2026-07-02T00:00:00Z",
+  "modules": [
+    {
+      "name": "Orchestration",
+      "bounded_context_gd5": "Orchestration",
+      "owner": "Team Orchestration",
+      "role": "LÕI sản phẩm",
+      "owns": ["plan tree (Tree/Node/DoneWhen/DependencyEdge)", "AcceptanceCheck+verdict (gate ghi)", "Evidence (Blackboard)", "SQLite langgraph.sqlite (resume truth)", "allowed_capabilities per-assignment (O đặt)"],
+      "does_not_own": ["chạy tool/LLM thật (Execution-Core)", "session state (Execution-Core)", "sổ event+redaction (Control-Plane)", "sandbox/policy (Tools-Safety)"],
+      "public_api": ["run_task_loop(TaskEnvelope) → Outcome", "DelegationManager.delegate(DelegationRequest) → DelegationResult"],
+      "seam": "public seam RIÊNG: run_task_loop + DelegationManager.delegate (delegate = cửa RIÊNG, scope⊆parent)",
+      "events_phat": ["TaskAccepted", "PlanDecomposed", "NodeDelegated", "AcceptanceJudged", "TaskFinished", "TaskBlocked"],
+      "depends_on": ["Execution-Core (execute_tool)", "Control-Plane (emit event / snapshot)", "Discipline (pure lib)", "SQLite (checkpoint atomic)"],
+      "contract_depth": "day_du"
+    },
+    {
+      "name": "Execution-Core",
+      "bounded_context_gd5": "Execution Core",
+      "owner": "Team Platform",
+      "role": "LÕI hạ tầng · CHOKEPOINT DUY NHẤT",
+      "owns": ["Session state/StateStore (per-run, deep-copy isolation, state CHỈ ở đây)", "SessionIdentity lineage 7-field", "registry (frozen sau bootstrap)", "envelope schema (ToolRequest/CapabilityResult)"],
+      "does_not_own": ["quyết KHI NÀO gọi tool/delegate (Orchestration)", "nội dung/chính sách tool (Tools-Safety)", "sổ event bền vững+redaction (Control-Plane, chỉ PHÁT)", "verdict (Orchestration)"],
+      "public_api": ["execute_tool(ToolRequest) → CapabilityResult", "SessionFactory.create/.restore → KernelSession"],
+      "seam": "public seam DUY NHẤT: execute_tool (mọi hành động LLM/tool đi qua; capability ∉ allowed_capabilities → fail-closed)",
+      "events_phat": ["tool.requested", "tool.completed", "tool.failed"],
+      "depends_on": ["Tools-Safety (SafeToolPort)", "Discipline (middleware Budget/Condense)", "Control-Plane (phát tool.*)", "LLM provider (qua execute_tool)"],
+      "contract_depth": "day_du"
+    },
+    {
+      "name": "Discipline",
+      "bounded_context_gd5": "Discipline",
+      "owner": "Team Platform",
+      "role": "thư viện thuần (stateless)",
+      "owns": ["định nghĩa luật + hằng số budget (knob)", "KHÔNG dữ liệu sống nào"],
+      "does_not_own": ["dữ liệu loop/session (caller truyền vào)", "phát event", "quyết định terminal (trả tín hiệu, Orchestration quyết)"],
+      "public_api": ["json_gate.parse(raw) → ParseResult", "finish_gate.check(...) → FinishVerdict", "budget.step(state) → BudgetVerdict", "condense.run(context, threshold) → context'"],
+      "seam": "pure lib — được Orchestration + Execution-Core GỌI",
+      "events_phat": [],
+      "depends_on": [],
+      "contract_depth": "gon_co_ly_do (stateless, 1 team ít đổi, không đối ngoại)"
+    },
+    {
+      "name": "Tools-Safety",
+      "bounded_context_gd5": "Tools & Safety",
+      "owner": "Team Safety",
+      "role": "biên an toàn",
+      "owns": ["chính sách sandbox + deny-list", "workspace jail config", "từng tool implementation + policy"],
+      "does_not_own": ["AI ĐƯỢC gọi tool (scope=Execution-Core); Tools-Safety chặn HÀNH VI, Exec-Core chặn QUYỀN", "phát/lưu event (Control-Plane)"],
+      "public_api": ["SafeToolPort.execute(ToolRequest) → CapabilityResult (chỉ Execution-Core gọi vào, qua port; deny → error không throw)"],
+      "seam": "SafeToolPort — Execution-Core gọi VÀO, không ai gọi thẳng",
+      "events_phat": [],
+      "depends_on": [],
+      "contract_depth": "day_du"
+    },
+    {
+      "name": "Control-Plane-Observability",
+      "bounded_context_gd5": "Observability / Control Plane",
+      "owner": "Team Observability",
+      "role": "audit + integration boundary",
+      "owns": ["RuntimeEvent stream + seq (per-run monotonic)", "RuntimeCommand queue + idempotency_key + ack", "ui_payload đã redact", "event log store (jsonl+summary+metrics)", "RuntimeCheckpoint approval gate"],
+      "does_not_own": ["business logic loop (chỉ TIÊU THỤ, UI ⟂ core)", "hành động thật", "authz THẬT (issued_by chỉ attribution; authz=requires_permission+checkpoint)"],
+      "public_api": ["EventEmitter.emit(RuntimeEvent) → void", "build_snapshot(events[]) → TaskLoopSnapshot", "CommandQueue.submit(RuntimeCommand) → CommandAck", "GET /api/stream · /api/snapshot · POST /api/commands (sau MVP)"],
+      "seam": "emit/snapshot/command; nghe TẤT CẢ event (catalog config-driven closed allowlist, OQ-2 đóng GĐ6)",
+      "events_phat": ["command.*", "ack"],
+      "depends_on": ["Event log store (append jsonl)"],
+      "contract_depth": "day_du"
+    },
+    {
+      "name": "Knowledge-optional",
+      "bounded_context_gd5": "Knowledge",
+      "owner": "Team Platform",
+      "role": "ngoài lõi MVP · được-phép-hỏng",
+      "owns": ["vector KB store + index (uuid5)", "health-gate state"],
+      "does_not_own": ["nằm trên critical path tới FINISHED (loop chạy KHÔNG cần RAG)", "phát/lưu event lõi"],
+      "public_api": ["RagPort.query(q,k?) → SearchResult[] (KB down → [] rỗng, never raises)", "RagPort.ingest(docs) → IngestAck"],
+      "seam": "RagPort — worker GỌI tùy chọn; ngoài critical path",
+      "events_phat": [],
+      "depends_on": ["Vector KB (health-gated, async/optional)"],
+      "contract_depth": "gon_co_ly_do (optional, ngoài lõi MVP, được-phép-hỏng; SLO duy nhất=never raises)"
+    }
+  ],
+  "chokepoint_seam": {
+    "execution_core_expose": "execute_tool (cửa DUY NHẤT mọi hành động LLM/tool)",
+    "orchestration_expose": ["run_task_loop", "DelegationManager.delegate (cửa RIÊNG, scope con ⊆ cha)"],
+    "cam": "cross-module bypass — vd tool gọi thẳng không qua execute_tool = vi phạm; delegate không qua DelegationManager = vi phạm"
+  },
+  "feature_map_epic_to_module": {
+    "E01": "Execution-Core", "E02": "Discipline", "E03": "Execution-Core", "E04": "Control-Plane-Observability",
+    "E05": "Orchestration", "E06": "Tools-Safety", "E07": "Discipline", "E08": "Knowledge-optional",
+    "E09": "Orchestration", "E10": "Orchestration", "E21": "Control-Plane-Observability"
+  },
+  "data_ownership_sach": true,
+  "no_data_hai_module": true,
+  "no_feature_mo_coi": true,
+  "quyet_dinh_gop_tach": [
+    "Giữ 1 context = 1 module (bám GĐ5/GĐ6 1-1). Loại tách Delegation riêng: chia đôi data-ownership điều-phối-scope (rule #3 cấm nhập nhằng) — giữ trong Orchestration nhưng expose cửa public riêng.",
+    "Gộp E07 Skills vào Discipline (logic thuần stateless). Loại tách Skills riêng: đẻ module rìa chỉ hàm thuần, không thêm ranh giới sở hữu thật (OQ-M1 nếu phình có state).",
+    "Discipline + Execution-Core cùng owner Team Platform nhưng 2 module. Loại gộp 1 module: Discipline chia sẻ cả Orch+Exec-Core, gộp tạo coupling ngược. Module ≠ team.",
+    "Knowledge tách riêng dù optional. Loại gộp vào Orchestration: kéo phụ thuộc mạng tùy-chọn vào critical path lõi."
+  ],
+  "open_q": [
+    "OQ-M1: nếu Skills (E07) phình thành catalog động có state → tách khỏi Discipline thành module riêng",
+    "OQ-1 (kế thừa): baseline P95 loop + error-rate + false-finish thực chưa có số → SLA chỉ có biên cứng, chưa ngưỡng alert → Operate GĐ14"
+  ],
+  "cho_duyet": false,
+  "gate": "GO",
+  "gate_cau_hoi": "Ownership & contract đã rõ để các team chạy delivery SONG SONG chưa?",
+  "gate_nguoi_duyet": "Kiến trúc sư + Eng-manager (chủ sở hữu, trình bằng chứng) · CTO (mở cổng) — tự-quyết, product owner: không hỏi approval",
+  "gate_ly_do": "Mỗi module 1 owner + does-NOT-own rõ + data ownership không chồng (khớp GĐ5 §5.5) + mọi phụ thuộc qua đúng 2 seam công khai (execute_tool · run_task_loop/delegate) → 6 team code song song không giẫm nhau. Bám 6 context GĐ5 + kiến trúc GĐ6 đã-qua-cổng.",
+  "phuong_an_loai_cong": [
+    "Chặn GO tới khi có backlog GĐ9 qua cổng — loại: ranh giới bám domain GĐ5 (đã qua cổng), thiếu backlog chỉ ảnh hưởng map-feature (đã cảnh báo ⚠️ + dùng epic), không lung lay ownership.",
+    "Tách Delegation+Skills thành module riêng cho 'sạch' — loại: chia đôi data-ownership/đẻ module rìa không thêm ranh giới thật."
+  ],
+  "artifact_path": "rebuild-hex-agent/pipeline/10-modules.md",
+  "handoff_to": "delivery",
+  "theo_doi": [
+    "chokepoint discipline (audit-test: 0 call site bỏ qua execute_tool) — rủi ro cao nhất khi nhiều team code song song",
+    "ADR-006: redact raw args TRƯỚC khi Tools-Safety bật write-tool (điều phối Safety↔Observability)",
+    "SPIKE-1 (resume 0 side-effect) treo từ GĐ8 — dính slice đầu Orchestration"
+  ]
+}

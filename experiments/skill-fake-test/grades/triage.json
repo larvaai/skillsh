@@ -1,0 +1,9 @@
+{
+  "skill": "triage",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "1/1, thiếu: none (bắt đúng dead file src/legacy/old_reminder_cron.ts → verdict xoá/archive)",
+  "evidence": "outputs/triage/verdict.md L14 verdict 'xoá (có kiểm soát)' + plan B 'archive' — khớp ANSWER-KEY mục C. Grep thật xác nhận 0 caller: `grep -rn startOldCron|stopOldCron|old_reminder_cron|OldCron` chỉ hit 2 dòng định nghĩa trong chính file (L6,L13). reminder.worker.ts thật sự thay thế (nightlyGenerate+everyMinute gọi DoseGeneratorService/ReminderService). Nhãn tin cậy caller = 'chắc chắn' hợp lệ (12 file, không DI/route-string). Trích dẫn atlas KHÔNG bịa: outputs/atlas/.ai-understanding/00_index.md thật, dựng trên đúng fixture mediremind, xác nhận 'legacy' là 1/6 module + 'chỉ 1 console.log ở legacy' + 4 flow_traces không chứa legacy. Delete-gate đi đủ (API/DB/domain-core/live-slice đều NO). Scope-check ghi trung thực 'không xác minh được do_not_touch/slice' (không có agent-state.json cạnh fixture). Read-only giữ đúng: xoá dead code BÀN GIAO sang /frame, không tự xoá inline.",
+  "top_failure": "Khối BÀN GIAO đủ khung nhưng THIẾU cổng xác nhận 3 lối (AskUserQuestion: bàn giao / ghi nhận / xem explain) mà SKILL.md Bước 4 bắt buộc cho verdict non-trivial — chỉ trỏ thẳng /frame. Lỗi nhẹ, không ảnh hưởng verdict.",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng: verdict xoá đúng đáp án, grep thật + trích atlas có thật (không bịa), qua đủ delete-gate; chỉ thiếu cổng-3-lối nên trừ nhẹ tiêu chí 6."
+}

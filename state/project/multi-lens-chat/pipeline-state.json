@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "project": "multi-lens-chat",
+  "mode": "greenfield",
+  "current_pillar": 2,
+  "current_stage": "PRD",
+  "feasibility": {
+    "business": "Chưa rõ ai dùng và để làm gì — 'dự án nhỏ' có thể là công cụ cá nhân, demo học tập, hoặc sản phẩm thật. Cần biết trước khi ước lượng giá trị.",
+    "product": "Ý tưởng lõi rõ: 1 agent chính hội thoại + N trợ lý nền chạy song song, mỗi trợ lý một lens (vd kỹ thuật/rủi ro/business/UX), trả insight về cho agent chính hoặc hiển thị cho user. Chưa rõ insight dùng để làm gì tiếp (agent chính tự quyết dùng hay luôn hiển thị hết cho user).",
+    "technical": "Khả thi cao — đây đúng là bài toán multi-agent orchestration (fan-out song song + tổng hợp), có nhiều pattern có sẵn (Claude Agent SDK, hoặc tự viết orchestrator gọi LLM API song song). Ẩn số: có cần persistent/streaming real-time không, hay chạy xong-rồi-trả là đủ.",
+    "unknowns": [
+      "Đây là công cụ cá nhân/demo hay sản phẩm có người dùng thật?",
+      "Các 'lens' có cố định (vd 4 lens: kỹ thuật/rủi ro/business/UX) hay do user tự định nghĩa?",
+      "Insight hiển thị real-time streaming hay đợi xong mới show?",
+      "Có cần lưu lịch sử hội thoại/insight không, hay chạy phiên rồi thôi?"
+    ]
+  },
+  "open_questions": [
+    { "id": "OQ-4", "stage": "PRD", "q": "Lens cố định hay user tự định nghĩa lúc chạy?", "leverage": "high", "status": "open" },
+    { "id": "OQ-5", "stage": "PRD", "q": "Insight hiển thị real-time (streaming từng lens) hay đợi tất cả xong mới show gộp?", "leverage": "high", "status": "open" },
+    { "id": "OQ-6", "stage": "PRD", "q": "Agent chính có tự lọc/tổng hợp insight trước khi trả lời, hay show riêng từng lens cho bạn tự đọc?", "leverage": "high", "status": "open" }
+  ],
+  "decisions": [
+    { "id": "NEED-1", "stage": "Business Need", "pillar": 1, "status": "confirmed",
+      "decision": "Xây multi-lens-chat: 1 agent chính hội thoại + N trợ lý nền chạy song song theo lens khác nhau, dùng cá nhân để học kỹ thuật multi-agent orchestration và giải bài toán thật (đầu tiên: review code/thiết kế qua nhiều góc nhìn).",
+      "rationale": "Dùng cá nhân/học tập, có bài toán cụ thể (review code đa lens) làm demo đầu — đủ động lực để build, không cần business case nặng vì không phải sản phẩm nhiều người dùng.",
+      "rejected_alternatives": [], "traces_to": [] },
+    { "id": "CASE-1", "stage": "Business Case", "pillar": 1, "status": "confirmed",
+      "decision": "Không cần ước lượng ROI/ngân sách hình thức — đây là dự án cá nhân, giá trị là học kỹ thuật + có công cụ review đa góc nhìn dùng thật.",
+      "rationale": "Altitude nhẹ: dự án nhỏ, không có stakeholder ngoài, business case nặng không tạo thêm giá trị quyết định.",
+      "rejected_alternatives": [], "traces_to": ["NEED-1"] }
+  ],
+  "handoffs": [],
+  "updated_at": "2026-07-02T00:00:00Z"
+}

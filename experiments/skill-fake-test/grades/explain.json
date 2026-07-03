@@ -1,0 +1,9 @@
+{
+  "skill": "explain",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "outputs/explain/answer.md là overview L3 đúng xương sống thang zoom: mở bằng vấn đề+cho-ai (quên uống thuốc, bệnh nhân/caregiver) trước mọi thuật ngữ; có bản đồ luồng 'bạn ở đây' 7 bước đánh số; module map map ngược về bước. Đối chiếu code: caregiver view-only khớp identity/caregiver.guard.ts (scope==='view-only'); db in-memory 'thật sẽ là Postgres' + pushProvider stub khớp common/db.ts & providers.ts; hai nhịp nightlyGenerate/everyMinute khớp reminders/reminder.worker.ts; confirmDose là HTTP endpoint lấy req.userId từ middleware khớp adherence/dose.controller.ts; 6 module (scheduling/reminders/adherence/identity/common/legacy) đều là thư mục thật; note timezone-chưa-dùng khớp BUG-1 + comment entity; legacy 'không còn được gọi' khớp grep 0 caller. Khẳng định 'monolith chia theo domain, KHÔNG Kafka/microservice' đúng ngược hẳn với bản flawed-explain bịa Kafka. Ba tiêu chí xương sống (Mức/Lời văn/Bám code) đều đạt; tổng ~13/14.",
+  "top_failure": "Hai suy diễn wiring không gắn nhãn 'chưa chắc' (không phải bịa file/API): (1) gán cho worker hiện tại một cron 'tự bật'/`setInterval` chạy nền — nhưng reminder.worker.ts chỉ EXPORT hàm thường, setInterval thật chỉ nằm ở legacy chưa nối; (2) trình bày bộ streak như đã nối 'cạnh' luồng confirm ở bước 6, trong khi currentStreak có 0 call site. Cả hai chỉ hạ tiêu chí Bám-code xuống 1, không thủng gate.",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng — overview L3 mở bằng vấn đề, có bản đồ luồng, neo thuật ngữ đúng thứ tự, bám code thật (kể cả bắt đúng 'không Kafka'); chỉ vướng 2 suy diễn wiring nhỏ không gắn nhãn, không thủng gate."
+}

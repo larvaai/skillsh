@@ -1,0 +1,9 @@
+{
+  "skill": "fanout",
+  "gate": "pass",
+  "effectiveness": 2,
+  "recall": "n/a",
+  "evidence": "outputs/fanout/fanout-plan.md + 2 bundle. GATE 3 xương sống: C1 gói (1) — bundle-T-11a/b đủ 5 phần (spec+contract path scheduling-v1.md+trích §1/module-map/delivery-standards+đích src/scheduling|reminders+KHÔNG-build cụ thể), cô lập path, KHÔNG đổ repo; nhưng nửa 'thu artifact về/ls' không chạy (DRY-RUN). C2 bám nguồn (2) — 0 bịa: mọi claim đã verify trên đĩa (scheduling-v1.md+adherence-v1.md TỒN TẠI, module-contract-v1.md trong graph T-08 ABSENT đúng như plan tố, checkpoints/ KHÔNG tồn tại đúng, old_reminder_cron.ts có thật); từ chối tuyên PASS/done. C3 đọc-được (2) — khối FAN-OUT+kết map task-id↔agent↔artifact, nêu unlock T-12+bước kế. C4 điều kiện (2) — bảng kiểm Bước 1 bắt đúng 'phiếu PASS không xác minh được' + contract path graph sai. C5 vai (2) — không ghi progress.json/không cấp phiếu/không code. C6 song song+đóng (1) — DRY-RUN: KHÔNG spawn thật 1 lượt, KHÔNG /checkpoint→/progress; chỉ mô tả template.",
+  "top_failure": "DRY-RUN: hành động định-nghĩa của fanout (Bước 3 bung sub-agent song song thật trong 1 lượt + Bước 4-5 thu artifact rồi /checkpoint→/progress đóng nhánh) KHÔNG hề chạy — chỉ mô tả. Phần lõi 'điều phối chạy' của hợp đồng vắng mặt; chỉ nửa lập-kế-hoạch (Bước 0-2) thực thi.",
+  "verdict_one_line": "Bản kế-hoạch fanout trung thực, không bịa, qua gate (10/12) — nhưng là DRY-RUN nên lõi 'bung song song thật + đóng nhánh' chưa chạy; hiệu quả 2 vì friction lớn ở đúng phần fanout sinh ra để làm."
+}

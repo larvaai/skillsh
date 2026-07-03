@@ -1,0 +1,9 @@
+{
+  "skill": "traceability",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "4/4, thiếu: không (G-1 uat/GĐ12 thiếu ✓, G-2 ship 0/2 chữ ký ✓, G-3 hai open-Q OQ-A+OQ-B ✓, G-4 rollback chưa test ✓)",
+  "evidence": "report.md:16-28 Góc nhìn lãnh đạo mở đúng 3-tầng (GĐ11 · thiếu lớn nhất theo thứ tự · GĐ8 PASS / GĐ13 NO-GO). Dashboard 30-52 phủ đủ GĐ0-14, khớp file thật: GĐ12=✗ (uat.md không tồn tại — đã verify find), GĐ13=~→✗ NO-GO (ship.md tồn tại). RECALL mục D: G-1 (row GĐ12 + gap #2 'BẮT BUỘC'), G-2 ('0/2 chữ ký CTO☐·PO☐' dòng 112), G-3 (OQ-A+OQ-B gap #5,#6), G-4 ('rollback chưa diễn tập' dòng 97). Bám nguồn: có ⚠️ cảnh báo workspace-vs-state (8-12), 'không rõ' dùng cho DoD-2-module + SAST/DAST (55,118). Sợi C1: chỉ mắt xích đứt CỤ THỂ (AC→Test đứt, ví dụ US-3.1.1/403 dòng 83). Đã cross-check progress.json vs đĩa, bắt path lệch T-06/07/08 (60-68). Điểm mạnh vượt key: phát hiện OQ-A thực ra ĐÃ đóng ở tech-decision.md ADR-007 §5 (đã verify grep dòng 89-90) trong khi ship.md/progress.json còn ghi treo — mâu thuẫn state thật, không bịa.",
+  "top_failure": "NONE (khiếm khuyết nhỏ: report ~150 dòng dài hơn lý tưởng 'quét 2-3 phút', nhưng khối lãnh đạo 30 giây vẫn tách bạch nên không rớt tc2)",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng — recall 4/4 buộc-có-G-1, 14/14 rubric, gate PASS; còn bắt thêm mâu thuẫn state OQ-A ngoài đáp án mà không bịa."
+}

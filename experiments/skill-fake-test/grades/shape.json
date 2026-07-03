@@ -1,0 +1,18 @@
+{
+  "skill": "shape",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "outputs/shape/shape.md có đủ bộ artifact: Brief (bảng 11 dòng, §1), C4 Context + Container (§2, ASCII + diễn giải), Data Flow gắn domain event GĐ5 (§3), Integration Model 5 dòng (§3), Security Model + STRIDE (§4), 5 ADR đủ Bối cảnh/Quyết định/Phương-án-loại/Hệ quả (§5). BÁM NGUỒN xác minh từng điểm: 4 module = đúng 4 bounded context domain-model.md §4 (Scheduling/Reminders/Adherence/Identity&Access); luật DoseEvent một-chủ-ghi (ADR-002) trace thẳng 'Ghi chú ranh giới' GĐ5; NFR-1..5 (60s/300ms p95/50k+250k/at-rest+audit/99.5%) khớp requirements.md §2 KHÔNG sai số; AC-1..5 đều có chỗ đỡ (AC-4→ownership, AC-3→idempotent, AC-5→worker missed). Số THIẾU (retention/pháp lý/rate-limit/fallback push↔sms/region) ghi open-Q, không bịa. In nguyên block ⚠️ cảnh báo đầu-vào-ngoài-pipeline (dòng 4-8, đúng vì chạy từ fixture chưa qua cổng GĐ5). KHÔNG chốt framework — DB/queue/scheduler/IdP/provider đẩy hết sang GĐ7. Câu cổng khớp doc verbatim (dòng 202). AI tự duyệt vai CTO+Security (dòng 206-209), không tự bấm GO. Bàn giao /stack là đường chính + 5 ràng buộc NFR + open-Q + artifact path (dòng 216-232), không tự chọn hộ. Mỗi artifact mở bằng Góc nhìn lãnh đạo ngôn ngữ nghiệp vụ ('không dùng cấp cứu', dòng 21).",
+  "top_failure": "NONE — không tìm được lỗi thực chất. Điểm gợn nhỏ (không rớt): worker-scheduler được coi là 'module thứ 5' trong shape.json.modules dù đúng nghĩa nó là container/tiến trình chứ không phải bounded context — nhưng thân bài §2 mô tả đúng là container tách tiến trình, không đẻ context giả.",
+  "verdict_one_line": "Bản shape chạy sạch đúng hợp đồng: 14/14, mọi ranh giới trace về bounded context GĐ5, mọi NFR bám requirements không bịa số, 5 ADR đủ phương-án-loại, cổng+bàn giao chuẩn — đạt gate, effectiveness 3.",
+  "effectiveness_detail": {
+    "1_dung_du_artifact": "2/2 — đủ Brief+C4 Context&Container+DataFlow+Integration+Security+5 ADR; ADR đủ 4 mục kèm phương án loại",
+    "2_doc_duoc_3_tang": "2/2 — mỗi artifact mở Góc nhìn lãnh đạo (nghiệp vụ, không jargon) rồi mới chi tiết dev đủ hành động",
+    "3_bam_nguon": "2/2 — 4 module=4 BC; NFR-1..5 khớp số requirements; DoseEvent một-chủ-ghi trace ghi-chú-ranh-giới; số thiếu→open-Q; có ⚠️ cảnh báo nguồn ngoài",
+    "4_du_la_du": "2/2 — độ sâu theo rủi ro (đường nóng+security dày, ô không áp dụng ghi 'Public: không có'), không thủ tục thừa",
+    "5_khong_lan_vai": "2/2 — thuần shape, mọi tool (DB/queue/IdP) chỉ là ràng buộc/open-Q chuyển GĐ7",
+    "6_traceability_cong": "2/2 — Tự-soi 4 câu; câu cổng đúng doc; AI duyệt CTO+Security; chờ user quyết",
+    "7_ban_giao": "2/2 — /stack đường chính + ràng buộc NFR + open-Q + artifact path; liệt kê lối rẽ, không tự chọn"
+  }
+}

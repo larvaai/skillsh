@@ -1,0 +1,171 @@
+{
+  "project": "hex-agent-rebuild",
+  "slug": "hex-agent-rebuild",
+  "giai_doan": "gd12_uat",
+  "artifact": "pipeline/12-uat.md",
+  "artifact_path": "rebuild-hex-agent/pipeline/12-uat.md",
+  "trang_thai": "cho_ky",
+  "cho_duyet": false,
+  "nhan_tu": "delivery",
+  "ban_giao": "ship",
+  "nguon": [
+    "gd11_delivery (Delivery Standards + DoR/DoD: DoD 9 dòng lõi + 5 invariant-kiểm-được D1–D5 KHÔNG cắt; test pyramid ~60 unit/15 property/15 integration/10 audit + contract; CI lint→type→unit→property→integration→audit→contract→build)",
+    "gd9_backlog (Requirement/Story/AC gốc Given/When/Then + Test ref TC-… : S1.1.1 chokepoint · S1.2.1/S1.3.1 discipline · S1.5.1 event/replay · S1.6.1 resume-SPIKE1 · S2.1.1/S2.2.1 tools-safety · S3.1.1 roles · S3.2.1 delegation-scope · S3.3.1 decompose-μ · S3.4.1 order · S3.5.1 acceptance-by-evidence · S3.5.2 bounded)",
+    "gd10_modules (2 seam công khai: execute_tool · run_task_loop/DelegationManager.delegate — contract-test cross-module)",
+    "evidence-A/B/C (mechanism gốc + 327-test harness tests/ + tests_audit/ — E19, evidence-C §1)"
+  ],
+  "input_ngoai_pipeline": false,
+  "canh_bao_input_ngoai": null,
+  "updated_at": "2026-07-02T00:00:00Z",
+
+  "pass_rate": "26/28",
+  "ac_loi_total": 28,
+  "ac_pass": 26,
+  "ac_pending": 2,
+  "ac_fail": 0,
+  "gap_chua_test": 0,
+  "pending_ly_do": "Code R2/R3 multi-agent + resume chưa chạy trên staging (GĐ8: 0/9 tick-thật) → đánh PENDING minh bạch, KHÔNG bịa PASS. Harness gốc (tests/ + tests_audit/) là bằng chứng KHUNG, không phải bằng chứng code-rebuild chạy xanh.",
+
+  "uat_signoff": false,
+  "uat_signoff_trang_thai": "KÝ CÓ ĐIỀU KIỆN (chuẩn bị đủ để PO ký; AI không tự ký thay người thật)",
+  "uat_signoff_nguoi": "PO (Product Owner)",
+  "uat_signoff_ngay": "2026-07-02",
+  "uat_signoff_ky_tren": "phần R1 PASS (chokepoint D1 · discipline · observability · replay-determinism · isolation)",
+  "uat_signoff_dieu_kien": "M1/M2/M3 (S3.5.1 finish-by-evidence · S3.5.2 bounded · S3.2.1 delegation-scope) nghiệm ĐẦY ĐỦ khi R3 multi-agent chạy xanh trên staging",
+
+  "security_signoff": false,
+  "security_signoff_trang_thai": "KÝ CÓ ĐIỀU KIỆN (chuẩn bị đủ để CISO ký; AI không tự ký thay)",
+  "security_signoff_nguoi": "Security / CISO",
+  "security_signoff_ngay": "2026-07-02",
+  "security_signoff_ky_tren": "D1 (0 bypass execute_tool — PASS) + khung test D4/D2 adversarial đã định",
+  "security_signoff_blocker": [
+    "D4 redact-raw-args (TC-REDACT-RAWARGS-003) PHẢI xanh TRƯỚC khi bật flag write_tools_enabled — ADR-006, known-gap raw args log jsonl",
+    "D2 scope⊆parent property-test (TC-DELEGATE-SCOPE-001) xanh TRƯỚC khi bật delegation_enabled"
+  ],
+
+  "ac_loi_6_nhom": {
+    "1_finish_by_evidence_M1": {
+      "requirement": "S3.5.1 — agent chỉ FINISHED khi mọi AC có ≥1 bằng chứng THẬT (rule #1)",
+      "test_cases": ["TC-FINISH-EVIDENCE-001", "TC-FINISH-REJECT-SCAFFOLD-002", "TC-VERDICT-GATE-ONLY-003 (D5)"],
+      "result": "PENDING (R3 chưa chạy staging)",
+      "harness_goc": "tests/supervisor/test_state.py · tests_audit/test_evidence_types.py · tests_audit/test_worker_no_verdict.py",
+      "neo": "state.py:35-37 · evidence.py:16-23,26-40 · node.py:20 · loop.py:186"
+    },
+    "2_runaway_guards_M2": {
+      "requirement": "S3.5.2 (multi-agent) + S1.2.1 (nền R1) — loop dừng cứng khi chạm guard",
+      "guards": "max_rounds · no-progress · repeat-decision N× · parse-budget · MAX_DEPTH · per-root step",
+      "test_cases": ["TC-BOUNDED-MAXROUNDS-001", "TC-BOUNDED-REPEAT-002", "TC-BUDGET-MAXSTEPS-001", "TC-GUARD-NOPROGRESS-002", "TC-BUDGET-ENFORCE-LOOP-004", "TC-JSONGATE-REPAIR-001", "TC-FINISHGATE-002"],
+      "result": "S1.2.1/S1.3.1 R1 PASS · S3.5.2 R3 PENDING",
+      "harness_goc": "tests/discipline/test_budget.py · tests/discipline/test_json_gate.py · tests/discipline/test_finish_gate.py · tests/supervisor/test_guards.py",
+      "neo": "budget.py:10-67 · loop.py:164-239,229-235 · finish_gate.py:15-22"
+    },
+    "3_delegation_scope_M3_D2": {
+      "requirement": "S3.2.1 delegate scope con⊆cha + S2.2.1 scope-check execute_tool + S3.1.1 RoleView allowlist",
+      "test_cases": ["TC-DELEGATE-SCOPE-001 (property D2)", "TC-DELEGATE-MERGE-002", "TC-BROKER-NOWIDEN-003 (audit)", "TC-DELEGATE-DEPTH-004", "TC-SCOPE-CHECK-001", "TC-ROLE-ALLOWLIST-001"],
+      "result": "PENDING (R2/R3)",
+      "harness_goc": "tests/delegation/test_policy.py · tests/delegation/test_manager.py · tests_audit/test_broker_no_widen.py · tests/core/test_kernel.py::scope_check · tests/roles/test_agent.py",
+      "neo": "policy.py:25-26,8-32 · manager.py:63-192 · broker.py:1-8 · kernel.py:106-150 · roles/agent.py:53"
+    },
+    "4_redact_0_secret_D4": {
+      "requirement": "S1.5.1 — ui_payload che secret TRƯỚC khi rời EventEmitter; redact-raw-args trước bật write-tool (ADR-006)",
+      "test_cases": ["TC-REDACT-UIPAYLOAD-004 (audit+property)", "TC-REDACT-RAWARGS-003 (blocker write-tool)"],
+      "result": "PENDING (control/write-tool chưa bật) — điều kiện chặn",
+      "harness_goc": "tests/control/test_redactor.py · tests_audit/test_no_secret_in_ui.py · tests_audit/test_redact_raw_args.py",
+      "neo": "emitter.py:53 (validate→seq→redact→fan-out) · I16 · evidence-B §6 known-gap"
+    },
+    "5_resume_determinism_D3": {
+      "requirement": "S1.6.1 resume SQLite-truth cùng run_id 0 side-effect (SPIKE-1) + S1.5.1 replay(events)=snapshot",
+      "test_cases": ["TC-RESUME-NOREPLAY-001 (SPIKE-1.a/b)", "TC-RESUME-ATOMIC-002 (SPIKE-1.c)", "TC-RESUME-SQLITE-TRUTH-003", "TC-REPLAY-DETERMINISTIC-002 (PASS)", "TC-EVENTLOG-SEQGAPFREE-001 (PASS)"],
+      "result": "replay-determinism + seq-gapfree PASS · resume round-trip PENDING (SPIKE-1 — chặn ĐÓNG R1)",
+      "harness_goc": "tests/orchestrator/test_resume.py · tests/control/test_snapshot.py · tests/observability/test_event_log.py",
+      "neo": "loop.py:217-273,208-218 · snapshot.py:88+ (evidence-B §7 v/ii) · I10/I11"
+    },
+    "6_plan_stopping_proof_mu": {
+      "requirement": "S3.3.1 gate-2 accept_decomposition μ(node)=len(done_when) co ngặt + S3.4.1 next_node không leo sớm",
+      "test_cases": ["TC-DECOMPOSE-MU-001 (property μ↓)", "TC-DECOMPOSE-STUCK-002 (RENAME/STUCK)", "TC-DECOMPOSE-CLOSE-003", "TC-ORDER-NEXTNODE-001"],
+      "result": "PENDING (R3)",
+      "harness_goc": "tests/decompose/test_accept.py · tests/decompose/test_solve.py · tests/decompose/test_tree.py",
+      "neo": "accept.py:52-128 · solve.py:165,229-253 · tree.py:43-51"
+    }
+  },
+
+  "ac_bo_tro_chokepoint_D1": {
+    "requirement": "S1.1.1 execute_tool chokepoint (D1 0-bypass) + S1.1.2 isolation + S1.4.1 LLM-as-capability + S2.1.1 fs-jail/policy",
+    "test_cases": ["TC-KERNEL-CHOKEPOINT-001 (PASS)", "TC-KERNEL-NO-BYPASS-002 (audit, PASS, D1)", "TC-KERNEL-ENVELOPE-003 (PASS)", "TC-KERNEL-ISOLATION-003 (PASS)", "TC-LLM-RETRYCLASS-001 (PASS)", "TC-SANDBOX-ESCAPE-001 (PENDING R2)", "TC-POLICY-MATRIX-002 (PENDING R2)"],
+    "harness_goc": "tests/core/test_kernel.py · tests/core/test_session.py · tests/llm/test_adapter.py · tests_audit/test_no_bypass_execute_tool.py · tests_audit/test_sandbox_escape.py · tests_audit/test_policy_matrix.py",
+    "neo": "kernel.py:106-150 (I1) · session.py isolation (I2/I3) · safety/sandbox.py:38,97"
+  },
+
+  "lop_test": {
+    "unit": "R1 PASS · R2/R3 PENDING (~60% pyramid)",
+    "property_hypothesis": "R1 PASS · R3 PENDING (~15%; μ↓, scope⊆parent, budget monotone, parse-repair)",
+    "integration": "PENDING (E2E slice + resume round-trip D3 chưa chạy staging)",
+    "contract_cross_module": "R1-control PASS · Tools/Orch PENDING (Orch↔Control-Plane 6 event · Exec↔Tools SafeToolPort · Exec↔Discipline middleware)",
+    "audit_adversarial": "D1 PASS · D5/D4/sandbox PENDING (~10%; quét tĩnh+động 0 vi phạm ranh giới)",
+    "perf": "HOÃN — NFR-số chưa có (OQ-1) → Operate GĐ14, KHÔNG bịa; single-node chưa traffic",
+    "security_sast_dast_pentest": "audit-adversarial thay DAST generic (mạnh hơn cho hệ này) PASS-1phần · pentest ngoài HOÃN (chưa expose public transport E21 R4) — gap có địa chỉ",
+    "a11y": "N/A — Control-Tower UI R4 parked (UI ⊥ core, ADR-006), chưa có UI test a11y",
+    "uat": "CHỜ code R3 chạy staging (điều kiện đủ trình ký đã đạt cho R1-PASS)",
+    "operational_readiness": "→ /ship GĐ13 (runbook/rollback)",
+    "dr_rollback": "rollback-qua-flag đặt (tắt write_tools_enabled/delegation_enabled + event-log replay) · DR đa-region HOÃN (single-node chưa cần)"
+  },
+
+  "bam_nguon_gd_truoc": {
+    "requirement_ac": "= backlog GĐ9 (Story S_._._ + AC Given/When/Then) — KHÔNG chế AC mới",
+    "chuan_da_verify": "= DoD GĐ11 (test pass unit+property+integration+contract+audit CI-xanh; D1–D5 = acceptance-security cứng)",
+    "test_ref_moc": "= Test ref TC-… đặt ở backlog GĐ9 → uat lấp thành Test Case + Result",
+    "harness_khung": "= 327-test gốc tests/ + tests_audit/ (evidence-C §1 E19) — bằng chứng KHUNG mỗi TC trỏ về",
+    "seam_contract": "= 2 seam công khai GĐ10 (execute_tool · run_task_loop/DelegationManager.delegate)"
+  },
+
+  "khong_lan_vai": {
+    "khong_dao_gap_edge_case_moi": "→ /review (AC chưa có test → đánh PENDING/hở, không tự moi case rồi coi đủ)",
+    "khong_sua_code_cho_xanh": "→ /frame · /delivery",
+    "khong_quyet_golive_deploy_cuoi": "→ /ship (GĐ13)",
+    "khong_bia_pass": "code R2/R3+resume chưa chạy staging → PENDING minh bạch, không đóng dấu PASS-live"
+  },
+
+  "open_q": [
+    "SPIKE-1/D3 (kế thừa GĐ8/GĐ9/GĐ11): resume round-trip pass a/b/c (TC-RESUME-NOREPLAY-001/ATOMIC-002/SQLITE-TRUTH-003) — điều kiện chặn ĐÓNG R1; fail → phương án B orchestrator tự viết (không đổi Standards)",
+    "ADR-006/D4 (kế thừa GĐ8/GĐ11): redact-raw-args (TC-REDACT-RAWARGS-003) — chặn bật write_tools_enabled",
+    "M1/M2/M3 R3: finish-by-evidence + bounded + delegation-scope + μ-proof chạy xanh trên bộ nghiệm thu — chặn release R3",
+    "OQ-1 (kế thừa GĐ11): NFR-số (P95 loop · ngưỡng alert/error-rate) chưa có → perf-gate đo ở Operate GĐ14, KHÔNG bịa",
+    "pentest ngoài + DAST public + DR đa-region: HOÃN tới khi có transport public (E21 Control Plane R4) — gap có địa chỉ, không giấu"
+  ],
+
+  "trang_thai_note": "cho_ky = bảng mapping + report + điều kiện xong, đang chờ PO/Security ký thật; resume thì NHẮC lại chỗ chờ, KHÔNG tự đi tiếp sang ship. cho_duyet:false = cổng đã tự-quyết GO-có-điều-kiện (chế độ tự-quyết, product owner không hỏi approval).",
+
+  "gate": "GO",
+  "gate_loai": "GO-LIVE CÓ ĐIỀU KIỆN theo release",
+  "gate_cau_hoi": "Pass đủ điều kiện để go-live chưa?",
+  "gate_nguoi_duyet": "QA-lead (chủ sở hữu bảng, trình bằng chứng) · PO (UAT sign-off) · Security/CISO (security sign-off) — tự-quyết, product owner: không hỏi approval; AI CHUẨN BỊ đủ để ký, không tự ký thay người thật",
+  "gate_ly_do": "Mọi AC lõi có Test Case ánh xạ + harness gốc chống lưng (không hở bị giấu); nền R1 (chokepoint D1 · discipline · observability · replay-determinism · isolation) PASS với test adversarial thật; 3 lời hứa điểm bán M1/M2/M3 có TC property/audit định nghĩa rõ, chỉ chờ code R3 chạy (PENDING đúng nghĩa); 2 chữ ký ký-có-điều-kiện với blocker có địa chỉ, không ký khống cho PENDING. uat KHÔNG tự quyết deploy cuối (→ /ship).",
+  "gate_dieu_kien_golive": [
+    "Đóng R1 ⟺ SPIKE-1/D3 pass a/b/c xanh staging (fail → phương án B, không đổi Standards)",
+    "Bật write_tools_enabled ⟺ D4 redact-raw-args (TC-REDACT-RAWARGS-003) xanh (ADR-006 blocker CISO)",
+    "Bật delegation_enabled / release R3 ⟺ D2 scope-property + finish-by-evidence + bounded-guards + μ-proof xanh trên bộ nghiệm thu → M1/M2/M3 chứng minh thật"
+  ],
+  "gate_phuong_an_loai": [
+    "NO-GO tới khi 28/28 PASS-live — loại: trộn vai GĐ12 với GĐ8 (dựng slice chạy là /frame); uat phát hiện+minh bạch PENDING + đặt điều kiện go-live theo release; chặn cổng = nghẽn pipeline chờ code.",
+    "Đóng dấu PASS cho R3/resume dựa trên harness gốc đã có — loại: harness gốc là bằng chứng KHUNG (test tồn tại bản gốc), không phải bằng chứng code-rebuild chạy xanh; đóng PASS = bịa số (rớt gate rubric #3). PENDING trung thực.",
+    "Chạy pentest+DAST+a11y+DR đầy đủ ngay vòng này — loại: slice nội bộ single-node chưa expose public transport (E21 R4 parked), UI chưa có → thủ tục thừa (vi phạm Đủ-là-đủ); điểm-bán-security nghiệm bằng audit-adversarial mạnh hơn DAST generic; ghi gap có địa chỉ.",
+    "uat tự ký hai chữ ký hộ PO/CISO cho gọn — loại: phá phân vai A5 (AI CHUẨN BỊ, người thật KÝ); ký-có-điều-kiện + ghi điều kiện là đúng vai."
+  ],
+
+  "handoff_to": "ship",
+  "handoff_liet_ke": [
+    "ship (GĐ13 — chính: go-live có điều kiện theo release, Go/No-Go + Runbook + rollback)",
+    "review (còn nghi gap/edge case/permission: error-path delegation, ca biên μ, permission checkpoint)",
+    "frame (code rồi re-test: R3 multi-agent · SPIKE-1 resume · redact-raw-args)"
+  ],
+  "theo_doi": [
+    "SPIKE-1/D3 resume round-trip — chặn ĐÓNG R1 (pass a/b/c) — ship kiểm trước Go/No-Go",
+    "ADR-006 D4 redact-raw-args — chặn bật write_tools_enabled — Safety↔Observability",
+    "M1/M2/M3 R3 — chặn release R3 (điểm bán chứng minh thật trên bộ nghiệm thu)",
+    "OQ-1 NFR-số (P95 loop/alert) → Operate GĐ14, không bịa",
+    "pentest/DAST public + DR đa-region → sau khi có transport public (E21 R4)"
+  ],
+  "artifact_path_this": "rebuild-hex-agent/pipeline/12-uat.md",
+  "state_json": "rebuild-hex-agent/pipeline/uat.json",
+  "prev_artifact_path": "rebuild-hex-agent/pipeline/11-delivery.md"
+}

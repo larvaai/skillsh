@@ -1,0 +1,22 @@
+CHẤM: explain · hex_agent · L3 · overview   variant=C
+avgTotal=13/14   gate=đạt   graderTotals=[13,13]
+
+--- Giám khảo #1 — total 13/14 · gate đạt
+  1_muc = 2 — Đúng L3: dừng ở Zoom 2 kỹ (luồng 8 bước) + chạm Zoom 3 (module map), mọi tên code (run/resume, execute_tool, delegate, SQLite) chỉ gọi sau khi đã neo vào một bước luồng, không trích số dòng hay chữ ký hàm.
+  2_che_do = 2 — Overview trọn vẹn: nói app làm gì + cho ai (dev dựng hệ multi-agent) + vì sao tồn tại (an toàn + khôi phục), rồi ý tưởng cốt lõi bằng lời, luồng bạn-ở-đây, module map, và nhắc lại giá trị ở cuối.
+  3_du_y = 2 — Đủ ý cho phạm vi overview L3: nắm được mẹo trung tâm (một cửa chokepoint + checkpoint bền), cửa delegation tách riêng, và trách nhiệm mọi module chính, không thừa không thiếu.
+  4_loi_van = 1 — Câu phần lớn ngắn phẳng và không có tường-bullet vô cớ, nhưng hai đoạn mở đầu là meta-commentary tự-quy-chiếu về Do/Don't của L3 hơi thừa/dày và vài câu nối kiểu nhờ-vậy-mà làm chậm nhịp.
+  5_bam_code = 2 — Mọi claim khớp code thật đã kiểm: run/resume ở orchestrator/loop.py, execute_tool ở core/, các node guard/agent/tool/delegate/finish, delegation là cửa riêng không qua kernel, và cả chi tiết tinh checkpoint.json là projection cho UI còn SQLite mới là nguồn tua lại.
+  6_ranh_gioi = 2 — Đúng vai explain: dạy người hiểu theo mức, không dựng .ai-understanding/ (atlas), không đào side-effect (trace), không liệt edge case (review), không phán số phận file (triage).
+  7_ket = 2 — Kết đúng mức L3: gợi ý bước tiếp tự nhiên là đi sâu trách nhiệm một phần cụ thể hoặc hỏi module đang thắc mắc, khớp đúng câu gợi ý L3 trong bảng mức.
+  SỬA TRƯỚC TIÊN: Cắt hai đoạn mở đầu meta về Do/Don't của L3 và vào thẳng vấn đề + cho ai — đó là đòn bẩy lớn nhất, kéo Lời văn từ 1 lên 2 và giúp câu đầu tiên đúng luật neo (vấn đề trước, không phải tự-quy-chiếu quy trình).
+
+--- Giám khảo #2 — total 13/14 · gate đạt
+  1_muc = 2 — Khop chuan L3: luong 'ban o day' 8 buoc (Zoom 2 ky) + diem danh module (cham Zoom 3), moi ten code (run/resume, execute_tool, delegate, thu muc) chi goi ten SAU khi da neo vao mot buoc, khong trich so dong/chu ky ham (dung nguong <L4).
+  2_che_do = 2 — Overview tron ven theo thang zoom: mot cau (Zoom 0) -> van de + cho ai + y tuong cot loi (Zoom 1) -> luong danh so (Zoom 2) -> module map (Zoom 3) -> nhac lai gia tri; ca business/CTO/dev deu theo duoc.
+  3_du_y = 2 — Du y cot loi cho pham vi overview: mot cua chokepoint + nguon su that ben de tua lai + cua delegation tach rieng + hai thu de vo (an toan/khoi phuc), khong thua khong thieu.
+  4_loi_van = 1 — Cau phan lon ngan/phang va van-de-truoc-thuat-ngu, list chi dung dung cho (buoc luong + diem danh module), nhung doan mo dau tu-quy-chieu 'Theo dong Do/Don't cua L3' la ke-quy-trinh lam ron va vai cau long menh de bang gach ngang hoi day.
+  5_bam_code = 2 — Moi claim khop code that: run/resume o orchestrator/loop.py, AgentKernel.execute_tool phat tool.requested->kiem scope->tool.completed/failed, node delegate tach khoi kernel, checkpoint.json la ban chieu UI con SQLite trong var/agent_runs/<run_id>/ moi la nguon tua lai, llm.chat di qua cung cua, scope con la tap con cha; khong bia gi.
+  6_ranh_gioi = 2 — Dung vai explain: day nguoi hieu theo muc L3, khong dung .ai-understanding/ (atlas), khong dao data-flow sau (trace), khong liet edge case (review), khong phan giu-sua-xoa (triage).
+  7_ket = 2 — Ket bang goi y dung muc L3 gan nhu khop bang muc ('trach nhiem tung phan, hay co module nao thac mac'), kem loi de xuat cu the (di sau execute_tool hoac delegation), khong hand off nham (dung o L3).
+  SỬA TRƯỚC TIÊN: Don bay lon nhat la loi van (tieu chi 4, dang 1): bo doan mo dau tu-quy-chieu ve 'Do/Don't cua L3' va mo thang bang van de, dong thoi go vai cau long menh de bang gach ngang — se dua l01 van tu 1 len 2 va bien ban 13/14 thanh gan nhu hoan hao.

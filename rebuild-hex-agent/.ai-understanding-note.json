@@ -1,0 +1,26 @@
+{
+  "project": "hex-agent-rebuild",
+  "atlas_of": "hex_agent",
+  "built_at": "static",
+  "stage": "00-foundation-atlas",
+  "artifact": "rebuild-hex-agent/00-understanding/ATLAS.md",
+  "understanding_level": 4,
+  "scope": "partial",
+  "source_evidence": [
+    "00-understanding/REBUILD-BRIEF.md",
+    "00-understanding/evidence-A-core-loop.md",
+    "00-understanding/evidence-B-domain-architecture.md",
+    "00-understanding/evidence-C-roadmap.md"
+  ],
+  "invariants_count": 7,
+  "trace_flows": ["intake", "supervisor_drive", "decompose_gate2", "next_node_order", "delegate_scope_shrink", "execute_tool_chokepoint", "emit_events", "judge_acceptance", "finish", "runaway_guards"],
+  "open_questions": [
+    "danh mục đầy đủ ~50 event / 16 command (config/runtime_*_types.yaml)",
+    "chi tiết nội bộ từng module gốc (chỉ có evidence)",
+    "scope E21 B2-B14 control plane chưa build",
+    "ranh giới v0 vs full rebuild"
+  ],
+  "gate": "GO",
+  "handoff_to": ["shape", "stack", "skeleton", "modules", "backlog", "explain", "frame", "triage"],
+  "updated_at": "2026-07-02"
+}

@@ -1,0 +1,9 @@
+{
+  "skill": "resume",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "outputs/resume/panorama.md in đúng một khối 6 mục theo mẫu Bước 2 (Bức tranh SM-1/SM-2, Con trỏ gd11_delivery, Đã chốt T-11+artifact, Sẵn sàng T-11a∥T-11b, Chạy song song pg-build, Tiến cử /fanout). Đối chiếu progress.json: con trỏ gd11_delivery+T-11 done khớp; T-11a/T-11b trang_thai=ready khớp; nhóm pg-build (depends_on T-08+T-11 đều done) tính ĐÚNG luật Bước 1; tiến cử /fanout đúng vì có nhóm song song sẵn sàng; nhận định gd11 KHÔNG phải cổng GO/NO-GO là đúng. Artifact dẫn khớp progress.json (delivery-standards.md tồn tại thật; module-contract-v1.md dẫn Y NGUYÊN đường progress.json ghi cho T-08 — copy trung thành, không bịa); OQ-A tham chiếu src/legacy/old_reminder_cron.ts CÓ THẬT trong fixture/codebase. Read-only: chỉ sinh panorama.md, không đụng fixture.",
+  "top_failure": "Friction nhỏ: dòng Con trỏ và Còn treo nhồi 2-3 ý/câu (dài hơn 'mỗi mục một dòng cô đọng'); thêm block 'Ghi chú tiến cử' ngoài khối — hợp lệ (vẫn chỉ tiến cử) nhưng loãng chuẩn liếc-15-giây. Không rớt gate nào.",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng: khối 6 mục đủ, bám trạng thái thật (ready+parallel_group tính đúng luật), read-only, tiến cử /fanout đúng con trỏ — chỉ vài dòng hơi dài."
+}

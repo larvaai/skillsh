@@ -1,0 +1,22 @@
+CHẤM: explain · hex_agent · L3 · overview   variant=D
+avgTotal=14/14   gate=đạt   graderTotals=[14,14]
+
+--- Giám khảo #1 — total 14/14 · gate đạt
+  1_muc = 2 — Khop L3: dung o Zoom 2 ky (luong 8 buoc danh so) + cham Zoom 3 (module map + trach nhiem), moi ten code (execute_tool, AgentKernel/KernelSession, delegate, discipline/) chi goi ten SAU khi da neo vao mot buoc luong, khong trich so dong.
+  2_che_do = 2 — Overview tron ven: mo bang van de + cho ai + vi sao ton tai (mat kiem soat/chay tien/chet giua chung), roi mot y tuong cot loi (mot cua duy nhat), roi ban do luong 'ban o day', roi module, va nhac lai gia tri business o moi tang.
+  3_du_y = 2 — Du y cho pham vi: chokepoint don -> observability/budget/safety gan mot cho, cua delegation tach rieng, finish gate chan code chua validate, SQLite la nguon su that de resume - khong thua khong thieu.
+  4_loi_van = 2 — Cau ngan phang, giong doi thuong ('khoi chay tien', 'ban dang o day'); luong danh so la ban do luong hop le chu khong phai tuong-bullet ne viet cau, list module la liet ke tang cuoi duoc phep, khong dan so dong.
+  5_bam_code = 2 — Da doi chieu fixture hex_agent: moi claim khop code that (execute_tool@core/kernel.py, node guard/agent/tool/delegate/finish/fail, DelegationServicePort.delegate@delegation/manager.py, event tool.requested/completed/failed, chain timing/policy/budget/retry/condense, scope check, finish gate code_changed, llm.chat capability, control/ Epic E21 contracts) - khong bia, va phan control/ chua xong duoc gan nhan trung thuc.
+  6_ranh_gioi = 2 — Dung vai explain: day nguoi hieu theo muc, khong dung .ai-understanding/ (atlas), khong dao side-effect sau (trace), khong liet gap/edge case (review), khong phan giu-sua-xoa (triage).
+  7_ket = 2 — Ket dung muc L3: moi di sau trach nhiem mot phan cu the (vi du vi sao tach AgentKernel frozen khoi KernelSession) hoac hoi co module nao dang thac mac - khop dung goi y L3, khong hand off nham (dung vi L3 duoi nguong L5).
+  SỬA TRƯỚC TIÊN: Ban da o muc toi da cho L3/overview; neu muon nang them, chi co the goi mot chut van bang cach cat bot mot vai menh de phu o doan giua doan 'cai cua duy nhat' cho tho hon - nhung day la tinh chinh, khong phai loi.
+
+--- Giám khảo #2 — total 14/14 · gate đạt
+  1_muc = 2 — Đúng L3 overview: dừng ở Zoom 2 kỹ (luồng 8 bước) + chạm Zoom 3 (điểm danh module + trách nhiệm), mọi tên code đều neo vào một bước trước khi gọi tên, không đào sâu quá mức L4.
+  2_che_do = 2 — Trọn vẹn overview: nói app làm gì + cho ai (dev dựng agent) + vì sao tồn tại (mất kiểm soát, cháy tiền), rồi ý tưởng cốt lõi 'một cái cửa' + luồng + module theo đúng thang zoom.
+  3_du_y = 2 — Đủ ý cho phạm vi overview L3: vấn đề, ý tưởng lõi, 8 bước luồng, thứ tự bên trong cửa (event→scope→middleware→event), và map module về bước — không thiếu mảnh cốt lõi, không thừa.
+  4_loi_van = 2 — Câu ngắn, phẳng, đời thường ('chui qua đúng MỘT cái cửa', 'khỏi cháy tiền'); bullet chỉ dùng cho luồng đánh số và list module ở tầng cuối, không trích số dòng — đúng principles E1–E4.
+  5_bam_code = 2 — Kiểm repo hex_agent: execute_tool trong core/kernel.py phát tool.requested/completed/failed, kernel frozen, nodes guard/agent/tool/delegate/finish/fail, DelegationServicePort→delegation/manager.py, chuỗi middleware timing/policy/budget/retry/condense, finish_gate 'code changed but no validation', control/ Epic E21 phần lớn là contract, SQLite checkpoint — mọi claim khớp code thật.
+  6_ranh_gioi = 2 — Đúng vai explain: dạy người hiểu theo mức, không dựng .ai-understanding/ (atlas), không đào side-effect (trace), không liệt edge case (review), không phán số phận file (triage).
+  7_ket = 2 — Kết đúng mức L3: xác nhận 'Bạn đang ở L3' rồi mời đi sâu trách nhiệm một phần cụ thể (vì sao tách AgentKernel frozen khỏi KernelSession, cửa delegation khác cửa chính) — đúng gợi ý L3 trong bảng mức.
+  SỬA TRƯỚC TIÊN: Bản này gần như hoàn hảo ở L3; đòn bẩy duy nhất còn lại là gắn nhãn 'chưa chắc' cho một hai chi tiết suy diễn từ thiết kế (vd tên capability chính xác là `llm.chat`) để tuyệt đối trung thực, nhưng không có claim nào bịa nên không hạ điểm.

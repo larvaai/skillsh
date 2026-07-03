@@ -1,0 +1,73 @@
+{
+  "project": "hex-agent-rebuild",
+  "slug": "hex-agent-rebuild",
+  "giai_doan": "gd9_backlog",
+  "updated_at": "2026-07-02T00:00:00Z",
+  "cho_duyet": false,
+  "nguon": ["gd8_live_slice", "gd4_prd", "gd5_domain", "rebuild_brief_epics_E01_E21"],
+  "roadmap": {
+    "business_objective": "M1 Zero false-finish = 0 lần FINISHED thiếu evidence thật trong bộ nghiệm thu (phụ: M2 Bounded, M3 No-escalation)",
+    "product_goal": "Agent tự-điều-phối: giao 1 mục tiêu → plan → order → delegate sub-agent → chỉ FINISHED khi mọi AC có bằng chứng thật, không chạy vô hạn",
+    "themes": [
+      "T1 Không bao giờ báo-xong-khống (evidence-based finish)",
+      "T2 Không bao giờ chạy vô hạn (bounded loop)",
+      "T3 Không leo thang quyền (delegation an toàn)",
+      "T4 Chạy được, quan sát được, khôi phục được (glass-box + resume)"
+    ],
+    "releases": {
+      "R1": "P0 Foundation — E01 Kernel · E02 Discipline · E03 LLM · E04 Observability · E05 Graph/Resume(SPIKE-1)",
+      "R2": "P1–P2 Single-agent+Tools — E06 Tools&Safety · E07 Skills · E08 RAG(optional)",
+      "R3": "P3 Multi-agent LÕI — E09 Roles · E10 TaskLoop+Delegation+Acceptance (điểm bán)",
+      "R4": "P4 Control Plane — E21 (hoãn có chủ đích, consumer read-model)"
+    },
+    "park_with_trigger": ["E11 Departments", "E12 IntentRouter", "E13 SoftwareFactory", "E14 Ledger/Memory", "E20 Labs"]
+  },
+  "backlog": {
+    "epics": 11,
+    "epics_phan_ra_R1": ["E01", "E02", "E03", "E04", "E05"],
+    "features": 15,
+    "features_R1": ["F1.1 chokepoint", "F1.2 budget/guard", "F1.3 json/finish-gate", "F1.4 LLM-as-capability", "F1.5 event-log-first", "F1.6 SQLite-resume(SPIKE-1)"],
+    "stories_co_ac": 15,
+    "stories_co_ac_R1": ["S1.1.1", "S1.1.2", "S1.2.1", "S1.3.1", "S1.4.1", "S1.5.1", "S1.6.1"],
+    "stories_loi_R3": ["S3.1.1 roles-allowlist", "S3.2.1 delegation scope⊆parent (M3)", "S3.3.1 decompose μ-proof", "S3.4.1 order next_node", "S3.5.1 acceptance-by-evidence (M1)", "S3.5.2 bounded (M2)"],
+    "ac_duoi_story": true,
+    "dod_tach_khoi_ac": true,
+    "test_ref_only": true
+  },
+  "loi_story_uu_tien_R3": ["S3.5.1 acceptance-by-evidence (M1)", "S3.5.2 bounded (M2)", "S3.2.1 delegation scope (M3)", "S3.3.1 μ-proof", "S3.4.1 order"],
+  "da_chot": [
+    "R1 = P0 Foundation vào trước (lý do: live-slice GĐ8 chứng minh đường đi ở gốc → rủi ro thấp; SPIKE-1 đo sớm-rẻ; nền cho mọi release sau)",
+    "Slice GĐ8 finish-by-evidence-tối-thiểu = feature đầu R1 (đúng luật slice-GĐ8→feature-đầu-release-gần)",
+    "R3 = release điểm bán — mọi Story LÕI (taskloop/acceptance/delegation) ưu tiên R3, có AC",
+    "R4 Control Plane hoãn cuối (consumer read-model, UI ⊥ core, không chặn go-live lõi — ADR-006 GĐ6)",
+    "4 giả-định-GĐ8-đã-đổi phản ánh thành AC: max_steps-enforce-discipline (F1.2-AC3), redact-raw-args (F1.5-AC3), reconcile-tên-event (F1.5-AC4), SPIKE-1 (F1.6)",
+    "E10 cắt thành 4 feature F3.2–F3.5 để mỗi feature vừa 1–2 sprint (không nhồi cả E10 một feature)"
+  ],
+  "dang_mo": [
+    "SPIKE-1 (LangGraph resume một-lần-đúng) — nằm TRONG R1, phải pass a/b/c TRƯỚC KHI ĐÓNG R1 (không chặn lập-kế-hoạch); fail → phương án B orchestrator tự viết, backlog R1 không đổi cấu trúc",
+    "OQ-1 NFR-số (P95 loop, ngưỡng alert error-rate) — chưa có baseline, đo ở Operate, không bịa số",
+    "R3 judge = honor-system một phần (O tự chấm) — siết evidence types ở R4/Operate, không chặn R3 go-live"
+  ],
+  "gate": "GO",
+  "gate_cau_hoi": "Backlog đủ để lập kế hoạch delivery & phân module chưa?",
+  "gate_nguoi_duyet": "Product Owner (chủ sở hữu) + Tech-lead (duyệt) — tự-quyết, product owner: không hỏi approval",
+  "gate_ly_do": "Ba artifact đủ + đọc-được 3 tầng; R1 phân rã tới Story+AC (delivery lấy được việc đầu = slice GĐ8); Story lõi R3 có AC nối M1/M2/M3 + business rule Domain; không open-Q Domain chặn AC. SPIKE-1/NFR-số có địa chỉ đo, không chặn việc lập kế hoạch.",
+  "gate_phuong_an_da_loai": [
+    "Chờ SPIKE-1 pass rồi mới chốt backlog — loại: SPIKE-1 là rủi ro thực-thi-R1 không phải điều-kiện-lập-kế-hoạch; chặn cổng = trộn vai GĐ8/11 vào GĐ9, nghẽn phân-module GĐ10 chạy song song",
+    "Phân rã đầy đủ Story+AC cả R2/R3/R4 — loại: cầu toàn, Domain R4 (NFR-số) treo → viết AC = bịa; refine ở backlog-refinement khi release tới",
+    "Đưa E21 Control Plane lên R2 cho demo sớm — loại: consumer read-model không chặn go-live lõi; kéo lên = trễ điểm-bán R3, vi phạm thứ-tự-gỡ-rủi-ro"
+  ],
+  "traceability": {
+    "chain": "Business Objective(M1) → Theme(T1–T4) → Epic(E01–E21) → Feature → Story → AC → Task → Test-ref",
+    "ac_noi_domain_rule": ["#1 finish-có-evidence", "#2 gate-ghi-verdict", "#3 scope child⊆parent", "#4 plan μ co ngặt", "#5 mọi hành động qua execute_tool"],
+    "story_dau_R1_la_live_slice_gd8": true,
+    "gia_dinh_gd8_phan_anh": ["SPIKE-1→F1.6", "reconcile-event-name→F1.5-AC4", "redact-raw-args→F1.5-AC3", "max_steps-enforce-discipline→F1.2-AC3"]
+  },
+  "handoff_ke": "modules",
+  "handoff_loi_re": {
+    "mac_dinh": "modules (GĐ10 — chia module domain boundary + owner + contract; gợi ý ranh giới chặt: Orchestration↔Execution-Core↔Delegation)",
+    "build_ngay": "frame (build một story R1 có AC — vd S1.6.1 SPIKE-1 hoặc S1.1.1 chokepoint); rồi delivery GĐ11 cho DoD/CI/test-pyramid",
+    "domain_treo": "idea hoặc partner (GĐ5) — hiện KHÔNG có Domain treo, chỉ NFR-số"
+  },
+  "artifact_path": "rebuild-hex-agent/pipeline/09-backlog.md"
+}

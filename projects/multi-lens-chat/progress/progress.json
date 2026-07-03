@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "project": "multi-lens-chat",
+  "mode": "greenfield",
+  "con_tro": { "giai_doan": "gd2_4_product_prd", "ghi_chu": "chờ chốt OQ-4/5/6 (lens, streaming, tổng hợp) rồi qua Domain" },
+  "tasks": [
+    { "id": "T-01", "viec": "Business Need + Case", "giai_doan": "gd1_business",
+      "trang_thai": "done", "depends_on": [], "parallel_group": null,
+      "owner": "idea", "artifact": "problem/business-case.md", "traces_to": ["NEED-1", "CASE-1"] },
+
+    { "id": "T-02", "viec": "Chốt PRD + MVP (đóng OQ-4/5/6)", "giai_doan": "gd2_4_product_prd",
+      "trang_thai": "in_progress", "depends_on": ["T-01"], "parallel_group": null,
+      "owner": "idea", "artifact": "problem/prd.md", "traces_to": ["CASE-1"] },
+
+    { "id": "T-03", "viec": "Domain Model (Conversation, MainAgent, LensWorker, Insight)", "giai_doan": "gd5_domain",
+      "trang_thai": "todo", "depends_on": ["T-02"], "parallel_group": null,
+      "owner": "idea", "artifact": "docs/domain-model.md" },
+
+    { "id": "T-04", "viec": "Kiến trúc orchestrator + N worker (fan-out/gather)", "giai_doan": "gd6_shape",
+      "trang_thai": "todo", "depends_on": ["T-03"], "parallel_group": null,
+      "owner": "shape", "artifact": "docs/architecture.md" },
+
+    { "id": "T-05", "viec": "Chọn stack (Agent SDK vs tự viết orchestrator)", "giai_doan": "gd7_stack",
+      "trang_thai": "todo", "depends_on": ["T-04"], "parallel_group": null,
+      "owner": "stack", "artifact": "docs/tech-decision.md" },
+
+    { "id": "T-06", "viec": "Freeze contract orchestrator↔worker (task vào → insight ra)", "giai_doan": "gd10_modules",
+      "trang_thai": "todo", "depends_on": ["T-05"], "parallel_group": null,
+      "owner": "modules", "artifact": "docs/contracts/worker-v1.md" },
+
+    { "id": "T-07", "viec": "Build các lens worker theo contract", "giai_doan": "gd11_delivery",
+      "trang_thai": "todo", "depends_on": ["T-06"], "parallel_group": "pg-lens-workers",
+      "owner": "delivery", "artifact": "codebase/workers/" },
+
+    { "id": "T-08", "viec": "Build orchestrator (fan-out + gather) theo contract", "giai_doan": "gd11_delivery",
+      "trang_thai": "todo", "depends_on": ["T-06"], "parallel_group": "pg-lens-workers",
+      "owner": "delivery", "artifact": "codebase/orchestrator/" },
+
+    { "id": "T-09", "viec": "Tích hợp + chạy thật end-to-end (một ca review code)", "giai_doan": "gd11_delivery",
+      "trang_thai": "todo", "depends_on": ["T-07", "T-08"], "parallel_group": null,
+      "owner": "frame", "artifact": "codebase/integration.md" }
+  ],
+  "updated_at": "2026-07-03T09:00:00Z"
+}

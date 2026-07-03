@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "project": "demo-gom-don",
+  "mode": "greenfield",
+  "con_tro": {
+    "giai_doan": "gd1_4_why_what",
+    "ghi_chu": "đề bài + kỳ vọng thô K1–K4 + 1 ý thô đã có; chờ idea làm rõ nghiệp vụ 4 khâu → PRD"
+  },
+  "tasks": [
+    {
+      "id": "T-01",
+      "viec": "Nhận đề bài demo, ghi kỳ vọng thô K1–K4, bắt ý đầu tiên",
+      "giai_doan": "gd0_intake",
+      "trang_thai": "done",
+      "depends_on": [],
+      "parallel_group": null,
+      "owner": "charter",
+      "artifact": "problem/00-de-bai.md"
+    },
+    {
+      "id": "T-02",
+      "viec": "Làm rõ nghiệp vụ 4 khâu (gom đơn, kho, xếp xe, đối soát) → Business Case → PRD; mài K1–K4 thành success metric đo được",
+      "giai_doan": "gd1_4_why_what",
+      "trang_thai": "ready",
+      "depends_on": ["T-01"],
+      "parallel_group": null,
+      "owner": "idea",
+      "artifact": "problem/prd.md"
+    }
+  ],
+  "updated_at": "2026-07-03T14:18:39+07:00"
+}

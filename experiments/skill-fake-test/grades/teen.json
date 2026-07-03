@@ -1,0 +1,9 @@
+{
+  "skill": "teen",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "Fixture: fixture/codebase/mediremind/src/adherence/streak.ts (hàm currentStreak). Output: outputs/teen/plain.md. Kiểm 3 xương sống: (1) Feynman — mở đúng một câu vấn đề đời thực 'đếm số ngày uống đủ liều liên tiếp tính ngược từ hôm nay' (dòng 5), rồi giải theo thứ tự gom-theo-ngày→xếp mới-nhất-trước→đếm-tới-ngày-hỏng, không diễn từng dòng → 2/2. (2) Bám code — mọi claim truy được về code: chấm +1 taken/-1 skipped/0 khác khớp dòng 7; 'ngày tốt = mọi liều taken, không skip, không để trống' khớp đúng arr.every(x=>x!==0)&&sum===length (dòng 14); sort().reverse()=mới nhất trước (dòng 10); break ở ngày hỏng đầu tiên (dòng 16); chạy-thử trả 2 đúng theo code → 2/2. (3) Lời đời thường — grep không thấy một tên kỹ thuật trần nào (function/loop/array/reduce/tên biến), không ký hiệu code, chạy-trong-đầu bằng lời → 2/2. Ngoài gate: 4 việc-thật-không-analogy 2/2 (không có 'người gác cổng'/'nhà hàng'), 5 đủ-là-đủ 2/2 (đúng một hàm, không lấn explain/trace), 6 kết+gợi ý 1/2: CÓ câu chốt bám context (dòng 33) nhưng THIẾU hẳn Bước-6 (không hỏi 'muốn thử ví dụ khác/còn chỗ nào chưa hình dung', không trỏ explain/trace). TỔNG 11/12.",
+  "top_failure": "Thiếu Bước-6 của quy trình: có câu kết 'vì sao quan trọng' nhưng không có bất kỳ gợi ý bước-tiếp nào (không hỏi thử ví dụ khác / còn khúc nào mờ, không trỏ explain/trace). Lỗi nhỏ, ngoài gate — kéo tiêu chí 6 xuống 1/2.",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng: 3 xương sống đều 2/2, không bịa hành vi, không jargon, không analogy; chỉ hụt Bước-6 gợi ý nên 11/12 — pass gate, hiệu quả 3."
+}

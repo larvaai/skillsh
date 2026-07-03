@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#
+# post-commit — ghi raw drift vào .ai-understanding/99_changes.md (Raw inbox).
+# Lớp "safety-net" cho thay đổi xảy ra NGOÀI agent (sửa tay, đồng đội commit).
+# Smart layer vẫn là skill: frame/triage append Pending, atlas fold + bump.
+#
+# Cài đặt (per-repo):
+#   cp <skill>/hooks/post-commit <repo>/.git/hooks/post-commit
+#   chmod +x <repo>/.git/hooks/post-commit
+#
+# Im lặng bỏ qua nếu repo chưa từng chạy `/atlas` (không có ledger).
+#
+set -euo pipefail
+
+root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+ledger="$root/.ai-understanding/99_changes.md"
+[ -f "$ledger" ] || exit 0
+
+hash="$(git rev-parse --short HEAD)"
+subject="$(git log -1 --pretty=%s | tr '|\n' '/ ')"
+files="$(git diff-tree --no-commit-id --name-only -r --root HEAD 2>/dev/null | grep -v '^\.ai-understanding/' || true)"
+[ -n "$files" ] || exit 0   # commit chỉ đụng .ai-understanding/ → không phải drift code, bỏ qua
+files_csv="$(printf '%s' "$files" | tr '\n' ',' | sed 's/,$//' | tr '|' '/')"
+
+printf '| %s | %s | %s | %s |\n' "$(date +%F)" "$hash" "$subject" "$files_csv" >> "$ledger"

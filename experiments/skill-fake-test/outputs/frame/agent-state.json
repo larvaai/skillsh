@@ -1,0 +1,94 @@
+{
+  "project": "/Users/uspro/Desktop/skillsh/experiments/skill-fake-test/fixture/mediremind",
+  "updated_at": "2026-07-03T10:25:57Z",
+  "phase": "frame",
+  "awaiting_confirmation": true,
+  "constitution": {
+    "goal": "Nhắc uống thuốc đúng giờ & đo tuân thủ (adherence) — SM-1 on-time dose rate +≥15 điểm%, SM-2 ≥60% caregiver-link kích hoạt tuần đầu",
+    "non_goals": [
+      "không rút guard chung / Nest guard / decorator @Roles cho slice này (chưa lên Nest)",
+      "không đụng nhánh caregiver view-only (story khác)",
+      "không đổi shape response 200/404 hiện có",
+      "không thêm field ngoài contract adherence-v1",
+      "không thêm Postgres/auth thật/BullMQ ở slice feature này",
+      "không sửa reminders/*, scheduling/*, legacy/*",
+      "không sửa endpoint skip/report — chỉ confirm"
+    ],
+    "coding_rules": [
+      "diff nhỏ, chỉ đụng file đã khai trong khối CHỜ XÁC NHẬN",
+      "code tường minh hơn trừu tượng thông minh",
+      "giữ nguyên public contract & behavior hiện có (chỉ THÊM nhánh 403)",
+      "không over-engineer, không feature tương lai, không framework chung"
+    ]
+  },
+  "domain": {
+    "user_journey": "Patient đã đăng nhập bấm 'Đã uống' từ deep-link reminder → POST /doses/:id/confirm → nếu là chủ liều thì DoseEvent pending→taken + tính lại adherence; nếu KHÔNG phải chủ thì bị chặn 403",
+    "core_concepts": ["DoseEvent", "userId", "ownership/authorization", "DoseStatus (pending→taken)", "AdherenceReport"],
+    "risks_if_overbuilt": [
+      "rút guard chung/Nest-guard trước khi thật sự cần → phá diff nhỏ",
+      "kéo nhánh caregiver view-only vào slice ownership → nhoè ranh giới story",
+      "đổi shape response cũ → phá contract slice GĐ8 đã chạy"
+    ]
+  },
+  "slices": [
+    {
+      "id": 1,
+      "name": "Ownership guard cho confirmDose (vá ô #5 GĐ8)",
+      "kind": "feature",
+      "trace": {
+        "story_id": "STORY-dose-ownership-guard",
+        "ac_refs": ["AC-dose-ownership-guard-1", "AC-dose-ownership-guard-2"],
+        "framing_ref": null,
+        "source_skill": "backlog"
+      },
+      "user_action": "Patient đã đăng nhập gọi POST /doses/:id/confirm để xác nhận một liều",
+      "system_behavior": "Kiểm dose.userId===req.userId trước khi mutate. Khớp → pending→taken + set takenAt + tính rate. Không khớp → 403 ADH-403-NOT-OWNER, KHÔNG đổi trạng thái. Không tồn tại → 404 (giữ nguyên).",
+      "visible_output": "Chủ liều: 200 {id, status:'taken', adherenceRate}. Không phải chủ: 403, không side-effect lên db.",
+      "acceptance": [
+        "AC-dose-ownership-guard-1: patient là chủ liều → confirm → pending→taken, takenAt set, trả 200",
+        "AC-dose-ownership-guard-2: liều thuộc user khác → trả 403 (ADH-403-NOT-OWNER), trạng thái KHÔNG đổi (đóng ô #5 Live Slice GĐ8)"
+      ],
+      "status": "active",
+      "contract": {
+        "input": { "id": "string (path param)", "userId": "string (từ middleware auth)" },
+        "output": { "id": "string", "status": "'taken'", "adherenceRate": "number" },
+        "errors": ["ADH-404-NOT-FOUND", "ADH-403-NOT-OWNER"],
+        "example": {
+          "in_owner": { "id": "u-sched-01-2026-07-03-08:00", "userId": "u-pat-01" },
+          "out_owner": { "status": 200, "body": { "id": "u-sched-01-2026-07-03-08:00", "status": "taken", "adherenceRate": 0.5 } },
+          "in_not_owner": { "id": "u-sched-01-2026-07-03-08:00", "userId": "u-pat-99" },
+          "out_not_owner": { "status": 403, "body": "ADH-403-NOT-OWNER" }
+        },
+        "status": "proposed_not_confirmed"
+      }
+    },
+    { "id": 2, "name": "Xác nhận liều happy path", "trace": { "story_id": "STORY-dose-confirm", "ac_refs": ["AC-dose-confirm-1", "AC-dose-confirm-2", "AC-dose-confirm-3"], "framing_ref": null, "source_skill": "backlog" }, "status": "done" },
+    { "id": 3, "name": "Tính adherence rate an toàn (không NaN)", "trace": { "story_id": "STORY-adherence-rate", "ac_refs": ["AC-adherence-rate-1"], "framing_ref": null, "source_skill": "backlog" }, "status": "parked" },
+    { "id": 4, "name": "Đánh dấu liều quá hạn missed", "trace": { "story_id": "STORY-dose-missed", "ac_refs": ["AC-dose-missed-1"], "framing_ref": null, "source_skill": "backlog" }, "status": "parked" },
+    { "id": 5, "name": "Caregiver xem báo cáo (view-only + audit)", "trace": { "story_id": "STORY-caregiver-view-report", "ac_refs": ["AC-caregiver-view-report-1", "AC-caregiver-view-report-2", "AC-caregiver-view-report-3"], "framing_ref": null, "source_skill": "backlog" }, "status": "parked" }
+  ],
+  "parking_lot": [
+    "rút guard phân quyền chung (Nest guard/decorator) khi lên NestJS",
+    "audit-log mọi truy cập/từ-chối dữ liệu patient (STORY-audit-caregiver-access, NFR-4)",
+    "Postgres thật thay db in-memory",
+    "BullMQ thay cron thủ công (OQ-A đã chốt ở Tech Decision)",
+    "siết window reminder về 60s (NFR-1, hoãn R2)"
+  ],
+  "confirmed": [],
+  "open": [
+    "Giả định A1: DoseEvent.userId đủ để kiểm quyền, không cần join sang Schedule (đã đọc dose-event.entity.ts, chờ user ratify)",
+    "Giả định A2: guard cục bộ trong confirmDose, không rút guard chung (chờ xác nhận)",
+    "Giả định A3: giữ shape response 200/404 cũ, chỉ thêm nhánh 403 ADH-403-NOT-OWNER",
+    "Giả định A4: slice kind=feature, không chạm hạ tầng thật; req.userId do middleware set",
+    "Hỏi: acceptance AC-dose-ownership-guard-1/2 đã đúng chưa, hay thêm/bớt?",
+    "Hỏi (DoD từ delivery, user nhận riêng): có ghi audit-log khi từ-chối-403 ngay kỳ này không hay đẩy sang STORY-audit-caregiver-access?"
+  ],
+  "do_not_touch": [
+    "src/reminders/*",
+    "src/scheduling/*",
+    "src/legacy/*",
+    "src/identity/caregiver.guard.ts",
+    "src/adherence/adherence.service.ts"
+  ],
+  "_source_note": "Prefill Bước 1b từ: backlog.json/backlog.md (GĐ9, STORY-dose-ownership-guard) + skeleton-live-slice.md (GĐ8 ô#5 FAIL) + domain-model.md (GĐ5) + contracts/adherence-v1.md (GĐ10). Live-slice mode KHÔNG áp (slice này là feature, không phải kind:live). Vị trí chuẩn theo SKILL.md là state/project/mediremind/agent-state.json; đặt tại outputs/frame/ theo yêu cầu eval."
+}

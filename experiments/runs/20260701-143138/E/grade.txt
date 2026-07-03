@@ -1,0 +1,22 @@
+CHẤM: explain · hex_agent · L3 · overview   variant=E
+avgTotal=14/14   gate=đạt   graderTotals=[14,14]
+
+--- Giám khảo #1 — total 14/14 · gate đạt
+  1_muc = 2 — Đúng L3: kể Zoom 2 kỹ rồi chạm Zoom 3, mọi tên code (execute_tool, cửa giao việc) đều neo vào bước luồng trước khi gọi tên, không trích số dòng — khớp hành vi L3.
+  2_che_do = 2 — Overview trọn vẹn theo thang zoom: vấn đề + cho ai (người dựng hệ agent) + vì sao tồn tại, một ý tưởng cốt lõi bằng lời, luồng như câu chuyện, rồi module map về từng bước.
+  3_du_y = 2 — Nắm đủ cốt lõi (một cửa duy nhất), luồng gác→suy nghĩ→4 ngả, cả các điểm tinh: deepcopy chống hỏng dữ liệu gốc, cửa giao việc RIÊNG, SQLite là bản lưu thật còn file UI chỉ để xem.
+  4_loi_van = 2 — Câu ngắn, phẳng, kể liền mạch như chuyện; chỉ dùng một list ở tầng module cuối (đúng E3), không trích số dòng, hình ảnh đời thường (trạm gác, cửa) dễ đọc.
+  5_bam_code = 2 — Mọi claim khớp code thật: execute_tool là chokepoint (kernel.py:106), copy.deepcopy(args) (kernel.py:114), chặn ngoài scope (kernel.py:130), nuốt lỗi 'tool must never crash kernel' (kernel.py:156), delegation là chokepoint riêng (README:54 + delegation/policy.py), SQLite truth vs JSON projection (orchestrator/checkpoint.py); không bịa file/hành vi.
+  6_ranh_gioi = 2 — Đúng vai explain: dạy hiểu theo mức, không dựng .ai-understanding/ (atlas), không đào side-effect sâu (trace), không liệt gap (review), không phán số phận file (triage).
+  7_ket = 2 — Kết bằng gợi ý đúng L3 gần như khớp bảng mức: giải thích kỹ trách nhiệm từng phần hay có module cụ thể đang thắc mắc (nêu ví dụ execute_tool / cửa giao việc).
+  SỬA TRƯỚC TIÊN: Không có lỗi chặn — bản này đạt gate và 14/14; nếu tinh chỉnh, có thể rút bớt một hai câu dài trong đoạn kể luồng execute_tool để nhịp đọc đều hơn, nhưng đó là làm đẹp chứ không phải sửa lỗi.
+
+--- Giám khảo #2 — total 14/14 · gate đạt
+  1_muc = 2 — Đúng L3: dừng ở Zoom 2 kỹ + chạm Zoom 3, mọi tên code (execute_tool, cửa giao việc) chỉ gọi SAU khi đã neo vào một bước trong luồng, không trích số dòng/chữ ký hàm (thứ cần L4).
+  2_che_do = 2 — Overview trọn vẹn: làm gì (chạy tác vụ có kỷ luật, soi lại được) + cho ai (người dựng hệ agent, không phải người dùng cuối) + vì sao tồn tại (nhiều agent gọi tool dễ loạn), kể theo luồng như câu chuyện.
+  3_du_y = 2 — Nắm đủ cốt lõi cho phạm vi: một-cửa-duy-nhất, cửa giao việc tách riêng (điểm dễ nhầm nhất), deepcopy input, nuốt lỗi thành envelope chuẩn, và SQLite là bản lưu thật vs file UI chỉ là bản chiếu.
+  4_loi_van = 2 — Câu ngắn, phẳng, kể bằng văn liền mạch; bullet chỉ ở tầng module map cuối, mỗi dòng một cụm ngắn; không tường-bullet, không trích số dòng.
+  5_bam_code = 2 — Mọi claim khớp code thật đã kiểm: execute_tool là cửa chung (README + core/kernel.py), delegate là chokepoint riêng, deepcopy(args) ở kernel.py:114, 'a tool must never crash the kernel' ở :156, SQLite-truth vs checkpoint.json UI; tất cả thư mục module đều tồn tại — không bịa.
+  6_ranh_gioi = 2 — Đúng vai explain: dạy hiểu theo mức, không dựng .ai-understanding/ (atlas), không đào data-flow/side-effect sâu (trace), không liệt edge case (review), không phán số phận file (triage).
+  7_ket = 2 — Kết bằng gợi ý đúng L3 (giải thích kỹ trách nhiệm từng phần / có module cụ thể đang thắc mắc), khớp gần nguyên văn gợi ý L3 trong SKILL, không hand off sai skill.
+  SỬA TRƯỚC TIÊN: Không có lỗi chặn — bản này là một L3 overview mẫu mực (mở bằng vấn đề+cho ai, luồng 'bạn ở đây', mỗi tên code neo trước khi gọi, khớp code thật). Nếu muốn tinh hơn: một câu trong đoạn luồng hơi dài nhiều mệnh đề, có thể tách đôi cho phẳng hơn nữa.

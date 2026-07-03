@@ -1,0 +1,28 @@
+{
+  "project": "/Users/uspro/Desktop/namnson/hex_agent",
+  "slug": "budget-exhaustion-backoff",
+  "updated_at": "2026-07-01T10:10:30Z",
+  "ten_y_tuong": "A1 — Budget Exhaustion Backoff (đã gọt: LLM tự nới trần TỔNG-số-bước)",
+  "giai_doan": "spike",
+  "cho_duyet": false,
+  "do_ro": "ro_rang",
+  "do_kha_thi": "chua_ro",
+  "trang_thai": "dang_spike",
+  "phan_bien": [
+    "Self-reference: agent đang tiêu budget lại tự quyết nới trần của chính nó → guardrail mất tác dụng nếu không có META-cap cứng bên ngoài + audit mỗi lần nới."
+  ],
+  "an_so_can_kiem_chung": [
+    "State codec: mutate max_steps giữa run có sống qua checkpoint→resume không (known-risks §1; budget counter ở graph/nodes.py:40-48, per-run)?",
+    "Governance model: 'xin thêm budget' đi qua execute_tool như một tool có META-cap cứng — có observable + capped + auditable không?"
+  ],
+  "da_chot": [
+    "Cơ chế = NỚI TRẦN ngân sách động (không phải backoff / kết-thúc-mềm)",
+    "Ai quyết = agent/LLM tự quyết",
+    "Phạm vi = CHỈ tổng-số-bước; giữ CỨNG same-tool → runaway loop thật vẫn chết (de-risk thông minh)"
+  ],
+  "dang_mo": [
+    "Nới bao nhiêu mỗi lần / tối đa mấy lần (bounded)? — chốt sau spike",
+    "'Đáng nới' theo tiêu chí nào khi LLM tự quyết? — cần định nghĩa trước khi rời spike"
+  ],
+  "artifact_path": null
+}

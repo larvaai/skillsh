@@ -1,0 +1,9 @@
+{
+  "skill": "backlog",
+  "gate": "pass",
+  "effectiveness": 3,
+  "recall": "n/a",
+  "evidence": "Output tại outputs/backlog/backlog.md sinh đủ 3 artifact GĐ9: Roadmap theme×release (dòng 26-30), Backlog phân rã Epic→Feature→Story→AC (dòng 48-145), Release Plan (dòng 149-174). AC dạng Given/When/Then nằm DƯỚI story, DoD tách riêng chỉ tham chiếu GĐ11 (dòng 166, 203). Đọc-được 3 tầng: mở bằng 'GÓC NHÌN LÃNH ĐẠO' + 'Điểm CTO/PO scan ra ngay' (dòng 37) rồi xuống AC cho dev. BÁM NGUỒN sạch — đối chiếu fixture: SM-1/SM-2 khớp prd.md §1; NFR-4 audit-log caregiver khớp prd.md §6; rule DoseEvent pending→taken/missed/skipped, CaregiverLink view-only khớp domain-model.md §3-4; STORY-dose-ownership-guard vá đúng ô #5 FAIL của skeleton-live-slice.md §4 ('confirmDose KHÔNG kiểm dose.userId===req.userId'); NFR-1 60s + window dispatchDue=5m đẩy sang R2 khớp live-slice §3.4/§5; caregiver.guard.ts canCaregiverView ngoài luồng confirm khớp §2. Có block ⚠️ cảnh báo đầu vào ngoài pipeline (dòng 8-12). Grace window 'missed' + retention OQ-B ghi thành open question thay vì bịa (dòng 82, 143, 194-195). Traceability table đầy đủ (dòng 180-191) + ghi rõ chỗ đứt. Cổng đúng câu GĐ9 (dòng 212), PO+Tech lead duyệt, AI KHÔNG tự pass (dòng 220). Bàn giao /modules + /frame STORY-dose-confirm + đường quay /idea (dòng 226-234).",
+  "top_failure": "NONE",
+  "verdict_one_line": "Chạy sạch đúng hợp đồng — 14/14, gate PASS: đủ 3 artifact, đọc-được 3 tầng, mọi epic/story/AC truy ngược được về PRD/Domain/live-slice, ô #5 FAIL và NFR-1 60s xử lý trung thực (thành story/đẩy R2), open question ghi rõ thay vì bịa; không có điểm yếu đáng kể."
+}

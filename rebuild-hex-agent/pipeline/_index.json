@@ -1,0 +1,62 @@
+{
+  "project": "hex-agent-rebuild",
+  "giai_doan": "gd14_operate",
+  "cho_duyet": true,
+  "updated_at": "2026-07-02T00:00:00Z",
+  "modules_owner": [
+    { "module": "Orchestration", "owner": "Team Orchestration" },
+    { "module": "Execution-Core", "owner": "Team Platform" },
+    { "module": "Discipline", "owner": "Team Platform" },
+    { "module": "Tools-Safety", "owner": "Team Safety" },
+    { "module": "Control-Plane-Observability", "owner": "Team Observability" },
+    { "module": "Knowledge-optional", "owner": "Team Platform" }
+  ],
+  "chokepoint_seam": {
+    "execution_core": "execute_tool",
+    "orchestration": ["run_task_loop", "DelegationManager.delegate"]
+  },
+  "gd12_uat": {
+    "stage": "gd12_uat",
+    "trang_thai": "cho_ky",
+    "pass_rate": "26/28",
+    "ac_pending": 2,
+    "ac_fail": 0,
+    "gap_chua_test": 0,
+    "uat_signoff": false,
+    "security_signoff": false,
+    "signoff_note": "cả hai KÝ CÓ ĐIỀU KIỆN (2026-07-02); AI chuẩn bị đủ để PO/CISO ký, không tự ký thay",
+    "updated_at": "2026-07-02T00:00:00Z"
+  },
+  "gd13_ship": {
+    "stage": "gd13_ship",
+    "trang_thai": "da_go",
+    "release": "R1-nền + alpha nội bộ",
+    "quyet_dinh": "go",
+    "quyet_dinh_loai": "GO cho pha ALPHA nội bộ (rollout theo bậc) — KHÔNG mở write/delegation bản này",
+    "gate_nguoi_ky": "CTO ✔ + PO ✔ (2026-07-02)",
+    "go_no_go": "12/12 ô có owner+trạng thái (6 N/A hợp lệ: comms/training/... alpha nội bộ); 4 thứ chặn xanh",
+    "rollback": "tắt flag features.yaml + pin version + không đụng run đang chạy + resume/replay; event-log bất biến; test = smoke offline (config bậc-1)",
+    "rollout": "internal alpha (smoke offline) → pilot 1 loại task (write-flag) → beta nhiều loại (delegation-flag) → gradual → full",
+    "updated_at": "2026-07-02T00:00:00Z"
+  },
+  "gd14_operate": {
+    "stage": "gd14_operate",
+    "gd": 14,
+    "trang_thai": "dang_do",
+    "cho_duyet": true,
+    "release_dang_van_hanh": "R1-nền + alpha nội bộ (GO GĐ13)",
+    "muc_tieu_goc_gd1": "M1 zero-false-finish (gate) · M2 bounded · M3 no-escalation · OQ-1 baseline chưa có số",
+    "business_dat": "MỘT PHẦN — nền R1 an toàn (0 sandbox-escape · 0 secret); M1/M2/M3 CHƯA tuyên vì R3 chưa live (2 PENDING GĐ12)",
+    "item_ve_backlog": ["I-1 đóng R3 multi-agent (có số M1/M2/M3)", "I-2 đóng SPIKE-1/D3 resume", "I-3 set OQ-1 DORA/NFR + redact-raw-args"],
+    "artifact_path": "rebuild-hex-agent/pipeline/14-operate.md",
+    "state_json": "rebuild-hex-agent/pipeline/operate.json",
+    "next": "backlog",
+    "updated_at": "2026-07-02T00:00:00Z"
+  },
+  "gate": "GO",
+  "gate_loai": "GO — mở vòng lặp kế (R3-first) tại /backlog GĐ9; alpha tiếp tục vận hành, CHƯA tuyên đạt mục tiêu GĐ1",
+  "artifact_path": "rebuild-hex-agent/pipeline/14-operate.md",
+  "state_json": "rebuild-hex-agent/pipeline/operate.json",
+  "handoff_to": "backlog",
+  "prev_artifact_path": "rebuild-hex-agent/pipeline/13-ship.md"
+}
