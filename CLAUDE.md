@@ -88,3 +88,30 @@ file trần trong git → tamper-VISIBLE (lộ trong diff), không tamper-proof.
 
 Test: `python3 .claude/hooks/tests/test_dot2_gates.py` (15 ca, có fixture thật). Bản đồ port
 đầy đủ + Đợt 3: `PORT-NOTES.md`.
+
+## Đợt 3 — Lật state fail-closed + gác gate + lưới an toàn
+
+**1. Lật `done` bằng SCRIPT, không tay — `bin/advance.py`** (checkpoint-verdict-advance +
+verdict-hash-binding). Vết: verdict là chữ tự do, progress.json lật `done` bằng tay → T-06
+"PASS chờ ký" mà đã done, 15 task done một buổi. Bản vá: verdict sống ở **front-matter máy-đọc**
+đầu phiếu checkpoint (`verdict:` ∈ {PASS, FAIL, PASS_PENDING_SIGNOFF} · `signed_by:` ·
+`artifact_sha256:`); `advance.py` là chỗ DUY NHẤT lật `done` — chỉ khi `verdict==PASS` + (nếu
+khai) sha artifact còn khớp; không có front-matter → REFUSE; sửa artifact sau chấm → STALE.
+`/progress` ADVANCE = chạy `python3 bin/advance.py <task-id>`, KHÔNG tự Edit progress.json.
+
+**2. Gác chính các file-gate — `config_write_guard.py`** (PreToolUse:Write|Edit|Bash). Chặn ghi
+`.claude/settings.json` + `.claude/hooks/**` qua MỌI đường (Write/Edit/MultiEdit + shell-write) —
+để một agent không "tiện tay" tắt gate. Flow thường không ghi vào đây; sửa gate là việc chủ đích
+→ editor NGOÀI phiên hoặc `SKILLSH_CONFIG_GUARD=off`.
+
+**3. Lưới cuối chống lệnh phá-máy — `bash_safety.py`** (PreToolUse:Bash). Chặn literal `rm -rf /`
+/ sysdir / biến-quote-thiếu-`:?`, `curl|sh`, fork bomb, `dd/mkfs → /dev`, `chmod -R /`, ghi
+`/etc/passwd`. **Fail-OPEN khi hook tự lỗi** (không brick Bash của solo). Break-glass
+`SKILLSH_BASH_SAFETY=off`. Bán đúng giá: bắt dạng literal, KHÔNG bắt biến rỗng expand thành `/`.
+
+**4. Chặn đọc secret — `permissions.deny` trong `settings.json`** (0 dòng Python): deny Read
+`.env`/`.env.*`/`*.pem`/`*.key`/`id_rsa*`/`credentials*`/`secrets.y*ml`. + luật `atlas`: gặp secret
+hardcode chỉ ghi TÊN biến + vị trí, KHÔNG ghi giá trị (chặn vector mà guard theo path mù).
+
+Test: `python3 bin/tests/test_dot3.py` (22 ca). Đợt 3 chưa làm (để session khác / sau):
+resume-pending-gates (prose resume/partner), git pre-push backstop, skill-md-validator.

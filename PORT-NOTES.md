@@ -54,17 +54,31 @@ Rủi ro port lớn nhất (từ bản đồ): nếu harness đích KHÔNG có h
 thì lớp compliance sụp thành advisory → phải dời enforcement sang git pre-push/CI. skillsh
 CÓ hook nên chặn được in-session; backstop transport (git pre-push) là Đợt 3.
 
-## Đợt 3 — chưa làm (theo rigor-gap, đã downscope)
+## Đợt 3 — ĐÃ LÀM (state fail-closed + gác gate + lưới an toàn)
 
-- **checkpoint-verdict-advance** (`advance.py`) — front-matter YAML {verdict, signed_by} trong
-  phiếu .md; `advance.py` fail-closed thay hand-edit `progress.json`; chỉ `verdict==PASS` mới
-  flip `done`. (Cần migrate phiếu sang front-matter trước — đổi prose checkpoint/progress.)
-- **git pre-push backstop** — cùng luật gate_ship nhưng ở tầng transport, bắt evasion
-  `sh -c 'git push'` mà hook in-session lọt.
-- **one-owner-write-guard** — hook mini gác {`.claude/settings.json`, `.claude/hooks/*`}.
+Commit trên cùng nhánh. Test: `python3 bin/tests/test_dot3.py` (22 ca, 0 đỏ). Đặt test ở
+`bin/tests/` vì `config_write_guard` gác cả cây `.claude/hooks/**`.
+
+| File | Vai | Điểm chặn |
+|---|---|---|
+| `bin/advance.py` | lật task→`done` fail-closed theo front-matter phiếu (verdict enum + sha-binding) | người/`progress` chạy |
+| `.claude/hooks/config_write_guard.py` | gác ghi `settings.json` + `.claude/hooks/**` (guard the guards) | Write/Edit/Bash |
+| `.claude/hooks/bash_safety.py` | lưới cuối chống `rm -rf /` / `curl\|sh` / fork-bomb / `dd→/dev` … (fail-open khi hook lỗi) | Bash |
+| `settings.json` `permissions.deny` | chặn Read `.env`/`*.pem`/`*.key`/`credentials`/`id_rsa`… | Read tool |
+| prose: checkpoint (front-matter phiếu) · progress (ADVANCE=advance.py) · atlas (secret→chỉ ghi tên+vị trí) | | model |
+
+Bằng chứng gate hoạt động thật: khi wire `config_write_guard`, nó **chặn ngay cả Edit của phiên
+đang cài nó** vào `settings.json` — phải hoàn tất qua break-glass (đúng thiết kế: sửa gate là việc
+chủ đích ngoài flow thường).
+
+## Đợt 3 — CÒN LẠI (để session khác / vòng sau)
+
 - **resume-pending-gates** — resume đọc `pipeline/*.json`, `cho_duyet:true` → in "ĐANG CHỜ KÝ",
-  không tiến cử skill sau cổng.
-- **bash-safety-floor**, **secret-read-guard** (permissions.deny cho `.env`/`*.pem`/`*.key`).
+  không tiến cử skill sau cổng (prose resume + partner). *(Đang có session khác sửa `resume/SKILL.md`
+  → chừa để tránh đụng.)*
+- **git pre-push backstop** — cùng luật `gate_ship` ở tầng transport, bắt evasion `sh -c 'git push'`.
+- **skill-md-validator** (`check_skills.py` gắn vào tune Bước 6), **current-pointer-truth** (xoá khối
+  ghi current.json ở 15 skill, chỉ charter ghi), **red-before-green** (proof-of-fail trong frame).
 
 ## Kiểm nhanh
 

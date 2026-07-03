@@ -50,8 +50,14 @@ Nếu `.claude/skills/<owner>/rubric.md` tồn tại (owner = `owner` của task
 
 ## Bước 3 — Cấp phiếu
 
-Ghi `projects/<key>/progress/checkpoints/<task-id>.md`:
+Ghi `projects/<key>/progress/checkpoints/<task-id>.md`. **Verdict sống ở FRONT-MATTER máy-đọc
+ở ĐẦU phiếu (Đợt 3)** — đây là chỗ DUY NHẤT `advance.py` đọc để lật `done`, không đoán từ prose:
 ```markdown
+---
+verdict: PASS | FAIL | PASS_PENDING_SIGNOFF
+signed_by:
+artifact_sha256: <sha256 của artifact lúc chấm — bật verdict-hash-binding>
+---
 # Phiếu checkpoint — <task-id>
 - Task: <việc>
 - Giai đoạn: <giai_doan>
@@ -66,10 +72,13 @@ Ghi `projects/<key>/progress/checkpoints/<task-id>.md`:
 ## Grade (advisory): <TỔNG/max · GATE đạt|rớt: … · n/a nếu không có rubric>
 Sửa trước tiên: <đòn bẩy lớn nhất, hoặc "—">
 
-## Verdict: PASS | FAIL
+## Verdict (đọc-cho-người — nguồn máy là front-matter): PASS | FAIL
 Lý do: <1–2 câu>
 Nếu FAIL, cần bổ sung: <danh sách cụ thể để owner sửa>
 ```
+
+- `verdict` ∈ enum đóng. Lấy `artifact_sha256` = `python3 -c "import hashlib;print(hashlib.sha256(open('<artifact>','rb').read()).hexdigest())"` (hoặc `bin/sign_gate.py` cho cổng đậm). Sửa artifact sau khi chấm → sha lệch → `advance.py` báo STALE, KHÔNG lật.
+- **Cổng đậm (GĐ8 live-slice · GĐ13 release):** verdict = `PASS_PENDING_SIGNOFF`, `signed_by` để RỖNG. `advance.py` sẽ KHÔNG lật cho tới khi Người duyệt tự điền `signed_by` (AI KHÔNG điền thay — xem CLAUDE.md Đợt 2). Cổng thường: `signed_by` có thể để rỗng, verdict `PASS` là đủ.
 
 In khối:
 ```
@@ -77,10 +86,14 @@ In khối:
 Artifact: <path>
 Đạt: <n>/<m> mục   |   Thiếu: <mục hoặc "—">
 Grade (tham khảo): <TỔNG/max · GATE …  |  n/a>
-→ PASS: chạy /progress để lật done + mở nhánh kế
+→ PASS: chạy `python3 bin/advance.py <task-id>` để lật done (fail-closed, đọc front-matter) + mở nhánh kế
 → FAIL: owner <skill> sửa <thiếu gì> rồi /checkpoint <task-id> lại
 ════════════════
 ```
+
+> **Lật `done` KHÔNG bằng tay.** `/progress` (ADVANCE) và người dùng lật task qua
+> `bin/advance.py <task-id>` — script đọc front-matter phiếu, chỉ `verdict: PASS` + sha khớp
+> mới lật, ghi atomic. Đây là chỗ vá vết T-06 ("PASS chờ ký" mà progress.json đã done).
 
 ## Vì sao vai này tách riêng
 
