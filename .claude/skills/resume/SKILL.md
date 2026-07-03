@@ -31,9 +31,10 @@ Ranh giới:
 ## Bước 1 — Đọc (đúng thứ tự nạp-ngữ-cảnh)
 
 1. `projects/<key>/constitution/` — nạp luật (đọc lướt, biết cách chơi).
-2. `projects/<key>/progress/progress.json` — con trỏ + toàn bộ tasks.
+2. `projects/<key>/progress/progress.json` — con trỏ + toàn bộ tasks. *(Project PIPELINE-mode có thể chưa có file này — không sao, đọc tiếp mục 5.)*
 3. Đầu mục artifact có thật: `ls` bốn folder `problem idea docs codebase`, đọc tiêu đề/dòng đầu file mới nhất để lấy một-dòng-tổng-thể.
 4. Kiểm sợi bằng MÁY (không soi tay): `python3 scripts/spine_check.py <key>` — trả link đứt / vòng lặp / task mồ côi / thiếu `traces_to`. Đưa kết quả vào dòng "Sợi" của khối toàn cảnh; exit 0 = liền.
+5. **Cổng đang chờ ký — đọc DỮ LIỆU, không đoán.** Nếu tồn tại `state/project/<key>/pipeline/` hoặc `projects/<key>/pipeline/`: đọc `_index.json` + các `<skill>.json`. Bất kỳ artifact nào có `cho_duyet: true` hoặc `trang_thai` ∈ {`cho_ky`, `cho_duyet`} = **MỘT CỔNG ĐANG CHỜ BẠN KÝ** (ghi nhớ stage đó cho Bước 2). Đây là cơ chế theo-dữ-liệu: một cổng đang treo thì thấy dù con trỏ nằm đâu — không phụ thuộc phán đoán "con trỏ có ở cổng không".
 
 Tính (không ghi, chỉ tính trong đầu):
 - **ready** = task `trang_thai` là `ready`, hoặc `todo` mà mọi `depends_on` đều `done`.
@@ -55,7 +56,13 @@ Còn treo: <open question/blocked nếu có, 1 dòng>
 ════════════════
 ```
 
-Nếu có nhiều task ready không cùng nhóm → liệt kê tối đa 3, để user chọn chạy cái nào trước. Nếu con trỏ đang ở một cổng chờ ký (live slice / release) → nhắc "đang chờ bạn ký GO/NO-GO", không tiến cử đi tiếp.
+Nếu có nhiều task ready không cùng nhóm → liệt kê tối đa 3, để user chọn chạy cái nào trước.
+
+**Cổng đang chờ ký (từ Bước 1 mục 5, HOẶC con trỏ đang ở live-slice/release):** in một dòng ⏳ làm **DÒNG ĐẦU** khối toàn cảnh (ngay dưới `═══ ĐANG Ở ĐÂU`, trước "Bức tranh"):
+```
+⏳ ĐANG CHỜ BẠN KÝ CỔNG <stage> — resume KHÔNG tiến cử skill sau cổng.
+```
+Và ở dòng "→ Tiến cử" ghi `chờ bạn ký GO/NO-GO rồi mới đi tiếp` — **KHÔNG** gợi ý skill giai đoạn kế. Cổng chờ-người bị bước qua trong im lặng ("/resume rồi làm tiếp" → chạy thẳng skill sau cổng) chính là vết mà mục này vá; cổng do DỮ LIỆU `cho_duyet` quyết, không do resume tự đánh giá.
 
 ## Khi project trống (vừa charter xong)
 
