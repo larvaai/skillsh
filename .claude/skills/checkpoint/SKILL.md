@@ -17,6 +17,7 @@ Ranh giới:
 - **Phán quyết có lý do.** `FAIL` phải nêu chính xác mục nào thiếu; `PASS` liệt kê các mục đã đạt. Không PASS/FAIL trống.
 - **Không đụng progress.json.** Không lật task, không dời con trỏ — đó là `progress`.
 - **Kiểm theo giai đoạn.** Mỗi giai đoạn có checklist mục bắt buộc riêng trong `constitution/definition-of-done.md`. Dùng đúng checklist của `giai_doan` task đó.
+- **Chấm chất lượng là ADVISORY.** Nếu owner của giai đoạn có rubric (`.claude/skills/<owner>/rubric.md`), checkpoint chạy `grade` để lấy điểm chất lượng và đính vào phiếu — nhưng điểm chỉ THAM KHẢO. Verdict PASS/FAIL vẫn do checklist cấu trúc (đủ mục + đúng path) quyết; một backbone-fail của grade là **cảnh báo to**, KHÔNG tự lật FAIL và KHÔNG ký thay user. Chất lượng sâu là thứ user cân khi ký (giữ warm-never-brick + user-giữ-GO).
 - **Cổng đậm cần chữ người.** Live slice (GĐ8) và release (GĐ13) là cổng GO/NO-GO — `checkpoint` chuẩn bị đủ để ký, nhưng verdict cuối chờ user ký, ghi `PASS (chờ ký)` cho tới khi có.
 
 ## Bước 0 — Nạp ngữ cảnh
@@ -41,10 +42,22 @@ Mở artifact, đối chiếu checklist của `giai_doan` (từ `definition-of-d
 
 Mỗi mục đánh ✓ (đạt) hoặc ✗ (thiếu, nêu cụ thể).
 
+## Bước 2b — Chấm chất lượng (advisory, nếu có rubric)
+
+Nếu `.claude/skills/<owner>/rubric.md` tồn tại (owner = `owner` của task), chạy `grade <owner>` trên artifact để lấy: **TỔNG điểm**, **GATE (đạt/rớt + tiêu chí nào)**, **đòn bẩy sửa-trước-tiên**. Đính cả ba vào phiếu.
+
+Đây là THAM KHẢO cho user, KHÔNG phải cổng: điểm thấp / backbone-fail → in cảnh báo to trong phiếu, nhưng verdict cấu trúc Bước 2 vẫn là cái quyết PASS/FAIL. Không có rubric cho giai đoạn đó → bỏ qua bước này, ghi "grade: n/a".
+
 ## Bước 3 — Cấp phiếu
 
-Ghi `projects/<key>/progress/checkpoints/<task-id>.md`:
+Ghi `projects/<key>/progress/checkpoints/<task-id>.md`. **Verdict sống ở FRONT-MATTER máy-đọc
+ở ĐẦU phiếu (Đợt 3)** — đây là chỗ DUY NHẤT `advance.py` đọc để lật `done`, không đoán từ prose:
 ```markdown
+---
+verdict: PASS | FAIL | PASS_PENDING_SIGNOFF
+signed_by:
+artifact_sha256: <sha256 của artifact lúc chấm — bật verdict-hash-binding>
+---
 # Phiếu checkpoint — <task-id>
 - Task: <việc>
 - Giai đoạn: <giai_doan>
@@ -56,20 +69,31 @@ Ghi `projects/<key>/progress/checkpoints/<task-id>.md`:
 - [x] <mục 2 đạt>
 - [ ] <mục thiếu — nêu cụ thể>
 
-## Verdict: PASS | FAIL
+## Grade (advisory): <TỔNG/max · GATE đạt|rớt: … · n/a nếu không có rubric>
+Sửa trước tiên: <đòn bẩy lớn nhất, hoặc "—">
+
+## Verdict (đọc-cho-người — nguồn máy là front-matter): PASS | FAIL
 Lý do: <1–2 câu>
 Nếu FAIL, cần bổ sung: <danh sách cụ thể để owner sửa>
 ```
+
+- `verdict` ∈ enum đóng. Lấy `artifact_sha256` = `python3 -c "import hashlib;print(hashlib.sha256(open('<artifact>','rb').read()).hexdigest())"` (hoặc `bin/sign_gate.py` cho cổng đậm). Sửa artifact sau khi chấm → sha lệch → `advance.py` báo STALE, KHÔNG lật.
+- **Cổng đậm (GĐ8 live-slice · GĐ13 release):** verdict = `PASS_PENDING_SIGNOFF`, `signed_by` để RỖNG. `advance.py` sẽ KHÔNG lật cho tới khi Người duyệt tự điền `signed_by` (AI KHÔNG điền thay — xem CLAUDE.md Đợt 2). Cổng thường: `signed_by` có thể để rỗng, verdict `PASS` là đủ.
 
 In khối:
 ```
 ═══ CHECKPOINT — <task-id>: <PASS|FAIL> ═══
 Artifact: <path>
 Đạt: <n>/<m> mục   |   Thiếu: <mục hoặc "—">
-→ PASS: chạy /progress để lật done + mở nhánh kế
+Grade (tham khảo): <TỔNG/max · GATE …  |  n/a>
+→ PASS: chạy `python3 bin/advance.py <task-id>` để lật done (fail-closed, đọc front-matter) + mở nhánh kế
 → FAIL: owner <skill> sửa <thiếu gì> rồi /checkpoint <task-id> lại
 ════════════════
 ```
+
+> **Lật `done` KHÔNG bằng tay.** `/progress` (ADVANCE) và người dùng lật task qua
+> `bin/advance.py <task-id>` — script đọc front-matter phiếu, chỉ `verdict: PASS` + sha khớp
+> mới lật, ghi atomic. Đây là chỗ vá vết T-06 ("PASS chờ ký" mà progress.json đã done).
 
 ## Vì sao vai này tách riêng
 

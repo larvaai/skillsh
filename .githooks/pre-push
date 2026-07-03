@@ -1,0 +1,11 @@
+#!/bin/sh
+# skillsh pre-push backstop (Đợt 3) — git chạy hook NÀY cho MỌI push, dù spawn kiểu gì
+# (kể cả `sh -c 'git push'` / push từ terminal tay) → lưới cuối re-áp gate ở tầng transport.
+#
+# Kích hoạt (một lần mỗi clone):  git config core.hooksPath .githooks
+# Break-glass:                     SKILLSH_PREPUSH=off   hoặc   git push --no-verify
+#
+# git đẩy các dòng "<local_ref> <local_sha> <remote_ref> <remote_sha>" qua stdin; ta chuyển
+# nguyên vào prepush_check.py. Không resolve được repo → thoát 0 (fail-open, không chặn push).
+root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+exec python3 "$root/bin/prepush_check.py" "$@"

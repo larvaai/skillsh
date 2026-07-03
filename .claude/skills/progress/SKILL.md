@@ -54,11 +54,14 @@ Ready ngay: <T-id...>
 ## Chế độ ADVANCE — đóng một bước
 
 Khi user báo một task xong:
-1. Kiểm `progress/checkpoints/<task-id>.md`. Không có / verdict `FAIL` → dừng: "Chưa có phiếu đạt. Chạy `/checkpoint <task-id>` trước." (nếu FAIL, nêu lý do trong phiếu).
-2. Verdict `PASS` → set task `done`.
-3. Mở khóa: mọi task `todo` mà toàn bộ `depends_on` giờ đã `done` → chuyển `ready`.
-4. Dời `con_tro` tới giai đoạn của task ready kế; nếu một `parallel_group` vừa đủ ready → ghi chú "mở nhánh song song, chạy /fanout".
-5. Cập nhật `board.md`, `updated_at`.
+1. **Lật bằng SCRIPT, không sửa tay (Đợt 3).** Chạy `python3 bin/advance.py <task-id>` — script đọc
+   FRONT-MATTER phiếu `progress/checkpoints/<task-id>.md`, và CHỈ lật `done` khi `verdict: PASS`
+   + (nếu phiếu khai `artifact_sha256`) sha artifact còn khớp; ghi `progress.json` atomic. Không có
+   phiếu / `FAIL` / `PASS_PENDING_SIGNOFF` / sha lệch → script từ chối kèm lối đi tiếp, KHÔNG được
+   tự Edit `progress.json` để lật (vá vết T-06: "PASS chờ ký" mà đã done). `--check` để soi trước.
+2. Script tự mở khóa: mọi task mà toàn bộ `depends_on` giờ đã `done` được liệt trong output "mở khoá".
+3. Dời `con_tro` tới giai đoạn của task ready kế; nếu một `parallel_group` vừa đủ ready → ghi chú "mở nhánh song song, chạy /fanout".
+4. Cập nhật `board.md`, `updated_at`.
 
 ```
 ═══ ĐÓNG BƯỚC — <T-id> ✓ ═══
