@@ -79,6 +79,8 @@ Business Objective → Product Goal → Requirement → PRD → Epic → Feature
 ```
 Ví dụ báo đứt: "Feature *Case Search* không nối được về Business Objective nào" · "Story *Search by status* thiếu AC" · "Requirement *tìm theo trạng thái* chưa có Test Case". Luật tối thiểu (C1): mỗi PR link story · mỗi story thuộc feature · mỗi feature phục vụ một business objective.
 
+**Project workspace (`projects/<key>/`): lấy sự thật sợi BẰNG MÁY, không soi tay.** Chạy `python3 scripts/spine_check.py <key>` — trả tất định: link `depends_on` đứt · vòng lặp phụ thuộc · task mồ côi (không nối về gốc) · bước chịu-lực (build/uat) thiếu `traces_to`. Đọc output đó rồi KỂ lại 3 tầng (lãnh đạo → chi tiết); script cho *sự thật*, skill thêm *góc nhìn + skill vá*. KHÔNG tự duyệt graph bằng mắt khi đã có engine.
+
 ### 3. Phần còn thiếu + nhắc skill
 
 Mỗi gap một dòng: *thiếu gì → vì sao GĐ sau sẽ mù → chạy skill nào*. Bám Đủ-là-đủ (đừng đòi làm thừa); never-skip thì đánh dấu **bắt buộc**.
@@ -145,4 +147,6 @@ Cổng chưa qua: GĐ9 "Backlog đủ để plan?" (PO+Tech). Security: threat m
 
 ## Phạm vi với project workspace (`projects/<key>/`)
 
-Project quản bằng workspace đã có tháp kiểm soát riêng: `/resume` (toàn cảnh + tiến cử), `progress/progress.json` (đồ thị task), phiếu `progress/checkpoints/` (từng bước) — dùng chúng, KHÔNG chạy `traceability` chồng lên (sẽ báo thiếu sai vì nó đọc `state/pipeline/`). `traceability` phục vụ project quản kiểu cũ qua `state/project/<key>/pipeline/` (vd `hex-agent-rebuild`). Khi project state-based cuối cùng migrate sang workspace → cân nhắc cất skill này vào `archive/skills/`.
+Hai layer, hai nguồn — cùng một skill:
+- **Workspace (`projects/<key>/`)** — sợi lấy bằng máy qua `spine_check.py <key>` (mục 2 ở trên). Toàn cảnh + tiến cử bước kế vẫn là `/resume`; `traceability` bổ sung phần *soi sợi sâu* (đứt/vòng/mồ côi/thiếu neo) mà resume chỉ tóm một dòng. Không đọc `state/pipeline/` cho project loại này (nó không có).
+- **Kiểu cũ (`state/project/<key>/pipeline/`, vd `hex-agent-rebuild` đã SUPERSEDED)** — traceability đọc `pipeline/*.json` như mô tả ở "Đầu vào". Khi mọi project cũ đã migrate sang workspace → cân nhắc cất skill này vào `archive/skills/`, chỉ giữ `spine_check.py` + `/resume`.

@@ -18,17 +18,21 @@ Ranh giới:
 - **Chỉ tiến cử, không tự chạy.** Nói "nên chạy `/idea`", không tự mở `idea`.
 - **Trung thực với tiến độ thật.** Chỉ báo done những task `progress.json` ghi done. Không suy diễn tiến độ từ việc "đã bàn tới".
 
-## Bước 0 — Xác định project
+## Bước 0 — Xác định project (qua sổ cái, không đoán)
 
-1. Argument (`/resume multi-lens-chat`).
-2. `state/current.json` → `workspace`.
-3. Không rõ → liệt kê các folder trong `projects/` và hỏi mở cái nào.
+1. Argument (`/resume hex-agent` — nhận cả tên cũ): chuẩn hoá bằng sổ cái —
+   `python3 scripts/portfolio.py resolve <arg>` trả về `key` + `path` chuẩn (gộp mọi alias/tên-cũ về một key).
+2. Không có arg → `python3 scripts/portfolio.py list` in mọi project + con trỏ đang mở (`→`); mặc định lấy `current`.
+3. Vẫn không rõ → hỏi mở cái nào.
+
+(Portfolio là engine tra cứu tất định — đừng tự suy `tên ↔ path`, để script trả lời.)
 
 ## Bước 1 — Đọc (đúng thứ tự nạp-ngữ-cảnh)
 
 1. `projects/<key>/constitution/` — nạp luật (đọc lướt, biết cách chơi).
 2. `projects/<key>/progress/progress.json` — con trỏ + toàn bộ tasks.
 3. Đầu mục artifact có thật: `ls` bốn folder `problem idea docs codebase`, đọc tiêu đề/dòng đầu file mới nhất để lấy một-dòng-tổng-thể.
+4. Kiểm sợi bằng MÁY (không soi tay): `python3 scripts/spine_check.py <key>` — trả link đứt / vòng lặp / task mồ côi / thiếu `traces_to`. Đưa kết quả vào dòng "Sợi" của khối toàn cảnh; exit 0 = liền.
 
 Tính (không ghi, chỉ tính trong đầu):
 - **ready** = task `trang_thai` là `ready`, hoặc `todo` mà mọi `depends_on` đều `done`.
@@ -44,6 +48,7 @@ Con trỏ: <giai_doan> — <ghi_chu>
 Đã chốt gần nhất: <1 dòng, task done mới nhất + artifact>
 Sẵn sàng chạy: <task id · việc> (owner: <skill>)
 Chạy song song được: <parallel_group + các task, hoặc "chưa">
+Sợi: <✓ liền | N chỗ cần vá: link đứt/mồ côi/thiếu neo — chạy /traceability xem chi tiết>
 Còn treo: <open question/blocked nếu có, 1 dòng>
 → Tiến cử: /<skill>   (hoặc /fanout nếu có nhóm song song sẵn sàng)
 ════════════════
