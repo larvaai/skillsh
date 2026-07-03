@@ -59,6 +59,10 @@ Tên và số tiêu chí lấy đúng từ `<skill>/rubric.md` (explain 7 tiêu 
 
 Grade không đụng state chung của skill khác. Chạy lẻ: chỉ in report. Chạy trong `tune`: ghi report vào `experiments/runs/<ts>/<variant>/grade.txt` theo đường dẫn tune chỉ định.
 
+## Chế độ in-flow (advisory) — do checkpoint gọi
+
+`checkpoint` gọi grade ngay tại cổng go/no-go của một bước (Bước 2b của checkpoint): grade chấm artifact giai đoạn theo `<owner>/rubric.md`, trả **TỔNG + GATE + đòn-bẩy-sửa-trước** để checkpoint đính vào phiếu. Đây là điểm THAM KHẢO cho user — grade **không tự lật FAIL, không ký thay, không chặn pipeline** (đúng warm-never-brick + user-giữ-GO). Không có rubric cho giai đoạn đó → grade báo "n/a", checkpoint bỏ qua. Grade vẫn read-only: chỉ chấm và in, checkpoint mới là chỗ ghi phiếu.
+
 ## Ranh giới
 
 - Grade chấm MỘT skill mỗi lần, theo đúng rubric của skill đó — không trộn tiêu chí của skill khác.

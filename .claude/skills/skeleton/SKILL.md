@@ -113,6 +113,17 @@ Trả lời được các câu này mới chốt, vướng bất kỳ câu nào 
 - Mọi ô đã tick có bằng chứng chạy THẬT (staging mở được / CI xanh / test pass / có log-metric-trace), không tick khống?
 - Có bám đầu vào GĐ7 (đúng stack đã chốt), không bịa, không chọn lại stack, không trôi sang build full?
 
+## Tự-suy-lại độc lập (trước cổng — CHỈ GĐ8)
+
+"Tự soi" ở trên kiểm Report có ĐỦ mục không. Bước này khác: **tự tay dựng lại phán quyết pass/chưa-pass TỪ BẰNG CHỨNG GỐC, TRƯỚC KHI tin lời kể của Report** — vì đọc-lại-report không phải là kiểm-lại (một tác giả tự soi mình chia chung điểm mù). Đây là cổng đắt nhất của pipeline nên đáng một lượt độc lập (Đủ-là-đủ: rigor nặng nhất ở cổng nặng nhất); GĐ khác KHÔNG cần bước này.
+
+Cách làm — đọc THẲNG các trường thô, chưa đọc "Góc nhìn lãnh đạo" của Report:
+1. Mở `pipeline/frame-return.json` và đọc nguyên `proof_level` · `staging_url`/`log_sample` · `ci_status` · `test_result`. Từ CHÍNH các số đó, tự kết luận: xương sống có chạy thật không?
+2. Đọc checklist validate: mọi ô **rủi ro cao** có bằng chứng THẬT chưa (không tick khống)?
+3. Đối chiếu kết luận độc lập của bạn với phán quyết Report. **Lệch nhau → nêu to** ("Report ghi chạy-thật nhưng `ci_status=null` / `test_result=fail` / ô X còn trống") ngay trong khối cổng cho CTO thấy.
+
+Đây là THAM KHẢO cho CTO, không thay quyền GO của họ; không phủ định cứng, luôn kèm lối đi tiếp (dựng nốt tầng / spike / thu hẹp slice).
+
 ## Cổng go/no-go + Bàn giao sang backlog (GĐ9)
 
 Cổng (câu hỏi của doc GĐ8): ***"Live slice pass chưa?"*** — slice chạy thật (staging HOẶC local-proven: docker compose + test E2E xanh + log), có observability, checklist validate tick đủ ô rủi ro cao. **Pass mới được scale ra nhiều module/feature.**

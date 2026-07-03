@@ -17,6 +17,7 @@ Ranh giới:
 - **Phán quyết có lý do.** `FAIL` phải nêu chính xác mục nào thiếu; `PASS` liệt kê các mục đã đạt. Không PASS/FAIL trống.
 - **Không đụng progress.json.** Không lật task, không dời con trỏ — đó là `progress`.
 - **Kiểm theo giai đoạn.** Mỗi giai đoạn có checklist mục bắt buộc riêng trong `constitution/definition-of-done.md`. Dùng đúng checklist của `giai_doan` task đó.
+- **Chấm chất lượng là ADVISORY.** Nếu owner của giai đoạn có rubric (`.claude/skills/<owner>/rubric.md`), checkpoint chạy `grade` để lấy điểm chất lượng và đính vào phiếu — nhưng điểm chỉ THAM KHẢO. Verdict PASS/FAIL vẫn do checklist cấu trúc (đủ mục + đúng path) quyết; một backbone-fail của grade là **cảnh báo to**, KHÔNG tự lật FAIL và KHÔNG ký thay user. Chất lượng sâu là thứ user cân khi ký (giữ warm-never-brick + user-giữ-GO).
 - **Cổng đậm cần chữ người.** Live slice (GĐ8) và release (GĐ13) là cổng GO/NO-GO — `checkpoint` chuẩn bị đủ để ký, nhưng verdict cuối chờ user ký, ghi `PASS (chờ ký)` cho tới khi có.
 
 ## Bước 0 — Nạp ngữ cảnh
@@ -41,6 +42,12 @@ Mở artifact, đối chiếu checklist của `giai_doan` (từ `definition-of-d
 
 Mỗi mục đánh ✓ (đạt) hoặc ✗ (thiếu, nêu cụ thể).
 
+## Bước 2b — Chấm chất lượng (advisory, nếu có rubric)
+
+Nếu `.claude/skills/<owner>/rubric.md` tồn tại (owner = `owner` của task), chạy `grade <owner>` trên artifact để lấy: **TỔNG điểm**, **GATE (đạt/rớt + tiêu chí nào)**, **đòn bẩy sửa-trước-tiên**. Đính cả ba vào phiếu.
+
+Đây là THAM KHẢO cho user, KHÔNG phải cổng: điểm thấp / backbone-fail → in cảnh báo to trong phiếu, nhưng verdict cấu trúc Bước 2 vẫn là cái quyết PASS/FAIL. Không có rubric cho giai đoạn đó → bỏ qua bước này, ghi "grade: n/a".
+
 ## Bước 3 — Cấp phiếu
 
 Ghi `projects/<key>/progress/checkpoints/<task-id>.md`:
@@ -56,6 +63,9 @@ Ghi `projects/<key>/progress/checkpoints/<task-id>.md`:
 - [x] <mục 2 đạt>
 - [ ] <mục thiếu — nêu cụ thể>
 
+## Grade (advisory): <TỔNG/max · GATE đạt|rớt: … · n/a nếu không có rubric>
+Sửa trước tiên: <đòn bẩy lớn nhất, hoặc "—">
+
 ## Verdict: PASS | FAIL
 Lý do: <1–2 câu>
 Nếu FAIL, cần bổ sung: <danh sách cụ thể để owner sửa>
@@ -66,6 +76,7 @@ In khối:
 ═══ CHECKPOINT — <task-id>: <PASS|FAIL> ═══
 Artifact: <path>
 Đạt: <n>/<m> mục   |   Thiếu: <mục hoặc "—">
+Grade (tham khảo): <TỔNG/max · GATE …  |  n/a>
 → PASS: chạy /progress để lật done + mở nhánh kế
 → FAIL: owner <skill> sửa <thiếu gì> rồi /checkpoint <task-id> lại
 ════════════════

@@ -103,6 +103,19 @@ Trước khi trình cổng, tự hỏi:
 - **Có tự bấm GO không?** (không được — chỉ khuyến nghị, CTO+PO quyết.)
 Vướng ô nào → sửa TRƯỚC khi trình cổng.
 
+## Tự-suy-lại độc lập (trước cổng — CHỈ GĐ13)
+
+"Tự soi" kiểm trang có ĐỦ không. Bước này khác: **tự tay dựng lại GO/NO-GO TỪ BẰNG CHỨNG GỐC, TRƯỚC KHI đọc khuyến nghị của chính `ship`** — đọc-lại không phải kiểm-lại; một tác giả tự chấm mình chia chung điểm mù. Đây là cổng go-live, đắt và khó đảo, nên đáng một lượt độc lập (Đủ-là-đủ: rigor nặng nhất ở cổng nặng nhất); GĐ khác KHÔNG cần.
+
+Cách làm — với TỪNG cái trong bốn thứ-không-thương-lượng, truy về nguồn gốc, chưa đọc dòng "Khuyến nghị":
+1. **rollback đã test?** → mở kết quả DR/rollback test thật (không phải câu "đã test" trong trang). Chưa có bằng chứng chạy → coi như CHƯA.
+2. **monitoring/alert đã bật?** → có tên metric + ngưỡng cụ thể chưa, hay chỉ ghi "đã bật"?
+3. **incident owner** → có TÊN người thật chưa?
+4. **UAT + Security sign-off (GĐ12)** → kéo thẳng từ `uat.md`: có chữ ký thật hay đang là giả định?
+Bất kỳ cái nào chỉ *được kể* mà không có bằng chứng gốc → kết luận độc lập của bạn là **NO-GO**, nêu to; nếu lệch với khuyến nghị trang thì phơi chỗ lệch ngay trong khối cổng cho CTO+PO thấy.
+
+Đây là THAM KHẢO cho Người duyệt, không thay quyền ký GO của họ; NO-GO luôn kèm thiếu-gì · ai · bao lâu.
+
 ## Cổng GO / NO-GO (phân vai A5) + Bàn giao sang `operate`
 
 Cổng là câu hỏi cho **Người duyệt = CTO + PO** (không phải AI tự quyết go-live). `ship` trình đủ bốn artifact + nêu rõ các dòng còn chặn + đưa khuyến nghị kèm lý do + phương án đã loại, rồi hỏi:

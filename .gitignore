@@ -1,6 +1,7 @@
-# Runtime telemetry — logs sinh khi chạy, không commit
+# Runtime telemetry + sổ audit cổng — logs sinh khi chạy, không commit
 state/telemetry/
 state/**/.dedup/
+state/trace/
 
 # Bản báo cáo máy sinh (chạy lại được)
 skill-governance/SKILL-DECISION.generated.md
