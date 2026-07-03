@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-07-03T00:00:00Z",
+  "note": "Sổ cái mọi project — NGUỒN SỰ THẬT DUY NHẤT. normalizer: mọi alias/path/khoá-cũ của một project resolve về đúng 1 key ở đây. Lớp portfolio chỉ được ghi portfolio.json + current.json; state từng project là READ-ONLY với lớp này (harness-design.md:47).",
+  "current": "hxag",
+  "projects": [
+    {
+      "key": "hxag",
+      "ten": "HexAgent (clean rebuild)",
+      "path": "projects/hxag",
+      "state_path": "state/project/hxag",
+      "schema_version": 1,
+      "mode": "greenfield",
+      "giai_doan": "gd14_operate",
+      "cho_duyet": false,
+      "aliases": ["hxag", "hex_agent", "hex-agent", "hex-agent-rebuild", "rebuild-hex-agent", "/Users/uspro/Desktop/namnson/hex_agent"],
+      "legacy_paths": ["rebuild-hex-agent", "state/project/hex_agent"],
+      "updated_at": "2026-07-03T03:05:00Z"
+    },
+    {
+      "key": "multi-lens-chat",
+      "ten": "Multi-Lens Chat",
+      "path": "projects/multi-lens-chat",
+      "state_path": "state/project/multi-lens-chat",
+      "schema_version": 1,
+      "mode": "greenfield",
+      "giai_doan": "gd2_4_product_prd",
+      "cho_duyet": true,
+      "aliases": ["multi-lens-chat", "multi_lens_chat", "multilens"],
+      "legacy_paths": ["state/project/multi-lens-chat/pipeline-state.json"],
+      "legacy_schema_note": "pipeline-state.json là schema A (EN current_pillar/current_stage) — giữ để tham chiếu; nguồn chuẩn là projects/multi-lens-chat/progress/progress.json (schema 1).",
+      "updated_at": "2026-07-02T00:00:00Z"
+    },
+    {
+      "key": "demo-gom-don",
+      "ten": "Demo — gom đơn một chỗ",
+      "path": "projects/demo-gom-don",
+      "state_path": "state/project/demo-gom-don",
+      "schema_version": 1,
+      "mode": "greenfield",
+      "giai_doan": "gd1_4_why_what",
+      "cho_duyet": false,
+      "aliases": ["demo-gom-don", "gom-don"],
+      "legacy_paths": [],
+      "updated_at": "2026-07-03T00:00:00Z"
+    },
+    {
+      "key": "mediremind",
+      "ten": "MediRemind — nhắc uống thuốc & theo dõi tuân thủ",
+      "path": "projects/mediremind",
+      "state_path": "state/project/mediremind",
+      "schema_version": 0,
+      "mode": "greenfield",
+      "giai_doan": "gd0_intake",
+      "cho_duyet": false,
+      "aliases": ["mediremind"],
+      "legacy_paths": ["state/project/mediremind"],
+      "note": "Chưa migrate sang projects/<key>/ — mới ở GĐ0 (idea done_handoff). Khi charter dựng workspace thì path projects/mediremind sẽ có thật.",
+      "updated_at": "2026-07-03T00:00:00Z"
+    }
+  ]
+}
