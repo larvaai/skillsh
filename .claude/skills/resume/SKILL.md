@@ -10,6 +10,7 @@ description: "Cửa vào một project đã dựng: đọc constitution + progre
 Ranh giới:
 - `resume` đọc và kể. `progress` mới được sửa `progress.json`. `charter` mới được dựng project.
 - `resume` tiến cử một skill kế; user tự chạy skill đó.
+- Muốn tổng kết BUỔI làm việc (diff theo thời-gian của CẢ repo: commit/worktree/sổ phê duyệt) → đó là `recap`; `resume` chỉ nói trạng thái hiện tại của MỘT project.
 
 ## Quy tắc bắt buộc
 
