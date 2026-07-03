@@ -8,3 +8,6 @@ skill-governance/SKILL-DECISION.generated.md
 # Python
 __pycache__/
 *.pyc
+
+# macOS
+.DS_Store
